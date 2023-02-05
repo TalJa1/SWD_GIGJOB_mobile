@@ -26,6 +26,7 @@ class _LoginHomeState extends State<LoginHome> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        resizeToAvoidBottomInset: false,
         backgroundColor: Colors.white,
         body: Column(
           // ignore: prefer_const_literals_to_create_immutables
@@ -116,38 +117,40 @@ class _LoginHomeState extends State<LoginHome> {
             SizedBox(
               height: 20,
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              // crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                // ignore: avoid_unnecessary_containers
-                Container(
-                  margin: EdgeInsets.only(right: 6),
-                  child: GestureDetector(
-                    onTap: () {
-                      // ignore: avoid_print
-                      print('Google');
-                    }, // Image tapped
-                    child: Image.asset(
-                      'assets/images/GoogleBtn.png',
+            Padding(
+              padding: EdgeInsets.only(bottom: 5),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // ignore: avoid_unnecessary_containers
+                  Container(
+                    margin: EdgeInsets.only(right: 6),
+                    child: GestureDetector(
+                      onTap: () {
+                        // ignore: avoid_print
+                        print('Google');
+                      }, // Image tapped
+                      child: Image.asset(
+                        'assets/images/GoogleBtn.png',
+                      ),
                     ),
                   ),
-                ),
-                // ignore: avoid_unnecessary_containers
-                Container(
-                  margin: EdgeInsets.only(left: 6),
-                  child: GestureDetector(
-                    onTap: () {
-                      // ignore: avoid_print
-                      print('Facebook');
-                    }, // Image tapped
-                    child: Image.asset(
-                      'assets/images/FacebookBtn.png',
+                  // ignore: avoid_unnecessary_containers
+                  Container(
+                    margin: EdgeInsets.only(left: 6),
+                    child: GestureDetector(
+                      onTap: () {
+                        // ignore: avoid_print
+                        print('Facebook');
+                      }, // Image tapped
+                      child: Image.asset(
+                        'assets/images/FacebookBtn.png',
+                      ),
                     ),
-                  ),
-                )
-              ],
-            ),
+                  )
+                ],
+              ),
+            )
           ],
         ));
   }
