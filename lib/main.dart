@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:gigjob_mobile/view/login_home.dart';
 import 'package:gigjob_mobile/view/confirmation_code.dart';
+import 'package:gigjob_mobile/view/sign_up.dart';
 
 void main() {
   runApp(const MyApp());
