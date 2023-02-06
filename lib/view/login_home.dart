@@ -1,9 +1,9 @@
 // ignore_for_file: prefer_const_constructors
 
-import 'dart:async';
-
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:gigjob_mobile/view/sign_up.dart';
+import 'package:gigjob_mobile/view/confirmation_code.dart';
 
 class LoginHome extends StatefulWidget {
   const LoginHome({Key? key}) : super(key: key);
@@ -25,6 +25,10 @@ class _LoginHomeState extends State<LoginHome> {
 
   @override
   Widget build(BuildContext context) {
+    bool isLogin = false;
+    bool phoneNumber = false;
+    bool password = false;
+
     return Scaffold(
         resizeToAvoidBottomInset: false,
         backgroundColor: Colors.white,
@@ -42,7 +46,12 @@ class _LoginHomeState extends State<LoginHome> {
             Container(
               margin: EdgeInsets.only(left: 20, right: 20),
               child: TextField(
-                onChanged: (value) => {},
+                onChanged: (value) => {
+                  if (value == '0909999999') ...[
+                    phoneNumber = true,
+                    print('phone $phoneNumber')
+                  ]
+                },
                 decoration: InputDecoration(
                     hintText: 'Phone number',
                     border: OutlineInputBorder(
@@ -55,7 +64,12 @@ class _LoginHomeState extends State<LoginHome> {
                 obscureText: true,
                 enableSuggestions: false,
                 autocorrect: false,
-                onChanged: (value) => {},
+                onChanged: (value) => {
+                  if (value == 't1') ...[
+                    password = true,
+                    print('pass $password')
+                  ]
+                },
                 decoration: InputDecoration(
                     hintText: 'Password',
                     border: OutlineInputBorder(
@@ -83,8 +97,23 @@ class _LoginHomeState extends State<LoginHome> {
                 height: 40,
                 child: FilledButton(
                   onPressed: () {
+                    setState(() {
+                      if (phoneNumber == true && password == true) {
+                        isLogin = true;
+                      }
+                    });
                     // ignore: avoid_print
-                    print('login');
+                    // print('login');
+                    if (isLogin == true) {
+                      print(isLogin);
+                      Route route = MaterialPageRoute(
+                          builder: (context) => ConfirmationCode());
+                      Navigator.push(context, route);
+                    } else {
+                      print(isLogin);
+                      // ignore: avoid_print
+                      print('wrong');
+                    }
                   },
                   child: Text("Login"),
                 ),
