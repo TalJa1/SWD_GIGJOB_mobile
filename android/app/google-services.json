@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "395540117439",
+    "project_id": "gigjob-mobile",
+    "storage_bucket": "gigjob-mobile.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:395540117439:android:4795f18430d28a6167d30a",
+        "android_client_info": {
+          "package_name": "com.example.gigjob_mobile"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "395540117439-hkbj5lk2hnrtcteihk7cv8gtsmmmbp3u.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDggaiV6q_HzlX1RAxU-s4uj0gFg6zgojM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "395540117439-hkbj5lk2hnrtcteihk7cv8gtsmmmbp3u.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "395540117439-hriqo5e2ka4g8dotnh77a8uog4u4olh2.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.gigjobMobile"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
