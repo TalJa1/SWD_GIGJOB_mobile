@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:gigjob_mobile/view/sign_up.dart';
 import 'package:gigjob_mobile/view/confirmation_code.dart';
 import 'package:gigjob_mobile/firebase_options.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class LoginHome extends StatefulWidget {
   const LoginHome({Key? key}) : super(key: key);
@@ -169,7 +170,8 @@ class _LoginHomeState extends State<LoginHome> {
                     child: GestureDetector(
                       onTap: () {
                         // ignore: avoid_print
-                        print('Google');
+                        // print('Google');
+                        signinWithGoogle();
                       }, // Image tapped
                       child: Image.asset(
                         'assets/images/GoogleBtn.png',
@@ -183,6 +185,7 @@ class _LoginHomeState extends State<LoginHome> {
                       onTap: () {
                         // ignore: avoid_print
                         print('Facebook');
+                        FirebaseAuth.instance.signOut();
                       }, // Image tapped
                       child: Image.asset(
                         'assets/images/FacebookBtn.png',
@@ -194,5 +197,20 @@ class _LoginHomeState extends State<LoginHome> {
             )
           ],
         ));
+  }
+
+  signinWithGoogle() async {
+    GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+
+    GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
+
+    AuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth?.accessToken, idToken: googleAuth?.idToken);
+
+    UserCredential userCre =
+        await FirebaseAuth.instance.signInWithCredential(credential);
+    print(userCre.credential?.token ?? "");
+    // ignore: avoid_print
+    // print(userCre.user?.displayName);
   }
 }
