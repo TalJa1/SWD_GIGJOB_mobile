@@ -14,53 +14,62 @@ class _AppFooter extends State<AppFooter> {
   final List<String> _pageNames = [''];
 
   void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-    Navigator.pushNamed(context, '/${_pageNames[index]}');
+    if (index != _selectedIndex) {
+      setState(() {
+        _selectedIndex = index;
+      });
+      Navigator.pushNamed(context, '/${_pageNames[index]}');
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home_filled,
+      items: const <BottomNavigationBarItem>[
+        BottomNavigationBarItem(
+          icon: Icon(
+            Icons.home_filled,
             color: Colors.black,
-            ),
-            
-            // Image.asset(
-            //             'assets/images/HomeIcon.png',
-            //           ),
-            label: "",
           ),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.notifications,
-            color: Colors.black,
 
-              ),
-              // Image.asset(
-              //             'assets/images/BellIcon.png',
-              //           ),
-              label: ""),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.search,
-            color: Colors.black,
-              ),
-              // Image.asset(
-              //             'assets/images/BellIcon.png',
-              //           ),
-              label: ""),
-          BottomNavigationBarItem(icon: Icon(Icons.wallet,
-            color: Colors.black,
-          ), label: ""),
-          BottomNavigationBarItem(icon: Icon(Icons.person,
-            color: Colors.black,
-          ), label: ""),
-        ],
-        currentIndex: _selectedIndex,
-
-        onTap: _onItemTapped,
-      );
+          // Image.asset(
+          //             'assets/images/HomeIcon.png',
+          //           ),
+          label: "",
+        ),
+        BottomNavigationBarItem(
+            icon: Icon(
+              Icons.notifications,
+              color: Colors.black,
+            ),
+            // Image.asset(
+            //             'assets/images/BellIcon.png',
+            //           ),
+            label: ""),
+        BottomNavigationBarItem(
+            icon: Icon(
+              Icons.search,
+              color: Colors.black,
+            ),
+            // Image.asset(
+            //             'assets/images/BellIcon.png',
+            //           ),
+            label: ""),
+        BottomNavigationBarItem(
+            icon: Icon(
+              Icons.wallet,
+              color: Colors.black,
+            ),
+            label: ""),
+        BottomNavigationBarItem(
+            icon: Icon(
+              Icons.person,
+              color: Colors.black,
+            ),
+            label: ""),
+      ],
+      currentIndex: _selectedIndex,
+      onTap: _onItemTapped,
+    );
   }
 }
