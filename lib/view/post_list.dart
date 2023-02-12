@@ -102,9 +102,15 @@ class _PostListState extends State<PostList> {
               ),
             ],
           ),
-          Text(
-            "He'll want to use your yacht, and I don't want this thing smelling like fish.",
-            style: TextStyle(fontSize: 14),
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  "He'll want to use your yacht, and I don't want this thing smelling like fish.",
+                  style: TextStyle(fontSize: 14),
+                ),
+              ),
+            ],
           ),
           Row(
             children: [
