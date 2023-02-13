@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:gigjob_mobile/view/login_home.dart';
 import 'package:gigjob_mobile/view/confirmation_code.dart';
 import 'package:gigjob_mobile/view/sign_up.dart';
+import 'package:gigjob_mobile/view/wallet.dart';
+import 'package:gigjob_mobile/view/user_profile.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,10 +20,12 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(initialRoute: '/', routes: {
+    return MaterialApp(initialRoute: '/profile', routes: {
       '/': (BuildContext context) => LoginHome(),
       '/confirm': (BuildContext context) => ConfirmationCode(),
-      '/signup': (BuildContext context) => SignUp()
+      '/signup': (BuildContext context) => SignUp(),
+      '/wallet': (BuildContext context) => WalletPage(),
+      '/profile': (BuildContext context) => UserProfile()
     });
   }
 }
