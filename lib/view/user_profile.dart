@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:animated_button_bar/animated_button_bar.dart';
+import 'package:http/http.dart' as http;
 
 class UserProfile extends StatefulWidget {
   const UserProfile({Key? key}) : super(key: key);
@@ -17,14 +20,28 @@ class _UserProfileState extends State<UserProfile> {
 
   bool isInfo = true;
   var userName = "Tui La Tai";
-  Object userInfor = {
-    "email": "tt@gamail.com",
-    "education": "asdfa",
-    "major": "asdfasf",
-    "age": 12,
-    "address": "asdasd",
-    "phone": "012310231",
-  };
+  String img = "";
+  // Object userInfor = {
+  //   "email": "tt@gamail.com",
+  //   "education": "asdfa",
+  //   "major": "asdfasf",
+  //   "age": 12,
+  //   "address": "asdasd",
+  //   "phone": "012310231",
+  // };
+
+  Future<http.Response> createAlbum(String title) {
+    return http.post(
+      Uri.parse(
+          'http://ec2-18-141-146-248.ap-southeast-1.compute.amazonaws.com/swagger-ui/index.html?fbclid=IwAR0KSo01YfEznIuNJon6_RMZwO1XdTxdNXDC-EaFWGukOylCxY_YVRVEaFM#/resource-controller/upload/api/v1/resource/upload'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'file': title,
+      }),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -74,9 +91,24 @@ class _UserProfileState extends State<UserProfile> {
                 height: 330,
                 width: MediaQuery.of(context).size.width,
                 // decoration: const BoxDecoration(color: Colors.black),
-                child: userData(isInfo),
+                // child: userData(isInfo),
               )),
-          Positioned(bottom: 35, child: editBtn())
+          Positioned(
+              bottom: 35,
+              child: Column(
+                children: [
+                  SizedBox(
+                    width: 300,
+                    child: TextField(
+                      onChanged: (value) {
+                        img = value;
+                        print(img);
+                      },
+                    ),
+                  ),
+                  editBtn(img),
+                ],
+              ))
         ],
       ),
     );
@@ -179,9 +211,11 @@ class _UserProfileState extends State<UserProfile> {
     ));
   }
 
-  Widget editBtn() {
+  Widget editBtn(String img) {
     return TextButton(
-      onPressed: () {},
+      onPressed: () {
+        createAlbum(img);
+      },
       child: const Text('Edit'),
     );
   }

@@ -212,8 +212,6 @@ class _LoginHomeState extends State<LoginHome> {
 
     UserCredential userCre =
         await FirebaseAuth.instance.signInWithCredential(credential);
-    // print(userCre.credential?.token ?? "");
-    // ignore: avoid_print
-    // print(userCre.user?.displayName);
+    print(userCre.credential?.token ?? "");
   }
 }
