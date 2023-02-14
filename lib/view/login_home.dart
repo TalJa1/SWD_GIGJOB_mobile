@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, avoid_print
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -207,10 +207,11 @@ class _LoginHomeState extends State<LoginHome> {
     AuthCredential credential = GoogleAuthProvider.credential(
         accessToken: googleAuth?.accessToken, idToken: googleAuth?.idToken);
 
+    print("access token ${googleAuth?.accessToken}");
+    print("id token ${googleAuth?.idToken}");
+
     UserCredential userCre =
         await FirebaseAuth.instance.signInWithCredential(credential);
     print(userCre.credential?.token ?? "");
-    // ignore: avoid_print
-    // print(userCre.user?.displayName);
   }
 }

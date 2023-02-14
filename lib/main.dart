@@ -8,6 +8,8 @@ import 'package:gigjob_mobile/view/nav_screen.dart';
 import 'package:gigjob_mobile/view/post_list.dart';
 import 'package:gigjob_mobile/view/post_list_detail.dart';
 import 'package:gigjob_mobile/view/sign_up.dart';
+import 'package:gigjob_mobile/view/wallet.dart';
+import 'package:gigjob_mobile/view/user_profile.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,7 +26,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(initialRoute: '/', routes: {
       '/': (BuildContext context) => LoginHome(),
       '/confirm': (BuildContext context) => ConfirmationCode(),
-      '/signup': (BuildContext context) => SignUp()
+      '/signup': (BuildContext context) => SignUp(),
+      '/wallet': (BuildContext context) => WalletPage(),
+      '/profile': (BuildContext context) => UserProfile()
     });
   }
 }
