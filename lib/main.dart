@@ -4,6 +4,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:gigjob_mobile/view/login_home.dart';
 import 'package:gigjob_mobile/view/confirmation_code.dart';
+import 'package:gigjob_mobile/view/nav_screen.dart';
+import 'package:gigjob_mobile/view/post_list.dart';
+import 'package:gigjob_mobile/view/post_list_detail.dart';
 import 'package:gigjob_mobile/view/sign_up.dart';
 
 void main() async {

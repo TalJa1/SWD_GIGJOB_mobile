@@ -72,11 +72,11 @@ class _PostListState extends State<PostList> {
           ),
         ),
       ),
-      bottomNavigationBar: StatefulBuilder(
-        builder: (BuildContext context, StateSetter setState) {
-          return AppFooter();
-        },
-      ),
+      // bottomNavigationBar: StatefulBuilder(
+      //   builder: (BuildContext context, StateSetter setState) {
+      //     return AppFooter();
+      //   },
+      // ),
     );
   }
 
