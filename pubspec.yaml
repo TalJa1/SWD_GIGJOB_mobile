@@ -41,6 +41,8 @@ dependencies:
   persistent_bottom_nav_bar: ^5.0.2
   animated_button_bar: ^0.0.2
   http: ^0.13.5
+  firebase_messaging: ^14.2.2
+  scoped_model: ^2.0.0
 
 dev_dependencies:
   flutter_test:

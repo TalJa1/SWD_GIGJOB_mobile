@@ -28,7 +28,8 @@ class MyApp extends StatelessWidget {
       '/confirm': (BuildContext context) => ConfirmationCode(),
       '/signup': (BuildContext context) => SignUp(),
       '/wallet': (BuildContext context) => WalletPage(),
-      '/profile': (BuildContext context) => UserProfile()
+      '/profile': (BuildContext context) => UserProfile(),
+      '/home': (BuildContext context) => RootScreen(),
     });
   }
 }
