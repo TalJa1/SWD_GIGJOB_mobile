@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(initialRoute: '/', routes: {
+    return MaterialApp(initialRoute: '/profile', routes: {
       '/': (BuildContext context) => LoginHome(),
       '/confirm': (BuildContext context) => ConfirmationCode(),
       '/signup': (BuildContext context) => SignUp(),

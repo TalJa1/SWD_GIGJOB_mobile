@@ -40,6 +40,10 @@ dependencies:
   google_sign_in: ^5.4.4
   animated_button_bar: ^0.0.2
   http: ^0.13.5
+  image_picker: ^0.8.6+1
+  get: ^4.6.5
+  dio: ^5.0.0
+  
 
 dev_dependencies:
   flutter_test:

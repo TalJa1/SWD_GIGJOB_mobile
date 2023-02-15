@@ -1,8 +1,12 @@
-import 'dart:convert';
+// ignore_for_file: avoid_print
 
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:animated_button_bar/animated_button_bar.dart';
 import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
+import 'package:http_parser/http_parser.dart';
+import 'package:dio/dio.dart';
 
 class UserProfile extends StatefulWidget {
   const UserProfile({Key? key}) : super(key: key);
@@ -20,27 +24,59 @@ class _UserProfileState extends State<UserProfile> {
 
   bool isInfo = true;
   var userName = "Tui La Tai";
-  String img = "";
-  // Object userInfor = {
-  //   "email": "tt@gamail.com",
-  //   "education": "asdfa",
-  //   "major": "asdfasf",
-  //   "age": 12,
-  //   "address": "asdasd",
-  //   "phone": "012310231",
-  // };
+  final ImagePicker picker = ImagePicker();
+  XFile? uploadfile;
+  XFile? pickedFile;
 
-  Future<http.Response> createAlbum(String title) {
-    return http.post(
-      Uri.parse(
-          'http://ec2-18-141-146-248.ap-southeast-1.compute.amazonaws.com/swagger-ui/index.html?fbclid=IwAR0KSo01YfEznIuNJon6_RMZwO1XdTxdNXDC-EaFWGukOylCxY_YVRVEaFM#/resource-controller/upload/api/v1/resource/upload'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(<String, String>{
-        'file': title,
-      }),
-    );
+  Future pickImg() async {
+    // ignore: unused_local_variable
+    pickedFile = (await picker.pickImage(source: ImageSource.gallery));
+    if (pickedFile != null) {
+      setState(() {
+        uploadfile = pickedFile; //File(pickedFile!.path);
+      });
+    }
+    print(uploadfile);
+  }
+
+  //Post with http
+  Future<String> uploadFile(XFile? file) async {
+    final url = Uri.parse(
+        'http://ec2-18-141-146-248.ap-southeast-1.compute.amazonaws.com/api/v1/resource/upload');
+    final request = http.MultipartRequest('POST', url);
+
+    // String filename = file!.name;
+    // var encryptedBase64EncodedString =
+    //     await File(file!.path).readAsString(encoding: utf8);
+    // var decoded = base64.decode(encryptedBase64EncodedString);
+    // ignore: await_only_futures
+    final multipartFile = await http.MultipartFile.fromBytes(
+        'file', File(file!.path).readAsBytesSync(),
+        contentType: MediaType('image', 'jpg'));
+    request.files.add(multipartFile);
+
+    final response = await request.send();
+    if (response.statusCode == 200) {
+      final responseString = await response.stream.bytesToString();
+      print('200');
+      return responseString;
+    } else {
+      print(response.statusCode);
+      throw Exception('Failed to upload file');
+    }
+  }
+
+  //Post with DIO
+  Future<String> uploadImage(XFile? file) async {
+    Dio dio = Dio();
+    String fileName = file!.path.split('/').last;
+    FormData formData = FormData.fromMap({
+      "file": MultipartFile.fromFileSync(file.path, filename: fileName),
+    });
+    Response response = await dio.post(
+        "http://ec2-18-141-146-248.ap-southeast-1.compute.amazonaws.com/api/v1/resource/upload",
+        data: formData);
+    return "Upload Status for $fileName ${response.statusCode}";
   }
 
   @override
@@ -51,12 +87,6 @@ class _UserProfileState extends State<UserProfile> {
       body: Stack(
         alignment: Alignment.topCenter,
         children: <Widget>[
-          // Positioned(
-          //     // bottom: 0,
-          //     child: Container(
-          //   height: 800,
-          //   decoration: const BoxDecoration(color: Colors.black),
-          // )),
           bottomLayer(),
           Container(
             height: 450,
@@ -96,19 +126,15 @@ class _UserProfileState extends State<UserProfile> {
           Positioned(
               bottom: 35,
               child: Column(
+                // ignore: prefer_const_literals_to_create_immutables
                 children: [
-                  SizedBox(
+                  const SizedBox(
                     width: 300,
-                    child: TextField(
-                      onChanged: (value) {
-                        img = value;
-                        print(img);
-                      },
-                    ),
                   ),
-                  editBtn(img),
+                  editBtn(),
+                  uploadbtn(),
                 ],
-              ))
+              )),
         ],
       ),
     );
@@ -211,12 +237,22 @@ class _UserProfileState extends State<UserProfile> {
     ));
   }
 
-  Widget editBtn(String img) {
+  Widget editBtn() {
     return TextButton(
-      onPressed: () {
-        createAlbum(img);
+      onPressed: () async {
+        await pickImg();
       },
       child: const Text('Edit'),
+    );
+  }
+
+  Widget uploadbtn() {
+    return TextButton(
+      onPressed: () {
+        // uploadFile(uploadfile!);
+        uploadImage(uploadfile!);
+      },
+      child: const Text('Upload'),
     );
   }
 }
