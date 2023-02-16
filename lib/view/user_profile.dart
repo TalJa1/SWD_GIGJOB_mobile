@@ -1,12 +1,14 @@
-// ignore_for_file: avoid_print
+// ignore_for_file: avoid_print, unnecessary_new
 
-import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:animated_button_bar/animated_button_bar.dart';
-import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:cross_file/cross_file.dart';
 
 class UserProfile extends StatefulWidget {
   const UserProfile({Key? key}) : super(key: key);
@@ -33,50 +35,30 @@ class _UserProfileState extends State<UserProfile> {
     pickedFile = (await picker.pickImage(source: ImageSource.gallery));
     if (pickedFile != null) {
       setState(() {
-        uploadfile = pickedFile; //File(pickedFile!.path);
+        uploadfile = pickedFile;
+        print(uploadfile!.path.toString());
       });
     }
     print(uploadfile);
-  }
-
-  //Post with http
-  Future<String> uploadFile(XFile? file) async {
-    final url = Uri.parse(
-        'http://ec2-18-141-146-248.ap-southeast-1.compute.amazonaws.com/api/v1/resource/upload');
-    final request = http.MultipartRequest('POST', url);
-
-    // String filename = file!.name;
-    // var encryptedBase64EncodedString =
-    //     await File(file!.path).readAsString(encoding: utf8);
-    // var decoded = base64.decode(encryptedBase64EncodedString);
-    // ignore: await_only_futures
-    final multipartFile = await http.MultipartFile.fromBytes(
-        'file', File(file!.path).readAsBytesSync(),
-        contentType: MediaType('image', 'jpg'));
-    request.files.add(multipartFile);
-
-    final response = await request.send();
-    if (response.statusCode == 200) {
-      final responseString = await response.stream.bytesToString();
-      print('200');
-      return responseString;
-    } else {
-      print(response.statusCode);
-      throw Exception('Failed to upload file');
-    }
   }
 
   //Post with DIO
   Future<String> uploadImage(XFile? file) async {
     Dio dio = Dio();
     String fileName = file!.path.split('/').last;
+    final Uint8List bytes = await file.readAsBytes();
     FormData formData = FormData.fromMap({
-      "file": MultipartFile.fromFileSync(file.path, filename: fileName),
+      "file": MultipartFile.fromBytes(bytes,
+          filename: fileName, contentType: new MediaType('image', 'jpeg')),
     });
-    Response response = await dio.post(
-        "http://ec2-18-141-146-248.ap-southeast-1.compute.amazonaws.com/api/v1/resource/upload",
-        data: formData);
-    return "Upload Status for $fileName ${response.statusCode}";
+    try {
+      Response response = await dio.post(
+          "http://ec2-18-141-203-185.ap-southeast-1.compute.amazonaws.com/api/v1/resource/upload",
+          data: formData);
+      return "Upload Status for $fileName ${response.statusCode}";
+    } catch (e) {
+      return e.toString();
+    }
   }
 
   @override
