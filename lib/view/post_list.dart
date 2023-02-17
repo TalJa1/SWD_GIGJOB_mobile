@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gigjob_mobile/view/nav_screen.dart';
+import 'package:filter_list/filter_list.dart';
 
 class PostList extends StatefulWidget {
   @override

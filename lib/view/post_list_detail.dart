@@ -25,7 +25,7 @@ class _PostListDetailState extends State<PostListDetail> {
           children: [
             Stack(
               children: [
-                Align(
+                const Align(
                   alignment: Alignment.topLeft,
                   child: Text(
                     "Back",
@@ -36,7 +36,7 @@ class _PostListDetailState extends State<PostListDetail> {
                 )
               ],
             ),
-            SizedBox(
+            const SizedBox(
               height: 16,
             ),
             Image.asset(
@@ -45,35 +45,35 @@ class _PostListDetailState extends State<PostListDetail> {
               height: 240,
               fit: BoxFit.cover,
             ),
-            SizedBox(
+            const SizedBox(
               height: 16,
             ),
             Row(
               children: [
-                Expanded(
+                const Expanded(
                     child: Text(
                   "Post Title Here...",
                   style: TextStyle(fontSize: 24.0),
                 ))
               ],
             ),
-            SizedBox(
+            const SizedBox(
               height: 12,
             ),
             Row(
               children: [
-                Expanded(
+                const Expanded(
                     child: Text(
                   "Author",
                   style: TextStyle(fontSize: 16),
                 ))
               ],
             ),
-            SizedBox(
+            const SizedBox(
               height: 12,
             ),
             Row(
-              children: [Expanded(child: Text("Description"))],
+              children: [const Expanded(child: Text("Description"))],
             )
           ],
         ),
@@ -97,7 +97,7 @@ class _PostListDetailState extends State<PostListDetail> {
               color: Colors.black,
               borderRadius: BorderRadius.circular(25),
             ),
-            child: Center(
+            child: const Center(
               child: Text(
                 'Apply Now!!!',
                 style: TextStyle(

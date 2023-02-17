@@ -47,6 +47,7 @@ dependencies:
   get: ^4.6.5
   image_picker: ^0.8.6+1
   dio: ^5.0.0
+  filter_list: ^1.0.2
   
 
 dev_dependencies:
