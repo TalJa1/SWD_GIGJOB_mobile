@@ -45,6 +45,9 @@ dependencies:
   scoped_model: ^2.0.0
   flutter_local_notifications: ^13.0.0
   get: ^4.6.5
+  image_picker: ^0.8.6+1
+  dio: ^5.0.0
+  
 
 dev_dependencies:
   flutter_test:

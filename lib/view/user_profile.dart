@@ -1,8 +1,13 @@
-import 'dart:convert';
+// ignore_for_file: avoid_print, unnecessary_new
+
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:animated_button_bar/animated_button_bar.dart';
-import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
+// ignore: depend_on_referenced_packages
+import 'package:http_parser/http_parser.dart';
+import 'package:dio/dio.dart';
 
 class UserProfile extends StatefulWidget {
   const UserProfile({Key? key}) : super(key: key);
@@ -20,27 +25,39 @@ class _UserProfileState extends State<UserProfile> {
 
   bool isInfo = true;
   var userName = "Tui La Tai";
-  String img = "";
-  // Object userInfor = {
-  //   "email": "tt@gamail.com",
-  //   "education": "asdfa",
-  //   "major": "asdfasf",
-  //   "age": 12,
-  //   "address": "asdasd",
-  //   "phone": "012310231",
-  // };
+  final ImagePicker picker = ImagePicker();
+  XFile? uploadfile;
+  XFile? pickedFile;
 
-  Future<http.Response> createAlbum(String title) {
-    return http.post(
-      Uri.parse(
-          'http://ec2-18-141-146-248.ap-southeast-1.compute.amazonaws.com/swagger-ui/index.html?fbclid=IwAR0KSo01YfEznIuNJon6_RMZwO1XdTxdNXDC-EaFWGukOylCxY_YVRVEaFM#/resource-controller/upload/api/v1/resource/upload'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(<String, String>{
-        'file': title,
-      }),
-    );
+  Future pickImg() async {
+    // ignore: unused_local_variable
+    pickedFile = (await picker.pickImage(source: ImageSource.gallery));
+    if (pickedFile != null) {
+      setState(() {
+        uploadfile = pickedFile;
+        print(uploadfile!.path.toString());
+      });
+    }
+    print(uploadfile);
+  }
+
+  //Post with DIO
+  Future<String> uploadImage(XFile? file) async {
+    Dio dio = Dio();
+    String fileName = file!.path.split('/').last;
+    final Uint8List bytes = await file.readAsBytes();
+    FormData formData = FormData.fromMap({
+      "file": MultipartFile.fromBytes(bytes,
+          filename: fileName, contentType: new MediaType('image', 'jpeg')),
+    });
+    try {
+      Response response = await dio.post(
+          "http://ec2-18-141-203-185.ap-southeast-1.compute.amazonaws.com/api/v1/resource/upload",
+          data: formData);
+      return "Upload Status for $fileName ${response.statusCode}";
+    } catch (e) {
+      return e.toString();
+    }
   }
 
   @override
@@ -51,12 +68,6 @@ class _UserProfileState extends State<UserProfile> {
       body: Stack(
         alignment: Alignment.topCenter,
         children: <Widget>[
-          // Positioned(
-          //     // bottom: 0,
-          //     child: Container(
-          //   height: 800,
-          //   decoration: const BoxDecoration(color: Colors.black),
-          // )),
           bottomLayer(),
           Container(
             height: 450,
@@ -97,18 +108,9 @@ class _UserProfileState extends State<UserProfile> {
               bottom: 35,
               child: Column(
                 children: [
-                  SizedBox(
-                    width: 300,
-                    child: TextField(
-                      onChanged: (value) {
-                        img = value;
-                        print(img);
-                      },
-                    ),
-                  ),
-                  editBtn(img),
+                  editBtn(),
                 ],
-              ))
+              )),
         ],
       ),
     );
@@ -182,6 +184,7 @@ class _UserProfileState extends State<UserProfile> {
               onTap: () => {
                     setState(() {
                       isInfo = true;
+                      print("isInfo $isInfo");
                     })
                   },
               child: const Text('Info')),
@@ -189,6 +192,7 @@ class _UserProfileState extends State<UserProfile> {
               onTap: () => {
                     setState(() {
                       isInfo = false;
+                      print("isInfo $isInfo");
                     })
                   },
               child: const Text('Experience')),
@@ -211,12 +215,24 @@ class _UserProfileState extends State<UserProfile> {
     ));
   }
 
-  Widget editBtn(String img) {
+  Widget editBtn() {
     return TextButton(
-      onPressed: () {
-        createAlbum(img);
+      style: ButtonStyle(
+          foregroundColor: MaterialStateProperty.all<Color>(Colors.white)),
+      onPressed: () async {
+        await pickImg();
       },
       child: const Text('Edit'),
+    );
+  }
+
+  Widget uploadbtn() {
+    return TextButton(
+      onPressed: () {
+        // uploadFile(uploadfile!);
+        uploadImage(uploadfile!);
+      },
+      child: const Text('Upload'),
     );
   }
 }
