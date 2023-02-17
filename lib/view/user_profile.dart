@@ -107,13 +107,8 @@ class _UserProfileState extends State<UserProfile> {
           Positioned(
               bottom: 35,
               child: Column(
-                // ignore: prefer_const_literals_to_create_immutables
                 children: [
-                  const SizedBox(
-                    width: 300,
-                  ),
                   editBtn(),
-                  uploadbtn(),
                 ],
               )),
         ],
@@ -189,6 +184,7 @@ class _UserProfileState extends State<UserProfile> {
               onTap: () => {
                     setState(() {
                       isInfo = true;
+                      print("isInfo $isInfo");
                     })
                   },
               child: const Text('Info')),
@@ -196,6 +192,7 @@ class _UserProfileState extends State<UserProfile> {
               onTap: () => {
                     setState(() {
                       isInfo = false;
+                      print("isInfo $isInfo");
                     })
                   },
               child: const Text('Experience')),
@@ -220,6 +217,8 @@ class _UserProfileState extends State<UserProfile> {
 
   Widget editBtn() {
     return TextButton(
+      style: ButtonStyle(
+          foregroundColor: MaterialStateProperty.all<Color>(Colors.white)),
       onPressed: () async {
         await pickImg();
       },
