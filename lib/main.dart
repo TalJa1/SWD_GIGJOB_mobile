@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:gigjob_mobile/firebase_options.dart';
 import 'package:gigjob_mobile/services/push_notification_service.dart';
+import 'package:gigjob_mobile/view/edit_profile.dart';
+// import 'package:gigjob_mobile/view/edit_profile.dart';
 import 'package:gigjob_mobile/view/login_home.dart';
 import 'package:gigjob_mobile/view/confirmation_code.dart';
 import 'package:gigjob_mobile/view/nav_screen.dart';
@@ -55,13 +57,14 @@ class _MyAppState extends State<MyApp> {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(initialRoute: '/profile', routes: {
+    return MaterialApp(initialRoute: '/home', routes: {
       '/': (BuildContext context) => LoginHome(),
       '/confirm': (BuildContext context) => ConfirmationCode(),
       '/signup': (BuildContext context) => SignUp(),
       '/wallet': (BuildContext context) => WalletPage(),
       '/profile': (BuildContext context) => UserProfile(),
       '/home': (BuildContext context) => RootScreen(),
+      'useredit': (BuildContext context) => EditProfilePage(),
     });
   }
 }

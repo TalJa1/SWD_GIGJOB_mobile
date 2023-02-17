@@ -1,0 +1,183 @@
+// ignore_for_file: avoid_print
+
+import 'dart:convert';
+import 'dart:io';
+import 'dart:typed_data';
+import 'package:http_parser/http_parser.dart';
+import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+
+class EditProfilePage extends StatefulWidget {
+  const EditProfilePage({Key? key}) : super(key: key);
+
+  @override
+  // ignore: library_private_types_in_public_api
+  _EditProfilePageState createState() => _EditProfilePageState();
+}
+
+class _EditProfilePageState extends State<EditProfilePage> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  final ImagePicker picker = ImagePicker();
+  XFile? uploadfile;
+  XFile? pickedFile;
+
+  Future pickImg() async {
+    // ignore: unused_local_variable
+    pickedFile = (await picker.pickImage(source: ImageSource.gallery));
+    if (pickedFile != null) {
+      setState(() {
+        uploadfile = pickedFile;
+        print(uploadfile!.path.toString());
+      });
+    }
+    print(uploadfile);
+  }
+
+  //Post with DIO
+  Future<String> uploadImage(XFile? file) async {
+    Dio dio = Dio();
+    String fileName = file!.path.split('/').last;
+    final Uint8List bytes = await file.readAsBytes();
+    FormData formData = FormData.fromMap({
+      "file": MultipartFile.fromBytes(bytes,
+          filename: fileName, contentType: new MediaType('image', 'jpeg')),
+    });
+    try {
+      Response response = await dio.post(
+          "http://ec2-18-141-203-185.ap-southeast-1.compute.amazonaws.com/api/v1/resource/upload",
+          data: formData);
+      return "Upload Status for $fileName ${response.statusCode}";
+    } catch (e) {
+      return e.toString();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // ignore: prefer_const_constructors
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: Stack(
+        // ignore: prefer_const_literals_to_create_immutables
+        children: <Widget>[
+          Positioned(
+              child: SizedBox(
+            height: 240,
+            width: MediaQuery.of(context).size.width,
+          )),
+          // ignore: prefer_const_constructors
+          CustomScrollView(
+            // ignore: prefer_const_literals_to_create_immutables
+            slivers: <Widget>[
+              // ignore: prefer_const_constructors
+              SliverAppBar(
+                  backgroundColor: const Color.fromARGB(255, 234, 234, 234),
+                  floating: true,
+                  leading: TextButton(
+                    child: const Text(
+                      'Back',
+                      style: TextStyle(color: Colors.black),
+                    ),
+                    onPressed: () {
+                      Navigator.maybePop(context);
+                    },
+                  )),
+              // ignore: prefer_const_constructors
+              SliverAppBar(
+                backgroundColor: const Color.fromARGB(255, 234, 234, 234),
+                floating: true,
+                flexibleSpace: const FlexibleSpaceBar(
+                  title: Text(
+                    'Edit Profile',
+                    style: TextStyle(color: Colors.black),
+                  ),
+                ),
+                leading: const Text(''),
+              )
+            ],
+          ),
+          Positioned(right: 20, top: 80, child: userImg()),
+          Positioned(bottom: 20, child: formEdit()),
+          Positioned(bottom: 5, child: uploadbtn())
+        ],
+      ),
+    );
+  }
+
+  Widget userImg() {
+    return GestureDetector(
+      onTap: () async {
+        await pickImg();
+      },
+      child: pickedFile == null
+          ? Container(
+              // constraints: const BoxConstraints.expand(width: 150, height: 150),
+              width: 150.0,
+              height: 150.0,
+              decoration: BoxDecoration(
+                // color: const Color(0xff7c94b6),
+                image: const DecorationImage(
+                  image: AssetImage('assets/images/GigJob.png'),
+                  fit: BoxFit.cover,
+                ),
+                borderRadius: const BorderRadius.all(Radius.circular(80.0)),
+                border: Border.all(
+                  color: const Color.fromARGB(179, 124, 123, 123),
+                  width: 4.0,
+                ),
+              ),
+            )
+          : Container(
+              // constraints: const BoxConstraints.expand(width: 150, height: 150),
+              width: 150.0,
+              height: 150.0,
+              decoration: BoxDecoration(
+                // color: const Color(0xff7c94b6),
+                image: DecorationImage(
+                  image: FileImage(File(pickedFile!.path)),
+                  fit: BoxFit.cover,
+                ),
+                borderRadius: const BorderRadius.all(Radius.circular(80.0)),
+                border: Border.all(
+                  color: const Color.fromARGB(179, 124, 123, 123),
+                  width: 4.0,
+                ),
+              ),
+            ),
+    );
+  }
+
+  Widget formEdit() {
+    return SizedBox(
+      width: MediaQuery.of(context).size.width,
+      height: 530,
+    );
+  }
+
+  Widget uploadbtn() {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      padding: const EdgeInsets.only(left: 16, right: 16),
+      child: TextButton(
+        onPressed: () {
+          uploadImage(uploadfile!);
+        },
+        style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all(Colors.black),
+            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(18.0),
+            ))),
+        child: const Text(
+          'Apply',
+          style: TextStyle(color: Colors.white),
+        ),
+      ),
+    );
+  }
+}

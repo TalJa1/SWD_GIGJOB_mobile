@@ -1,13 +1,8 @@
 // ignore_for_file: avoid_print, unnecessary_new
-
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:animated_button_bar/animated_button_bar.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:gigjob_mobile/view/edit_profile.dart';
 // ignore: depend_on_referenced_packages
-import 'package:http_parser/http_parser.dart';
-import 'package:dio/dio.dart';
 
 class UserProfile extends StatefulWidget {
   const UserProfile({Key? key}) : super(key: key);
@@ -25,40 +20,6 @@ class _UserProfileState extends State<UserProfile> {
 
   bool isInfo = true;
   var userName = "Tui La Tai";
-  final ImagePicker picker = ImagePicker();
-  XFile? uploadfile;
-  XFile? pickedFile;
-
-  Future pickImg() async {
-    // ignore: unused_local_variable
-    pickedFile = (await picker.pickImage(source: ImageSource.gallery));
-    if (pickedFile != null) {
-      setState(() {
-        uploadfile = pickedFile;
-        print(uploadfile!.path.toString());
-      });
-    }
-    print(uploadfile);
-  }
-
-  //Post with DIO
-  Future<String> uploadImage(XFile? file) async {
-    Dio dio = Dio();
-    String fileName = file!.path.split('/').last;
-    final Uint8List bytes = await file.readAsBytes();
-    FormData formData = FormData.fromMap({
-      "file": MultipartFile.fromBytes(bytes,
-          filename: fileName, contentType: new MediaType('image', 'jpeg')),
-    });
-    try {
-      Response response = await dio.post(
-          "http://ec2-18-141-203-185.ap-southeast-1.compute.amazonaws.com/api/v1/resource/upload",
-          data: formData);
-      return "Upload Status for $fileName ${response.statusCode}";
-    } catch (e) {
-      return e.toString();
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,31 +46,30 @@ class _UserProfileState extends State<UserProfile> {
                     padding: const EdgeInsets.only(top: 10),
                     child: Column(
                       children: [
-                        Text(
-                          userName,
-                          style: const TextStyle(
-                              color: Colors.black,
-                              fontSize: 25,
-                              fontWeight: FontWeight.bold),
+                        Row(
+                          children: [
+                            Text(
+                              userName,
+                              style: const TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 25,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            editBtn()
+                          ],
                         ),
                         stateButton()
                       ],
                     ),
                   ))),
           Positioned(
-              bottom: 110,
-              child: SizedBox(
+              bottom: 5,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
                 height: 330,
                 width: MediaQuery.of(context).size.width,
                 // decoration: const BoxDecoration(color: Colors.black),
                 // child: userData(isInfo),
-              )),
-          Positioned(
-              bottom: 35,
-              child: Column(
-                children: [
-                  editBtn(),
-                ],
               )),
         ],
       ),
@@ -170,11 +130,11 @@ class _UserProfileState extends State<UserProfile> {
     return Container(
       decoration: const BoxDecoration(color: Colors.white),
       // constraints: const BoxConstraints.expand(height: 100, width: 420),
-      height: 88,
-      width: 420,
+      height: 85,
+      width: MediaQuery.of(context).size.width,
       child: AnimatedButtonBar(
         radius: 32.0,
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.fromLTRB(10, 16, 10, 16),
         backgroundColor: const Color.fromARGB(255, 228, 227, 227),
         foregroundColor: Colors.white,
         borderColor: const Color.fromARGB(255, 228, 227, 227),
@@ -216,23 +176,18 @@ class _UserProfileState extends State<UserProfile> {
   }
 
   Widget editBtn() {
-    return TextButton(
-      style: ButtonStyle(
-          foregroundColor: MaterialStateProperty.all<Color>(Colors.white)),
-      onPressed: () async {
-        await pickImg();
-      },
-      child: const Text('Edit'),
-    );
-  }
-
-  Widget uploadbtn() {
-    return TextButton(
+    return IconButton(
+      // ignore: prefer_const_constructors
+      icon: Icon(Icons.edit),
+      // onPressed: () async {
+      //   await pickImg();
+      // },
       onPressed: () {
-        // uploadFile(uploadfile!);
-        uploadImage(uploadfile!);
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const EditProfilePage()),
+        );
       },
-      child: const Text('Upload'),
     );
   }
 }
