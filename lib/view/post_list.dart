@@ -18,7 +18,7 @@ class _PostListState extends State<PostList> {
           child: Column(
             children: [
               Stack(
-                children: [
+                children: const [
                   Align(
                     alignment: Alignment.center,
                     child: Text(
@@ -39,11 +39,11 @@ class _PostListState extends State<PostList> {
                   ),
                 ],
               ),
-              SizedBox(
+              const SizedBox(
                 height: 32,
               ),
               TextField(
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Search',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.all(
@@ -53,12 +53,12 @@ class _PostListState extends State<PostList> {
                   suffixIcon: Icon(Icons.search),
                 ),
                 textInputAction: TextInputAction.search,
-                style: TextStyle(fontSize: 16),
+                style: const TextStyle(fontSize: 16),
                 onSubmitted: (value) {
                   // Perform the search action
                 },
               ),
-              SizedBox(
+              const SizedBox(
                 height: 32,
               ),
               Expanded(
@@ -82,7 +82,7 @@ class _PostListState extends State<PostList> {
 
   Widget _buildPostList(int e) {
     return Container(
-      padding: EdgeInsets.fromLTRB(0, 0, 0, 32),
+      padding: const EdgeInsets.fromLTRB(0, 0, 0, 32),
       child: Column(
         children: [
           Image.asset(
@@ -92,9 +92,9 @@ class _PostListState extends State<PostList> {
             fit: BoxFit.cover,
           ),
           Row(
-            children: [
+            children: const [
               Padding(
-                padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
+                padding: EdgeInsets.fromLTRB(0, 8, 0, 8),
                 child: Text(
                   "Header",
                   style: TextStyle(fontSize: 16),
@@ -103,7 +103,7 @@ class _PostListState extends State<PostList> {
             ],
           ),
           Row(
-            children: [
+            children: const [
               Expanded(
                 child: Text(
                   "He'll want to use your yacht, and I don't want this thing smelling like fish.",
@@ -113,7 +113,7 @@ class _PostListState extends State<PostList> {
             ],
           ),
           Row(
-            children: [
+            children: const [
               Text("8m ago",
               style: TextStyle(fontSize: 14),),
             ],

@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:gigjob_mobile/DAO/BaseDAO.dart';
 import 'package:gigjob_mobile/DTO/AccountDTO.dart';
+import 'package:gigjob_mobile/services/request.dart';
 import 'package:http/http.dart' as http;
 
 class AccountDAO extends BaseDAO {
@@ -17,6 +18,16 @@ class AccountDAO extends BaseDAO {
           'idTokenString': idToken ?? ""
         },
       );
+
+      String path = "/account/authenticate-google";
+      Map<String, String> headers = {
+        'Content-Type': 'application/json',
+        'idTokenString': idToken ?? ""
+      };
+
+      final res = ApiService.post(path, headers, null);
+
+
       if (response.statusCode == 200) {
         final user = response.body;
         final userDTO = AccountDTO.fromJson(jsonDecode(user));
@@ -51,6 +62,22 @@ class AccountDAO extends BaseDAO {
             'registrationTokens': [fcmToken]
           }));
 
+      String path = "/send-notification";
+      Map<String, String> headers = {'Content-Type': 'application/json'};
+      Map<String, dynamic> body = {
+        "subject": "",
+        "content": "",
+        "imageUrl": "",
+        "data": {
+          "additionalProp1": "",
+          "additionalProp2": "",
+          "additionalProp3": ""
+        },
+        'registrationTokens': [fcmToken]
+      };
+
+      final res = ApiService.post(path, headers, body);
+
       print(response);
 
       if (response.statusCode == 200) {
@@ -64,6 +91,4 @@ class AccountDAO extends BaseDAO {
     }
     return false;
   }
-
-
 }
