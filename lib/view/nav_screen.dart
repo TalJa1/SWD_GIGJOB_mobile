@@ -3,6 +3,8 @@ import 'package:gigjob_mobile/view/login_home.dart';
 import 'package:gigjob_mobile/view/post_list.dart';
 import 'package:gigjob_mobile/view/post_list_detail.dart';
 import 'package:gigjob_mobile/view/sign_up.dart';
+import 'package:gigjob_mobile/view/user_profile.dart';
+import 'package:gigjob_mobile/view/wallet.dart';
 import "package:persistent_bottom_nav_bar/persistent_tab_view.dart";
 
 class RootScreen extends StatefulWidget {
@@ -11,25 +13,25 @@ class RootScreen extends StatefulWidget {
 }
 
 class _RootScreen extends State<RootScreen> {
-  int _selectedIndex = 0;
+  // int _selectedIndex = 0;
 
-  final List<String> _pageNames = [''];
-  final List<Widget> _screen = [
-    PostList(),
-    PostList(),
-    PostList(),
-    PostList(),
-    PostList(),
-  ];
+  // final List<String> _pageNames = [''];
+  // final List<Widget> _screen = [
+  //   PostList(),
+  //   PostList(),
+  //   PostList(),
+  //   PostList(),
+  //   UserProfile(),
+  // ];
 
-  void _onItemTapped(int index) {
-    if (index != _selectedIndex) {
-      setState(() {
-        _selectedIndex = index;
-      });
-      Navigator.pushNamed(context, '/${_pageNames[index]}');
-    }
-  }
+  // void _onItemTapped(int index) {
+  //   if (index != _selectedIndex) {
+  //     setState(() {
+  //       _selectedIndex = index;
+  //     });
+  //     Navigator.pushNamed(context, '/${_pageNames[index]}');
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -41,9 +43,9 @@ class _RootScreen extends State<RootScreen> {
       return [
         PostList(),
         PostListDetail(),
+        WalletPage(),
         PostList(),
-        PostList(),
-        PostList(),
+        UserProfile()
       ];
     }
 

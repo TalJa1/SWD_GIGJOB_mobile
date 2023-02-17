@@ -7,7 +7,7 @@ import 'package:http/http.dart' as http;
 class AccountDAO extends BaseDAO {
   Future<AccountDTO?> postToken(String? idToken) async {
     var url = Uri.parse(
-        "http://ec2-18-141-146-248.ap-southeast-1.compute.amazonaws.com/api/v1/account/authenticate-google");
+        "http://ec2-18-141-203-185.ap-southeast-1.compute.amazonaws.com/api/v1/account/authenticate-google");
 
     try {
       final response = await http.post(
@@ -27,11 +27,12 @@ class AccountDAO extends BaseDAO {
     } catch (e) {
       print(e);
     }
+    return null;
   }
 
   Future<bool> postFcmToken(String? fcmToken) async {
     var url = Uri.parse(
-        "http://ec2-18-141-146-248.ap-southeast-1.compute.amazonaws.com/api/v1/send-notification");
+        "http://ec2-18-141-203-185.ap-southeast-1.compute.amazonaws.com/api/v1/send-notification");
 
     try {
       final response = await http.post(url,

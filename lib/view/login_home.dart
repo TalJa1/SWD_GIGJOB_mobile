@@ -7,11 +7,13 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:gigjob_mobile/DTO/AccountDTO.dart';
+import 'package:gigjob_mobile/accesories/dialog.dart';
 import 'package:gigjob_mobile/services/push_notification_service.dart';
 import 'package:gigjob_mobile/view/sign_up.dart';
 import 'package:gigjob_mobile/view/nav_screen.dart';
 import 'package:gigjob_mobile/view/confirmation_code.dart';
 import 'package:gigjob_mobile/firebase_options.dart';
+import 'package:gigjob_mobile/viewmodel/login_viewmodel.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 
@@ -26,6 +28,15 @@ class LoginHome extends StatefulWidget {
 class _LoginHomeState extends State<LoginHome> {
   final _unfocusNode = FocusNode();
   final scaffoldKey = GlobalKey<ScaffoldState>();
+
+  late LoginViewModel _loginViewModel;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _loginViewModel = LoginViewModel();
+  }
 
   @override
   void dispose() {
@@ -177,7 +188,7 @@ class _LoginHomeState extends State<LoginHome> {
                       onTap: () {
                         // ignore: avoid_print
                         // print('Google');
-                        signinWithGoogle();
+                        _loginViewModel.signinWithGoogle(context);
                       }, // Image tapped
                       child: Image.asset(
                         'assets/images/GoogleBtn.png',
@@ -203,100 +214,5 @@ class _LoginHomeState extends State<LoginHome> {
             )
           ],
         ));
-  }
-
-  signinWithGoogle() async {
-    try {
-      GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-
-      GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
-
-      AuthCredential credential = GoogleAuthProvider.credential(
-          accessToken: googleAuth?.accessToken, idToken: googleAuth?.idToken);
-
-      print("access token ${googleAuth?.accessToken}");
-      print("id token ${googleAuth?.idToken}");
-
-      UserCredential userCre =
-          await FirebaseAuth.instance.signInWithCredential(credential);
-      print(userCre.credential?.token ?? "");
-
-      String? token = googleAuth?.idToken;
-      String? fcmToken =
-          await PushNotificationService.getInstance()?.getFcmToken();
-
-      postFcmToken(fcmToken);
-      final accountDTO = postToken(token);
-      if (accountDTO != null) {
-        Route route = MaterialPageRoute(builder: (context) => RootScreen());
-        Navigator.push(context, route);
-      }
-    } catch (e) {
-      print(e);
-    }
-  }
-
-  Future<bool> postFcmToken(String? fcmToken) async {
-    var url = Uri.parse(
-        "http://ec2-18-141-146-248.ap-southeast-1.compute.amazonaws.com/api/v1/send-notification");
-
-    try {
-      final response = await http.post(url,
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: json.encode({
-            "subject": "",
-            "content": "",
-            "imageUrl": "",
-            "data": {
-              "additionalProp1": "",
-              "additionalProp2": "",
-              "additionalProp3": ""
-            },
-            'registrationTokens': [fcmToken]
-          }));
-
-      print(response);
-
-      if (response.statusCode == 200) {
-        print(jsonDecode(response.body));
-        return true;
-      } else {
-        throw Exception('Failed to post token');
-      }
-    } catch (e) {
-      print(e);
-    }
-    return false;
-  }
-
-  Future<AccountDTO?> postToken(String? token) async {
-    var url = Uri.parse(
-        "http://ec2-18-141-146-248.ap-southeast-1.compute.amazonaws.com/api/v1/account/authenticate-google");
-
-    try {
-      final response = await http.post(
-        url,
-        headers: {
-          'Content-Type': 'application/json',
-          'idTokenString': token ?? ""
-        },
-      );
-
-      print(response);
-
-      if (response.statusCode == 200) {
-        print(jsonDecode(response.body));
-        final user = response.body;
-        final userDTO = AccountDTO.fromJson(jsonDecode(user));
-        return userDTO;
-      } else {
-        throw Exception('Failed to post token');
-      }
-    } catch (e) {
-      print(e);
-    }
-    return null;
   }
 }

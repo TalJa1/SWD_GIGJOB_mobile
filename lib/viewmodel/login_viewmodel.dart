@@ -1,13 +1,9 @@
 
-
-
-
-import 'dart:js';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gigjob_mobile/DAO/AccountDAO.dart';
 import 'package:gigjob_mobile/DTO/AccountDTO.dart';
+import 'package:gigjob_mobile/accesories/dialog.dart';
 import 'package:gigjob_mobile/services/push_notification_service.dart';
 import 'package:gigjob_mobile/view/nav_screen.dart';
 import 'package:gigjob_mobile/viewmodel/base_model.dart';
@@ -18,7 +14,7 @@ class LoginViewModel extends BaseModel {
 
    AccountDTO? user;
 
-  Future<void> signinWithGoogle() async {
+  Future<void> signinWithGoogle(BuildContext context) async {
     try {
       GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
@@ -32,16 +28,18 @@ class LoginViewModel extends BaseModel {
 
       UserCredential userCre =
           await FirebaseAuth.instance.signInWithCredential(credential);
-      print(userCre.credential?.token ?? "");
+      // print(userCre.credential?.token ?? "");
 
       String? token = googleAuth?.idToken;
       String? fcmToken = await PushNotificationService.getInstance()?.getFcmToken();
 
-      dao.postFcmToken(fcmToken);
-      final accountDTO = dao.postToken(token);
+      await dao.postFcmToken(fcmToken);
+      AccountDTO? accountDTO = await dao.postToken(token);
       if (accountDTO != null) {
         Route route = MaterialPageRoute(builder: (context) => RootScreen());
-        Navigator.push(context as BuildContext, route);
+        Navigator.push(context, route);
+      } else {
+        await showMyDialog(context, "Error", "Login fail");
       }
     } catch (e) {
       print(e);

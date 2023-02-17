@@ -1,11 +1,13 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
-
-
+import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class PushNotificationService {
   static PushNotificationService? _instance;
-  
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
+
   static PushNotificationService? getInstance() {
     if (_instance == null) {
       _instance = PushNotificationService();
@@ -13,17 +15,49 @@ class PushNotificationService {
     return _instance;
   }
 
-
   final FirebaseMessaging _fcm = FirebaseMessaging.instance;
+
+  Future init() async {
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      print("Received a message: ${message.notification!.title}");
+      print("Received a message: ${message.notification!.body}");
+
+      _showNotification(message);
+    });
+
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      print("Received background message: ${message.notification!.body}");
+    });
+  }
 
   Future<String?> getFcmToken() async {
     if (!isSmartPhoneDevice()) return null;
     String? token = await _fcm.getToken();
     return token;
   }
-}
 
-bool isSmartPhoneDevice() {
-  return (defaultTargetPlatform == TargetPlatform.iOS) ||
-      (defaultTargetPlatform == TargetPlatform.android);
+  Future<void> _showNotification(RemoteMessage message) async {
+    const AndroidNotificationDetails androidPlatformChannelSpecifics =
+        AndroidNotificationDetails(
+      'your channel id',
+      'your channel name',
+      importance: Importance.max,
+      priority: Priority.high,
+      showWhen: false,
+    );
+    const NotificationDetails platformChannelSpecifics =
+        NotificationDetails(android: androidPlatformChannelSpecifics);
+    await flutterLocalNotificationsPlugin.show(
+      0,
+      message.notification!.title,
+      message.notification!.body,
+      platformChannelSpecifics,
+      payload: message.data['data'],
+    );
+  }
+
+  bool isSmartPhoneDevice() {
+    return (defaultTargetPlatform == TargetPlatform.iOS) ||
+        (defaultTargetPlatform == TargetPlatform.android);
+  }
 }
