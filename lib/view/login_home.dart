@@ -1,13 +1,21 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, avoid_print
+
+import 'dart:convert';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:gigjob_mobile/DTO/AccountDTO.dart';
+import 'package:gigjob_mobile/accesories/dialog.dart';
+import 'package:gigjob_mobile/services/push_notification_service.dart';
 import 'package:gigjob_mobile/view/sign_up.dart';
+import 'package:gigjob_mobile/view/nav_screen.dart';
 import 'package:gigjob_mobile/view/confirmation_code.dart';
 import 'package:gigjob_mobile/firebase_options.dart';
+import 'package:gigjob_mobile/viewmodel/login_viewmodel.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:http/http.dart' as http;
 
 class LoginHome extends StatefulWidget {
   const LoginHome({Key? key}) : super(key: key);
@@ -20,6 +28,15 @@ class LoginHome extends StatefulWidget {
 class _LoginHomeState extends State<LoginHome> {
   final _unfocusNode = FocusNode();
   final scaffoldKey = GlobalKey<ScaffoldState>();
+
+  late LoginViewModel _loginViewModel;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _loginViewModel = LoginViewModel();
+  }
 
   @override
   void dispose() {
@@ -171,7 +188,7 @@ class _LoginHomeState extends State<LoginHome> {
                       onTap: () {
                         // ignore: avoid_print
                         // print('Google');
-                        signinWithGoogle();
+                        _loginViewModel.signinWithGoogle(context);
                       }, // Image tapped
                       child: Image.asset(
                         'assets/images/GoogleBtn.png',
@@ -197,20 +214,5 @@ class _LoginHomeState extends State<LoginHome> {
             )
           ],
         ));
-  }
-
-  signinWithGoogle() async {
-    GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-
-    GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
-
-    AuthCredential credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth?.accessToken, idToken: googleAuth?.idToken);
-
-    UserCredential userCre =
-        await FirebaseAuth.instance.signInWithCredential(credential);
-    print(userCre.credential?.token ?? "");
-    // ignore: avoid_print
-    // print(userCre.user?.displayName);
   }
 }
