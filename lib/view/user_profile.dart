@@ -5,10 +5,9 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:animated_button_bar/animated_button_bar.dart';
 import 'package:image_picker/image_picker.dart';
+// ignore: depend_on_referenced_packages
 import 'package:http_parser/http_parser.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:cross_file/cross_file.dart';
 
 class UserProfile extends StatefulWidget {
   const UserProfile({Key? key}) : super(key: key);
