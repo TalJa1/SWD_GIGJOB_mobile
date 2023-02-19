@@ -19,61 +19,66 @@ class _UserProfileState extends State<UserProfile> {
   }
 
   bool isInfo = true;
-  var userName = "Tui La Tai";
+  var userName = "Chau Tan Tai";
+
+  String getName(String userName) {
+    return '${userName.split(' ').last} ${userName.split(' ').first}';
+  }
 
   @override
   Widget build(BuildContext context) {
     // ignore: prefer_const_constructors
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: Stack(
-        alignment: Alignment.topCenter,
-        children: <Widget>[
-          bottomLayer(),
-          Container(
-            height: 450,
-            color: Colors.white,
-          ),
-          backGround(),
-          Positioned(top: 150, child: profileImage()),
-          // ignore: prefer_const_constructors
-          Positioned(
-              // bottom: 0,
-              top: 300,
-              child: SizedBox(
-                  height: 150,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 10),
-                    child: Column(
-                      children: [
-                        Row(
+        backgroundColor: Colors.white,
+        body: SingleChildScrollView(
+          child: Stack(
+            alignment: Alignment.topCenter,
+            children: <Widget>[
+              bottomLayer(),
+              Container(
+                height: 450,
+                color: Colors.white,
+              ),
+              backGround(),
+              Positioned(top: 150, child: profileImage()),
+              // ignore: prefer_const_constructors
+              Positioned(
+                  // bottom: 0,
+                  top: 300,
+                  child: SizedBox(
+                      height: 150,
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 10),
+                        child: Column(
                           children: [
-                            Text(
-                              userName,
-                              style: const TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 25,
-                                  fontWeight: FontWeight.bold),
+                            Row(
+                              children: [
+                                Text(
+                                  getName(userName),
+                                  style: const TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 25,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                editBtn()
+                              ],
                             ),
-                            editBtn()
+                            stateButton()
                           ],
                         ),
-                        stateButton()
-                      ],
-                    ),
-                  ))),
-          Positioned(
-              bottom: 5,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                height: 330,
-                width: MediaQuery.of(context).size.width,
-                // decoration: const BoxDecoration(color: Colors.black),
-                // child: userData(isInfo),
-              )),
-        ],
-      ),
-    );
+                      ))),
+              Positioned(
+                  bottom: 5,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    height: 330,
+                    width: MediaQuery.of(context).size.width,
+                    // decoration: const BoxDecoration(color: Colors.black),
+                    // child: userData(isInfo),
+                  )),
+            ],
+          ),
+        ));
   }
 
   Widget backGround() {

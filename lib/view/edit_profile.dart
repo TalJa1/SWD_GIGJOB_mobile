@@ -1,8 +1,8 @@
-// ignore_for_file: avoid_print
+// ignore_for_file: avoid_print, sized_box_for_whitespace
 
-import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:flutter/services.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -25,6 +25,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
   final ImagePicker picker = ImagePicker();
   XFile? uploadfile;
   XFile? pickedFile;
+
+  final _formKey = GlobalKey<FormState>();
+  final _textController = TextEditingController();
 
   Future pickImg() async {
     // ignore: unused_local_variable
@@ -102,7 +105,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
             ],
           ),
           Positioned(right: 20, top: 80, child: userImg()),
-          Positioned(bottom: 20, child: formEdit()),
+          Positioned(top: 230, child: formEdit()),
           Positioned(bottom: 5, child: uploadbtn())
         ],
       ),
@@ -153,9 +156,53 @@ class _EditProfilePageState extends State<EditProfilePage> {
   }
 
   Widget formEdit() {
-    return SizedBox(
-      width: MediaQuery.of(context).size.width,
-      height: 530,
+    return Container(
+        height: 530,
+        width: MediaQuery.of(context).size.width,
+        child: SingleChildScrollView(
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                textForm("name"),
+                textForm("address"),
+                textForm("education"),
+                textForm("address"),
+                textForm("address"),
+                textForm("address"),
+                textForm("address"),
+                textForm("address"),
+                textForm("address"),
+                textForm("address")
+              ],
+            ),
+          ),
+        ));
+  }
+
+  Widget textForm(String field) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+      child: TextFormField(
+        controller: _textController,
+        decoration: InputDecoration(
+          border: const OutlineInputBorder(),
+          labelText: 'Enter your $field',
+        ),
+        validator: (value) {
+          if (value!.isEmpty) {
+            return 'Please enter your $field';
+          }
+          return null;
+        },
+        onChanged: (value) {
+          if (_formKey.currentState!.validate()) {
+            // The form is valid, do something with the input
+            print('User entered: $value');
+          }
+        },
+      ),
     );
   }
 
