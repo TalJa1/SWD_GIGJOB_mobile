@@ -25,59 +25,97 @@ class _UserProfileState extends State<UserProfile> {
     return '${userName.split(' ').last} ${userName.split(' ').first}';
   }
 
+  final List<String> titleList = [
+    'Education',
+    'Address',
+    'Date of birth',
+    'Item 4',
+    'Item 5',
+    'Item 6',
+    'Item 7',
+    'Item 8',
+    'Item 9',
+    'Item 10',
+  ];
+
+  final List<String> dataList = [
+    'Soy estudiante de FPT',
+    'Obispo tajon',
+    '20/02/2022',
+    'Item 4',
+    'Item 5',
+    'Item 6',
+    'Item 7',
+    'Item 8',
+    'Item 9',
+    'Item 10',
+  ];
+
+  List<String> _combineLists() {
+    final combinedList = <String>[];
+    for (var i = 0; i < titleList.length || i < dataList.length; i++) {
+      if (i < titleList.length) {
+        combinedList.add(titleList[i]);
+      }
+      if (i < dataList.length) {
+        combinedList.add(dataList[i]);
+      }
+    }
+    return combinedList;
+  }
+
   @override
   Widget build(BuildContext context) {
+    // ignore: unused_local_variable
     // ignore: prefer_const_constructors
     return Scaffold(
+        resizeToAvoidBottomInset: false,
         backgroundColor: Colors.white,
-        body: SingleChildScrollView(
-          child: Stack(
-            alignment: Alignment.topCenter,
-            children: <Widget>[
-              bottomLayer(),
-              Container(
-                height: 450,
-                color: Colors.white,
-              ),
-              backGround(),
-              Positioned(top: 150, child: profileImage()),
-              // ignore: prefer_const_constructors
-              Positioned(
-                  // bottom: 0,
-                  top: 300,
-                  child: SizedBox(
-                      height: 150,
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 10),
-                        child: Column(
-                          children: [
-                            Row(
+        body: Column(
+          children: [
+            Expanded(
+              child: Stack(
+                alignment: Alignment.topCenter,
+                children: <Widget>[
+                  bottomLayer(),
+                  Container(
+                    height: 450,
+                    color: Colors.white,
+                  ),
+                  backGround(),
+                  Positioned(top: 150, child: profileImage()),
+                  // ignore: prefer_const_constructors
+                  Positioned(
+                      // bottom: 0,
+                      top: 300,
+                      child: SizedBox(
+                          height: 150,
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 10),
+                            child: Column(
                               children: [
-                                Text(
-                                  getName(userName),
-                                  style: const TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 25,
-                                      fontWeight: FontWeight.bold),
+                                Row(
+                                  children: [
+                                    Text(
+                                      getName(userName),
+                                      style: const TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 25,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    editBtn()
+                                  ],
                                 ),
-                                editBtn()
+                                stateButton()
                               ],
                             ),
-                            stateButton()
-                          ],
-                        ),
-                      ))),
-              Positioned(
-                  bottom: 5,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    height: 330,
-                    width: MediaQuery.of(context).size.width,
-                    // decoration: const BoxDecoration(color: Colors.black),
-                    // child: userData(isInfo),
-                  )),
-            ],
-          ),
+                          ))),
+                  // Positioned(top: 430, child: userData(isInfo))
+                ],
+              ),
+            ),
+            userData(isInfo)
+          ],
         ));
   }
 
@@ -139,7 +177,7 @@ class _UserProfileState extends State<UserProfile> {
       width: MediaQuery.of(context).size.width,
       child: AnimatedButtonBar(
         radius: 32.0,
-        padding: const EdgeInsets.fromLTRB(10, 16, 10, 16),
+        padding: const EdgeInsets.fromLTRB(10, 5, 10, 30),
         backgroundColor: const Color.fromARGB(255, 228, 227, 227),
         foregroundColor: Colors.white,
         borderColor: const Color.fromARGB(255, 228, 227, 227),
@@ -167,26 +205,49 @@ class _UserProfileState extends State<UserProfile> {
   }
 
   Widget userData(bool checkIsInfo) {
-    return SingleChildScrollView(
-        child: Padding(
-      padding: const EdgeInsets.only(left: 20, right: 20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        // ignore: prefer_const_literals_to_create_immutables
-        children: [
-          const Text('Email '),
-        ],
-      ),
-    ));
+    final combinedList = _combineLists();
+    return checkIsInfo
+        ? Expanded(
+            child: Padding(
+                padding: const EdgeInsets.only(left: 20, right: 20),
+                child: ListView.builder(
+                  itemCount: combinedList.length,
+                  itemBuilder: (context, index) {
+                    if (index % 2 == 0) {
+                      final firstIndex = index ~/ 2;
+                      return ListTile(
+                        title: Text(
+                          titleList[firstIndex],
+                          style: const TextStyle(
+                              fontWeight: FontWeight.w500, fontSize: 20),
+                        ),
+                      );
+                    } else {
+                      final secondIndex = (index - 1) ~/ 2;
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(dataList[secondIndex]),
+                          const Divider(
+                            height: 2,
+                            color: Colors.black,
+                          )
+                        ],
+                      );
+                    }
+                  },
+                )))
+        : const Expanded(
+            child: Padding(
+                padding: EdgeInsets.only(left: 20, right: 20),
+                child: Text('hello')));
   }
 
   Widget editBtn() {
     return IconButton(
       // ignore: prefer_const_constructors
       icon: Icon(Icons.edit),
-      // onPressed: () async {
-      //   await pickImg();
-      // },
+
       onPressed: () {
         Navigator.push(
           context,
