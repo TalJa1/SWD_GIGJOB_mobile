@@ -4,6 +4,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:animated_button_bar/animated_button_bar.dart';
+import 'package:gigjob_mobile/services/request.dart';
 import 'package:image_picker/image_picker.dart';
 // ignore: depend_on_referenced_packages
 import 'package:http_parser/http_parser.dart';
@@ -43,7 +44,10 @@ class _UserProfileState extends State<UserProfile> {
 
   //Post with DIO
   Future<String> uploadImage(XFile? file) async {
+
+    Map<String, String> baseHeaders = ApiService.getHeader();
     Dio dio = Dio();
+    dio.options.headers = baseHeaders;
     String fileName = file!.path.split('/').last;
     final Uint8List bytes = await file.readAsBytes();
     FormData formData = FormData.fromMap({
@@ -52,7 +56,7 @@ class _UserProfileState extends State<UserProfile> {
     });
     try {
       Response response = await dio.post(
-          "http://ec2-18-141-203-185.ap-southeast-1.compute.amazonaws.com/api/v1/resource/upload",
+          "http://ec2-13-229-83-87.ap-southeast-1.compute.amazonaws.com/api/v1/resource/upload",
           data: formData);
       return "Upload Status for $fileName ${response.statusCode}";
     } catch (e) {
@@ -109,6 +113,7 @@ class _UserProfileState extends State<UserProfile> {
               child: Column(
                 children: [
                   editBtn(),
+                  uploadbtn()
                 ],
               )),
         ],

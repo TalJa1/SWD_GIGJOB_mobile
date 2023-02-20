@@ -3,7 +3,17 @@ import 'package:http/http.dart' as http;
 
 class ApiService {
   static const String baseUrl =
-      'http://ec2-18-141-203-185.ap-southeast-1.compute.amazonaws.com/api/v1';
+      'http://ec2-13-229-83-87.ap-southeast-1.compute.amazonaws.com/api/v1';
+
+  static Map<String, String> baseHeaders = {
+    'Content-Type': 'application/json',
+    'Authorization': '',
+  };
+
+  static Map<String, String> getHeader() {
+    return baseHeaders;
+  }
+
 
   static Future<Map<String, dynamic>> post(
     String path,
@@ -12,14 +22,17 @@ class ApiService {
   ) async {
     final response = await http.post(
       Uri.parse(baseUrl + path),
-      headers: headers,
+      headers: {
+        ...baseHeaders,
+        ...headers
+      },
       body: body != null ? jsonEncode(body) : null,
     );
 
     if (response.statusCode == 200) {
       return jsonDecode(response.body);
     } else {
-      throw Exception('Failed to post data');
+      throw Exception(response.body);
     }
   }
 
@@ -55,5 +68,9 @@ class ApiService {
     } else {
       throw Exception('Failed to update data.');
     }
+  }
+
+  static setToken(String token){
+    baseHeaders["Authorization"] = "Bearer $token"; 
   }
 }
