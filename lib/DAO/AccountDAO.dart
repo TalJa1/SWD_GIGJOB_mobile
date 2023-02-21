@@ -4,7 +4,6 @@ import 'dart:convert';
 import 'package:gigjob_mobile/DAO/BaseDAO.dart';
 import 'package:gigjob_mobile/DTO/AccountDTO.dart';
 import 'package:gigjob_mobile/services/request.dart';
-import 'package:http/http.dart' as http;
 
 class AccountDAO extends BaseDAO {
   Future<void> postToken(String? idToken) async {

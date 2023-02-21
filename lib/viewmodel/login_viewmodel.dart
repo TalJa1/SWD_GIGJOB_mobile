@@ -36,14 +36,9 @@ class LoginViewModel extends BaseModel {
       // AccountDTO? accountDTO = await dao.postToken(token);
       await dao.postToken(token);
       await dao.postFcmToken(fcmToken);
+
       Route route = MaterialPageRoute(builder: (context) => RootScreen());
         Navigator.push(context, route);
-      // if (accountDTO != null) {
-      //   Route route = MaterialPageRoute(builder: (context) => RootScreen());
-      //   Navigator.push(context, route);
-      // } else {
-      //   await showMyDialog(context, "Error", "Login fail");
-      // }
     } catch (e) {
        await showMyDialog(context, "Error", "Login fail");
     }
