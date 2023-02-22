@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gigjob_mobile/view/nav_screen.dart';
+import 'package:filter_list/filter_list.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
 
 class PostList extends StatefulWidget {
   @override
@@ -8,6 +10,14 @@ class PostList extends StatefulWidget {
 
 class _PostListState extends State<PostList> {
   List<int> arr = [1, 2, 3, 5];
+
+  final List<String> items = [
+    'Item1',
+    'Item2',
+    'Item3',
+    'Item4',
+  ];
+  List<String> selectedItems = [];
 
   @override
   Widget build(BuildContext context) {
@@ -19,31 +29,35 @@ class _PostListState extends State<PostList> {
             children: [
               Stack(
                 children: [
-                  Align(
+                  const Align(
                     alignment: Alignment.center,
                     child: Text(
-                      "Content",
+                      "POST",
                       style: TextStyle(
-                        fontSize: 24.0,
+                        fontWeight: FontWeight.w900,
+                        fontSize: 32.0,
                       ),
                     ),
                   ),
                   Align(
-                    alignment: Alignment.topRight,
-                    child: Text(
-                      "Filter",
-                      style: TextStyle(
-                        fontSize: 16.0,
-                      ),
-                    ),
-                  ),
+                      alignment: Alignment.topRight,
+                      child: ElevatedButton.icon(
+                        onPressed: () {
+                          showDialog<String>(
+                              context: context,
+                              builder: (BuildContext context) =>
+                                  _buildDialog(context));
+                        },
+                        icon: const Icon(Icons.filter_list_alt),
+                        label: const Text('Filter'),
+                      )),
                 ],
               ),
-              SizedBox(
+              const SizedBox(
                 height: 32,
               ),
               TextField(
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Search',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.all(
@@ -53,12 +67,12 @@ class _PostListState extends State<PostList> {
                   suffixIcon: Icon(Icons.search),
                 ),
                 textInputAction: TextInputAction.search,
-                style: TextStyle(fontSize: 16),
+                style: const TextStyle(fontSize: 16),
                 onSubmitted: (value) {
                   // Perform the search action
                 },
               ),
-              SizedBox(
+              const SizedBox(
                 height: 32,
               ),
               Expanded(
@@ -80,9 +94,132 @@ class _PostListState extends State<PostList> {
     );
   }
 
+  Widget _buildDialog(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Filter'),
+      content: _buildListSelectCheckBox(),
+      actions: <Widget>[
+        TextButton(
+          onPressed: () => Navigator.pop(context, 'Cancel'),
+          child: const Text('Cancel'),
+        ),
+        TextButton(
+          onPressed: () => Navigator.pop(context, 'OK'),
+          child: const Text('Apply'),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildListSelectCheckBox() {
+    return SizedBox(
+      height: 200,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          _buildMultipSelectCheckBox(),
+          _buildMultipSelectCheckBox(),
+          _buildMultipSelectCheckBox(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMultipSelectCheckBox() {
+    return DropdownButtonHideUnderline(
+      child: Container(
+        width: 250,
+        child: DropdownButton2(
+          buttonDecoration: BoxDecoration(
+            border: Border.all(),
+            borderRadius: BorderRadius.circular(32),
+          ),
+          isExpanded: true,
+          hint: Align(
+            alignment: AlignmentDirectional.center,
+            child: Text(
+              'Select',
+              style: TextStyle(
+                fontSize: 14,
+                color: Theme.of(context).hintColor,
+              ),
+            ),
+          ),
+          items: items.map((item) {
+            return DropdownMenuItem<String>(
+              value: item,
+              //disable default onTap to avoid closing menu when selecting an item
+              enabled: false,
+              child: StatefulBuilder(
+                builder: (context, menuSetState) {
+                  final _isSelected = selectedItems.contains(item);
+                  return InkWell(
+                    onTap: () {
+                      _isSelected
+                          ? selectedItems.remove(item)
+                          : selectedItems.add(item);
+                      //This rebuilds the StatefulWidget to update the button's text
+                      setState(() {});
+                      //This rebuilds the dropdownMenu Widget to update the check mark
+                      menuSetState(() {});
+                    },
+                    child: Container(
+                      height: double.infinity,
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Row(
+                        children: [
+                          _isSelected
+                              ? const Icon(Icons.check_box_outlined)
+                              : const Icon(Icons.check_box_outline_blank),
+                          const SizedBox(width: 16),
+                          Text(
+                            item,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontSize: 14,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+            );
+          }).toList(),
+          //Use last selected item as the current value so if we've limited menu height, it scroll to last item.
+          value: selectedItems.isEmpty ? null : selectedItems.last,
+          onChanged: (value) {},
+          buttonHeight: 40,
+          buttonWidth: 140,
+          itemHeight: 40,
+          itemPadding: EdgeInsets.zero,
+          selectedItemBuilder: (context) {
+            return items.map(
+              (item) {
+                return Container(
+                  alignment: AlignmentDirectional.center,
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Text(
+                    selectedItems.join(', '),
+                    style: const TextStyle(
+                      fontSize: 14,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    maxLines: 1,
+                  ),
+                );
+              },
+            ).toList();
+          },
+        ),
+      ),
+    );
+  }
+
   Widget _buildPostList(int e) {
     return Container(
-      padding: EdgeInsets.fromLTRB(0, 0, 0, 32),
+      padding: const EdgeInsets.fromLTRB(0, 0, 0, 32),
       child: Column(
         children: [
           Image.asset(
@@ -92,9 +229,9 @@ class _PostListState extends State<PostList> {
             fit: BoxFit.cover,
           ),
           Row(
-            children: [
+            children: const [
               Padding(
-                padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
+                padding: EdgeInsets.fromLTRB(0, 8, 0, 8),
                 child: Text(
                   "Header",
                   style: TextStyle(fontSize: 16),
@@ -103,7 +240,7 @@ class _PostListState extends State<PostList> {
             ],
           ),
           Row(
-            children: [
+            children: const [
               Expanded(
                 child: Text(
                   "He'll want to use your yacht, and I don't want this thing smelling like fish.",
@@ -113,9 +250,11 @@ class _PostListState extends State<PostList> {
             ],
           ),
           Row(
-            children: [
-              Text("8m ago",
-              style: TextStyle(fontSize: 14),),
+            children: const [
+              Text(
+                "8m ago",
+                style: TextStyle(fontSize: 14),
+              ),
             ],
           ),
         ],

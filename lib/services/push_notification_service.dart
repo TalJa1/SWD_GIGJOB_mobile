@@ -5,7 +5,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class PushNotificationService {
   static PushNotificationService? _instance;
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
 
   static PushNotificationService? getInstance() {
@@ -22,7 +22,7 @@ class PushNotificationService {
       print("Received a message: ${message.notification!.title}");
       print("Received a message: ${message.notification!.body}");
 
-      _showNotification(message);
+      // _showNotification(message);
     });
 
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
@@ -37,6 +37,7 @@ class PushNotificationService {
   }
 
   Future<void> _showNotification(RemoteMessage message) async {
+    
     const AndroidNotificationDetails androidPlatformChannelSpecifics =
         AndroidNotificationDetails(
       'your channel id',
@@ -54,6 +55,33 @@ class PushNotificationService {
       platformChannelSpecifics,
       payload: message.data['data'],
     );
+
+    // const AndroidNotificationChannel channel = AndroidNotificationChannel(
+    //   'high_importance_channel', // id
+    //   'High Importance Notifications', // title// description
+    //   importance: Importance.max,
+    // );
+
+    // final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    //     FlutterLocalNotificationsPlugin();
+
+    // await flutterLocalNotificationsPlugin
+    //     .resolvePlatformSpecificImplementation<
+    //         AndroidFlutterLocalNotificationsPlugin>()
+    //     ?.createNotificationChannel(channel);
+
+    //     flutterLocalNotificationsPlugin.show(
+    //     message.notification.hashCode,
+    //     message.notification?.title,
+    //     message.notification?.body,
+    //     NotificationDetails(
+    //       android: AndroidNotificationDetails(
+    //         channel.id,
+    //         channel.name,
+    //         icon: message.notification?.android?.smallIcon,
+    //         // other properties...
+    //       ),
+    //     ));
   }
 
   bool isSmartPhoneDevice() {

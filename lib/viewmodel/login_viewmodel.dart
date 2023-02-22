@@ -30,19 +30,17 @@ class LoginViewModel extends BaseModel {
           await FirebaseAuth.instance.signInWithCredential(credential);
       // print(userCre.credential?.token ?? "");
 
-      String? token = googleAuth?.idToken;
+      String? token = await googleAuth?.idToken;
       String? fcmToken = await PushNotificationService.getInstance()?.getFcmToken();
 
+      // AccountDTO? accountDTO = await dao.postToken(token);
+      await dao.postToken(token);
       await dao.postFcmToken(fcmToken);
-      AccountDTO? accountDTO = await dao.postToken(token);
-      if (accountDTO != null) {
-        Route route = MaterialPageRoute(builder: (context) => RootScreen());
+
+      Route route = MaterialPageRoute(builder: (context) => RootScreen());
         Navigator.push(context, route);
-      } else {
-        await showMyDialog(context, "Error", "Login fail");
-      }
     } catch (e) {
-      print(e);
+       await showMyDialog(context, "Error", "Login fail");
     }
   }
 }

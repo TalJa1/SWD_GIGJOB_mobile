@@ -16,6 +16,8 @@ class _ConfirmationCodeState extends State<ConfirmationCode> {
   final TextEditingController _fieldTwo = TextEditingController();
   final TextEditingController _fieldThree = TextEditingController();
   final TextEditingController _fieldFour = TextEditingController();
+  final TextEditingController _fieldFive = TextEditingController();
+  final TextEditingController _fieldSix = TextEditingController();
 
   @override
   void dispose() {
@@ -33,12 +35,12 @@ class _ConfirmationCodeState extends State<ConfirmationCode> {
           children: [
             const Text('Enter confirm code',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-            Center(
-              child: const Text('Please enter your',
+            const Center(
+              child: Text('Please enter your',
                   style: TextStyle(fontWeight: FontWeight.bold)),
             ),
-            Center(
-              child: const Text('digit code',
+            const Center(
+              child: Text('digit code',
                   style: TextStyle(fontWeight: FontWeight.bold)),
             ),
             const SizedBox(
@@ -46,14 +48,16 @@ class _ConfirmationCodeState extends State<ConfirmationCode> {
             ),
             // Implement 4 input fields
             Padding(
-              padding: const EdgeInsets.fromLTRB(50, 0, 50, 0),
+              padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   _buildOtpInput(_fieldOne, true),
                   _buildOtpInput(_fieldTwo, false),
                   _buildOtpInput(_fieldThree, false),
-                  _buildOtpInput(_fieldFour, false)
+                  _buildOtpInput(_fieldFour, false),
+                  _buildOtpInput(_fieldFive, false),
+                  _buildOtpInput(_fieldSix, false),
                 ],
               ),
             ),
@@ -64,25 +68,19 @@ class _ConfirmationCodeState extends State<ConfirmationCode> {
               onTap: () {
                 // Resend OTP
               },
-              child: Text(
+              child: const Text(
               'Resend OTP',
-              style: TextStyle(color: Colors.blue))
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.bold
+                ))
               ),
             const SizedBox(
               height: 30,
             ),
             FractionallySizedBox(
               widthFactor: 1,
-              child: ElevatedButton(
-                  onPressed: () {
-                    setState(() {
-                      // _otp = _fieldOne.text +
-                      //     _fieldTwo.text +
-                      //     _fieldThree.text +
-                      //     _fieldFour.text;
-                    });
-                  },
-                  child: const Text('Continue')),
+              child: _buildButtonApply(),
             ),
             const SizedBox(
               height: 30,
@@ -110,6 +108,9 @@ class _ConfirmationCodeState extends State<ConfirmationCode> {
         cursorColor: Theme.of(context).primaryColor,
         decoration: const InputDecoration(
             border: OutlineInputBorder(),
+            focusedBorder: OutlineInputBorder(
+      borderSide: const BorderSide(color: Colors.black),
+    ),
             counterText: '',
             hintStyle: TextStyle(color: Colors.black, fontSize: 10.0)),
         onChanged: (value) {
@@ -117,6 +118,30 @@ class _ConfirmationCodeState extends State<ConfirmationCode> {
             FocusScope.of(context).nextFocus();
           }
         },
+      ),
+    );
+  }
+
+  Widget _buildButtonApply() {
+    return InkWell(
+      onTap: () {},
+      child: Container(
+        height: 50,
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: Colors.black,
+          borderRadius: BorderRadius.circular(25),
+        ),
+        child: const Center(
+          child: Text(
+            'Apply Now!!!',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
       ),
     );
   }

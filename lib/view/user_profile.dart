@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:animated_button_bar/animated_button_bar.dart';
 import 'package:gigjob_mobile/view/edit_profile.dart';
+
 // ignore: depend_on_referenced_packages
 
 class UserProfile extends StatefulWidget {
@@ -110,7 +111,6 @@ class _UserProfileState extends State<UserProfile> {
                               ],
                             ),
                           ))),
-                  // Positioned(top: 430, child: userData(isInfo))
                 ],
               ),
             ),
@@ -209,7 +209,7 @@ class _UserProfileState extends State<UserProfile> {
     return checkIsInfo
         ? Expanded(
             child: Padding(
-                padding: const EdgeInsets.only(left: 20, right: 20),
+                padding: const EdgeInsets.only(left: 20, right: 20, bottom: 5),
                 child: ListView.builder(
                   itemCount: combinedList.length,
                   itemBuilder: (context, index) {
