@@ -208,34 +208,34 @@ class _UserProfileState extends State<UserProfile> {
     final combinedList = _combineLists();
     return checkIsInfo
         ? Expanded(
-            child: Padding(
-                padding: const EdgeInsets.only(left: 20, right: 20, bottom: 5),
-                child: ListView.builder(
-                  itemCount: combinedList.length,
-                  itemBuilder: (context, index) {
-                    if (index % 2 == 0) {
-                      final firstIndex = index ~/ 2;
-                      return ListTile(
-                        title: Text(
-                          titleList[firstIndex],
-                          style: const TextStyle(
-                              fontWeight: FontWeight.w500, fontSize: 20),
-                        ),
-                      );
-                    } else {
-                      final secondIndex = (index - 1) ~/ 2;
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(dataList[secondIndex]),
-                          const Divider(
-                            height: 2,
-                            color: Colors.black,
-                          )
-                        ],
-                      );
-                    }
-                  },
+            child: Container(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
+                padding: const EdgeInsets.only(left: 10, right: 10, bottom: 5),
+                child: Center(
+                  child: Card(
+                    child: ListView.builder(
+                      itemCount: combinedList.length,
+                      itemBuilder: (context, index) {
+                        if (index % 2 == 0) {
+                          final firstIndex = index ~/ 2;
+                          return ListTile(
+                              title: Center(
+                            child: Text(
+                              titleList[firstIndex],
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.w500, fontSize: 20),
+                            ),
+                          ));
+                        } else {
+                          final secondIndex = (index - 1) ~/ 2;
+                          return Center(
+                            child: Text(dataList[secondIndex]),
+                          );
+                        }
+                      },
+                    ),
+                  ),
                 )))
         : const Expanded(
             child: Padding(
