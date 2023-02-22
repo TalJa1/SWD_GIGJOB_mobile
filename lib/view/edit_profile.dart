@@ -68,53 +68,63 @@ class _EditProfilePageState extends State<EditProfilePage> {
   Widget build(BuildContext context) {
     // ignore: prefer_const_constructors
     return Scaffold(
-      resizeToAvoidBottomInset: false,
-      backgroundColor: Colors.white,
-      body: Stack(
-        // ignore: prefer_const_literals_to_create_immutables
-        children: <Widget>[
-          Positioned(
-              child: SizedBox(
-            height: 240,
-            width: MediaQuery.of(context).size.width,
-          )),
-          // ignore: prefer_const_constructors
-          CustomScrollView(
-            // ignore: prefer_const_literals_to_create_immutables
-            slivers: <Widget>[
-              // ignore: prefer_const_constructors
-              SliverAppBar(
-                  backgroundColor: const Color.fromARGB(255, 234, 234, 234),
-                  floating: true,
-                  leading: TextButton(
-                    child: const Text(
-                      'Back',
-                      style: TextStyle(color: Colors.black),
-                    ),
-                    onPressed: () {
-                      Navigator.maybePop(context);
-                    },
-                  )),
-              // ignore: prefer_const_constructors
-              SliverAppBar(
-                backgroundColor: const Color.fromARGB(255, 234, 234, 234),
-                floating: true,
-                flexibleSpace: const FlexibleSpaceBar(
-                  title: Text(
-                    'Edit Profile',
-                    style: TextStyle(color: Colors.black),
-                  ),
+        resizeToAvoidBottomInset: false,
+        backgroundColor: Colors.white,
+        body: Column(
+          children: [
+            Stack(
+              // ignore: prefer_const_literals_to_create_immutables
+              children: <Widget>[
+                Positioned(
+                    child: SizedBox(
+                  height: 240,
+                  width: MediaQuery.of(context).size.width,
+                )),
+                // ignore: prefer_const_constructors
+                CustomScrollView(
+                  scrollDirection: Axis.vertical,
+                  shrinkWrap: true,
+                  // ignore: prefer_const_literals_to_create_immutables
+                  slivers: <Widget>[
+                    // ignore: prefer_const_constructors
+                    SliverAppBar(
+                        backgroundColor:
+                            const Color.fromARGB(255, 234, 234, 234),
+                        floating: true,
+                        leading: TextButton(
+                          child: const Text(
+                            'Back',
+                            style: TextStyle(color: Colors.black),
+                          ),
+                          onPressed: () {
+                            Navigator.maybePop(context);
+                          },
+                        )),
+                    // ignore: prefer_const_constructors
+                    SliverAppBar(
+                      backgroundColor: const Color.fromARGB(255, 234, 234, 234),
+                      floating: true,
+                      flexibleSpace: const FlexibleSpaceBar(
+                        title: Text(
+                          'Edit Profile',
+                          style: TextStyle(color: Colors.black),
+                        ),
+                      ),
+                      leading: const Text(''),
+                    )
+                  ],
                 ),
-                leading: const Text(''),
-              )
-            ],
-          ),
-          Positioned(right: 20, top: 80, child: userImg()),
-          Positioned(top: 230, child: formEdit()),
-          Positioned(bottom: 5, child: uploadbtn())
-        ],
-      ),
-    );
+                Positioned(right: 20, top: 80, child: userImg()),
+                // Positioned(top: 230, child: formEdit()),
+                // Positioned(bottom: 5, child: uploadbtn())
+              ],
+            ),
+            Expanded(child: formEdit()),
+            // Expanded(child: )
+            uploadbtn(),
+            const SizedBox(height: 10)
+          ],
+        ));
   }
 
   Widget userImg() {
@@ -162,7 +172,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   Widget formEdit() {
     return Container(
-        height: 530,
+        height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
         child: SingleChildScrollView(
           child: Form(
@@ -177,9 +187,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 textForm("address"),
                 textForm("address"),
                 textForm("address"),
+                textForm("education"),
                 textForm("address"),
                 textForm("address"),
-                textForm("address")
+                textForm("address"),
               ],
             ),
           ),
