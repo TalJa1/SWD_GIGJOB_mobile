@@ -24,34 +24,11 @@ class _UserProfileState extends State<UserProfile> {
   var userName = "Chau Tan Tai";
 
   String getName(String userName) {
-    return '${userName.split(' ').last} ${userName.split(' ').first}';
+    return userName.split(' ').last;
   }
-
-  // List<Experience> exper = [];
 
   final user = new UserDTO("Chau Tan Tai", "tt@gmail.com", "Obispo Tajon",
       "0909999999", "Nivel B1", "20/01/2022");
-
-  final List<String> titleList = [];
-
-  final List<String> dataList = [];
-
-  List<String> _combineLists() {
-    for (var entry in user.toJson().entries) {
-      titleList.add(entry.key.toString());
-      dataList.add(entry.value.toString());
-    }
-    final combinedList = <String>[];
-    for (var i = 0; i < titleList.length || i < dataList.length; i++) {
-      if (i < titleList.length) {
-        combinedList.add(titleList[i]);
-      }
-      if (i < dataList.length) {
-        combinedList.add(dataList[i]);
-      }
-    }
-    return combinedList;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -66,24 +43,21 @@ class _UserProfileState extends State<UserProfile> {
               child: Stack(
                 alignment: Alignment.topCenter,
                 children: <Widget>[
-                  bottomLayer(),
-                  Container(
-                    height: 450,
-                    color: Colors.white,
-                  ),
                   backGround(),
-                  Positioned(top: 150, child: profileImage()),
+                  Positioned(top: 120, child: profileImage()),
                   // ignore: prefer_const_constructors
                   Positioned(
                       // bottom: 0,
-                      top: 300,
+                      top: 270,
                       child: SizedBox(
-                          height: 150,
+                          height: 120,
                           child: Padding(
                             padding: const EdgeInsets.only(top: 10),
                             child: Column(
                               children: [
                                 Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
                                   children: [
                                     Text(
                                       getName(userName),
@@ -92,7 +66,7 @@ class _UserProfileState extends State<UserProfile> {
                                           fontSize: 25,
                                           fontWeight: FontWeight.bold),
                                     ),
-                                    editBtn()
+                                    // editBtn()
                                   ],
                                 ),
                                 stateButton()
@@ -102,7 +76,11 @@ class _UserProfileState extends State<UserProfile> {
                 ],
               ),
             ),
-            userData(isInfo)
+            userData(isInfo),
+            editBtn(),
+            const SizedBox(
+              height: 15,
+            )
           ],
         ));
   }
@@ -110,7 +88,7 @@ class _UserProfileState extends State<UserProfile> {
   Widget backGround() {
     return Container(
         // constraints: const BoxConstraints.expand(height: 250),
-        height: 250,
+        height: 200,
         width: MediaQuery.of(context).size.width,
         color: const Color.fromARGB(255, 45, 45, 45),
         // ignore: prefer_const_constructors
@@ -121,7 +99,7 @@ class _UserProfileState extends State<UserProfile> {
           children: [
             // ignore: prefer_const_constructors
             Padding(
-              padding: const EdgeInsets.only(top: 80),
+              padding: const EdgeInsets.only(top: 60),
               child: const Text(
                 'Profile',
                 style: TextStyle(fontSize: 30, color: Colors.white),
@@ -150,11 +128,6 @@ class _UserProfileState extends State<UserProfile> {
         ),
       ),
     );
-  }
-
-  Widget bottomLayer() {
-    // bool showFirstPage = false;
-    return const SizedBox(height: 900);
   }
 
   Widget stateButton() {
@@ -193,53 +166,66 @@ class _UserProfileState extends State<UserProfile> {
   }
 
   Widget userData(bool checkIsInfo) {
-    final combinedList = _combineLists();
+    // final combinedList = _combineLists();
     return checkIsInfo
         ? Expanded(
             child: Container(
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height,
                 padding: const EdgeInsets.only(left: 10, right: 10, bottom: 5),
-                child: Center(
-                  child: Card(
-                    child: ListView.builder(
-                      itemCount: combinedList.length,
-                      itemBuilder: (context, index) {
-                        if (index % 2 == 0) {
-                          final firstIndex = index ~/ 2;
-                          return ListTile(
-                              title: Center(
-                            child: Text(
-                              titleList[firstIndex].toUpperCase(),
-                              style: const TextStyle(
-                                  fontWeight: FontWeight.w500, fontSize: 20),
-                            ),
-                          ));
-                        } else {
-                          final secondIndex = (index - 1) ~/ 2;
-                          return Center(
-                            child: Text(dataList[secondIndex]),
-                          );
-                        }
-                      },
-                    ),
-                  ),
+                child: SingleChildScrollView(
+                  child: Center(
+                      child: Padding(
+                    padding: const EdgeInsets.only(top: 10, bottom: 10),
+                    child: Column(children: [
+                      userInfo("Full Name", user.name.toString()),
+                      userInfo("Email", user.email.toString()),
+                      userInfo("Address", user.address.toString()),
+                      userInfo("Phone", user.phone.toString()),
+                      userInfo("Education", user.education.toString()),
+                      userInfo("Birth", user.birth.toString())
+                    ]),
+                  )),
                 )))
-        : const Expanded(
+        : Expanded(
             child: Padding(
-                padding: EdgeInsets.only(left: 20, right: 20),
-                child: Text('hello')));
+                padding: const EdgeInsets.only(left: 20, right: 20),
+                child: Text(user.name.toString())));
   }
 
-  // Widget UserExper() {
-  //   return Card();
-  // }
+  Widget userInfo(String tittle, String userdata) {
+    return SizedBox(
+      width: MediaQuery.of(context).size.width,
+      child: Card(
+        child: Column(
+          children: [
+            Title(
+                color: Colors.black,
+                // ignore: prefer_const_constructors
+                child: Text(
+                  tittle,
+                  style: const TextStyle(
+                      fontSize: 20, fontWeight: FontWeight.bold),
+                )),
+            const SizedBox(
+              height: 10,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 20, right: 20),
+              child: Text(userdata),
+            ),
+            const SizedBox(
+              height: 10,
+            )
+          ],
+        ),
+      ),
+    );
+  }
 
   Widget editBtn() {
-    return IconButton(
-      // ignore: prefer_const_constructors
-      icon: Icon(Icons.edit),
-
+    return FloatingActionButton.extended(
+      label: const Text('Edit'),
       onPressed: () {
         Navigator.push(
           context,
