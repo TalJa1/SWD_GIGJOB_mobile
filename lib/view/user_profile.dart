@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_print, unnecessary_new
 import 'package:flutter/material.dart';
 import 'package:animated_button_bar/animated_button_bar.dart';
+import 'package:gigjob_mobile/DTO/UserDTO.dart';
 import 'package:gigjob_mobile/view/edit_profile.dart';
 
 // ignore: depend_on_referenced_packages
@@ -26,33 +27,20 @@ class _UserProfileState extends State<UserProfile> {
     return '${userName.split(' ').last} ${userName.split(' ').first}';
   }
 
-  final List<String> titleList = [
-    'Education',
-    'Address',
-    'Date of birth',
-    'Item 4',
-    'Item 5',
-    'Item 6',
-    'Item 7',
-    'Item 8',
-    'Item 9',
-    'Item 10',
-  ];
+  // List<Experience> exper = [];
 
-  final List<String> dataList = [
-    'Soy estudiante de FPT',
-    'Obispo tajon',
-    '20/02/2022',
-    'Item 4',
-    'Item 5',
-    'Item 6',
-    'Item 7',
-    'Item 8',
-    'Item 9',
-    'Item 10',
-  ];
+  final user = new UserDTO("Chau Tan Tai", "tt@gmail.com", "Obispo Tajon",
+      "0909999999", "Nivel B1", "20/01/2022");
+
+  final List<String> titleList = [];
+
+  final List<String> dataList = [];
 
   List<String> _combineLists() {
+    for (var entry in user.toJson().entries) {
+      titleList.add(entry.key.toString());
+      dataList.add(entry.value.toString());
+    }
     final combinedList = <String>[];
     for (var i = 0; i < titleList.length || i < dataList.length; i++) {
       if (i < titleList.length) {
@@ -222,7 +210,7 @@ class _UserProfileState extends State<UserProfile> {
                           return ListTile(
                               title: Center(
                             child: Text(
-                              titleList[firstIndex],
+                              titleList[firstIndex].toUpperCase(),
                               style: const TextStyle(
                                   fontWeight: FontWeight.w500, fontSize: 20),
                             ),
@@ -242,6 +230,10 @@ class _UserProfileState extends State<UserProfile> {
                 padding: EdgeInsets.only(left: 20, right: 20),
                 child: Text('hello')));
   }
+
+  // Widget UserExper() {
+  //   return Card();
+  // }
 
   Widget editBtn() {
     return IconButton(
