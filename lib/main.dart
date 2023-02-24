@@ -128,13 +128,14 @@ class _MyAppState extends State<MyApp> {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(initialRoute: '/', routes: {
+    return MaterialApp(initialRoute: '/home', routes: {
       '/': (BuildContext context) => LoginHome(),
       '/confirm': (BuildContext context) => ConfirmationCode(),
       '/signup': (BuildContext context) => SignUp(),
       '/wallet': (BuildContext context) => WalletPage(),
       '/profile': (BuildContext context) => UserProfile(),
       '/home': (BuildContext context) => RootScreen(),
-    });
+    },
+    );
   }
 }

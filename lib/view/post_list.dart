@@ -24,65 +24,73 @@ class _PostListState extends State<PostList> {
     return Scaffold(
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 48, 16, 0),
-          child: Column(
-            children: [
-              Stack(
-                children: [
-                  const Align(
-                    alignment: Alignment.center,
-                    child: Text(
-                      "POST",
-                      style: TextStyle(
-                        fontWeight: FontWeight.w900,
-                        fontSize: 32.0,
+          padding: const EdgeInsets.fromLTRB(0, 48, 0, 0),
+          child: Container(
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+                  child: Stack(
+                    children: [
+                      const Align(
+                        alignment: Alignment.center,
+                        child: Text(
+                          "POST",
+                          style: TextStyle(
+                            fontWeight: FontWeight.w900,
+                            fontSize: 32.0,
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                  Align(
-                      alignment: Alignment.topRight,
-                      child: ElevatedButton.icon(
-                        onPressed: () {
-                          showDialog<String>(
-                              context: context,
-                              builder: (BuildContext context) =>
-                                  _buildDialog(context));
-                        },
-                        icon: const Icon(Icons.filter_list_alt),
-                        label: const Text('Filter'),
-                      )),
-                ],
-              ),
-              const SizedBox(
-                height: 32,
-              ),
-              TextField(
-                decoration: const InputDecoration(
-                  labelText: 'Search',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(32.0),
-                    ),
-                  ),
-                  suffixIcon: Icon(Icons.search),
-                ),
-                textInputAction: TextInputAction.search,
-                style: const TextStyle(fontSize: 16),
-                onSubmitted: (value) {
-                  // Perform the search action
-                },
-              ),
-              const SizedBox(
-                height: 32,
-              ),
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: arr.map((e) => _buildPostList(e)).toList(),
+                      Align(
+                          alignment: Alignment.topRight,
+                          child: ElevatedButton.icon(
+                            onPressed: () {
+                              showDialog<String>(
+                                  context: context,
+                                  builder: (BuildContext context) =>
+                                      _buildDialog(context));
+                            },
+                            icon: const Icon(Icons.filter_list_alt),
+                            label: const Text('Filter'),
+                          )),
+                    ],
                   ),
                 ),
-              )
-            ],
+                const SizedBox(
+                  height: 32,
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+                  child: TextField(
+                    decoration: const InputDecoration(
+                      labelText: 'Search',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(32.0),
+                        ),
+                      ),
+                      suffixIcon: Icon(Icons.search),
+                    ),
+                    textInputAction: TextInputAction.search,
+                    style: const TextStyle(fontSize: 16),
+                    onSubmitted: (value) {
+                      // Perform the search action
+                    },
+                  ),
+                ),
+                const SizedBox(
+                  height: 32,
+                ),
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: arr.map((e) => _buildPostList(e)).toList(),
+                    ),
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ),
@@ -219,44 +227,58 @@ class _PostListState extends State<PostList> {
 
   Widget _buildPostList(int e) {
     return Container(
-      padding: const EdgeInsets.fromLTRB(0, 0, 0, 32),
+      padding: const EdgeInsets.fromLTRB(0, 16, 0, 0),
       child: Column(
         children: [
-          Image.asset(
-            'assets/images/Test_img.png',
-            width: 500,
-            height: 240,
-            fit: BoxFit.cover,
-          ),
-          Row(
-            children: const [
-              Padding(
-                padding: EdgeInsets.fromLTRB(0, 8, 0, 8),
-                child: Text(
-                  "Header",
-                  style: TextStyle(fontSize: 16),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+            child: Column(
+              children: [
+                Image.asset(
+                  'assets/images/Test_img.png',
+                  width: MediaQuery.of(context).size.width,
+                  height: 240,
+                  fit: BoxFit.cover,
                 ),
-              ),
-            ],
-          ),
-          Row(
-            children: const [
-              Expanded(
-                child: Text(
-                  "He'll want to use your yacht, and I don't want this thing smelling like fish.",
-                  style: TextStyle(fontSize: 14),
+                Row(
+                  children: const [
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(0, 8, 0, 8),
+                      child: Text(
+                        "Header",
+                        style: TextStyle(fontSize: 16),
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-            ],
+                Row(
+                  children: const [
+                    Expanded(
+                      child: Text(
+                        "He'll want to use your yacht, and I don't want this thing smelling like fish.",
+                        style: TextStyle(fontSize: 14),
+                      ),
+                    ),
+                  ],
+                ),
+                Row(
+                  children: const [
+                    Text(
+                      "8m ago",
+                      style: TextStyle(fontSize: 14),
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 16,
+                ),
+              ],
+            ),
           ),
-          Row(
-            children: const [
-              Text(
-                "8m ago",
-                style: TextStyle(fontSize: 14),
-              ),
-            ],
-          ),
+          const Divider(
+            thickness: 3,
+            color: Colors.grey,
+          )
         ],
       ),
     );
