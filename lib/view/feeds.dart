@@ -33,11 +33,12 @@ class _NotificationScreenState extends State<NotificationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 48, 16, 0),
-          child: Column(
-            children: [
-              Stack(
+        child: Column(
+          children: [
+            Container(
+              color: Colors.white,
+              padding: const EdgeInsets.fromLTRB(16, 48, 16, 0),
+              child: Stack(
                 children: const [
                   Align(
                     alignment: Alignment.center,
@@ -49,32 +50,31 @@ class _NotificationScreenState extends State<NotificationScreen> {
                       ),
                     ),
                   ),
-                  // Align(
-                  //     alignment: Alignment.topRight,
-                  //     child: ElevatedButton.icon(
-                  //       onPressed: () {
-                  //         showDialog<String>(
-                  //             context: context,
-                  //             builder: (BuildContext context) =>
-                  //                 _buildDialog(context));
-                  //       },
-                  //       icon: const Icon(Icons.filter_list_alt),
-                  //       label: const Text('Filter'),
-                  //     )),
                 ],
               ),
-              const SizedBox(
-                height: 32,
-              ),
-              TextField(
-                decoration: const InputDecoration(
+            ),
+            Container(
+              color: Colors.white,
+              padding: const EdgeInsets.fromLTRB(16, 32, 16, 32),
+              child: TextField(
+                decoration: InputDecoration(
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                    borderSide: const BorderSide(color: Colors.black),
+                  ),
+                  filled: true,
+                  fillColor: Colors.white,
                   labelText: 'Search',
-                  border: OutlineInputBorder(
+                  labelStyle: const TextStyle(color: Colors.black),
+                  border: const OutlineInputBorder(
                     borderRadius: BorderRadius.all(
                       Radius.circular(32.0),
                     ),
                   ),
-                  suffixIcon: Icon(Icons.search),
+                  suffixIcon: const Icon(
+                    Icons.search,
+                    color: Colors.black,
+                  ),
                 ),
                 textInputAction: TextInputAction.search,
                 style: const TextStyle(fontSize: 16),
@@ -82,18 +82,15 @@ class _NotificationScreenState extends State<NotificationScreen> {
                   // Perform the search action
                 },
               ),
-              const SizedBox(
-                height: 32,
-              ),
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: arr.map((e) => _buildFeed(e)).toList(),
-                  ),
+            ),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: arr.map((e) => _buildFeed(e)).toList(),
                 ),
-              )
-            ],
-          ),
+              ),
+            )
+          ],
         ),
       ),
     );
@@ -123,8 +120,8 @@ class _NotificationScreenState extends State<NotificationScreen> {
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text(
+                      children: const [
+                        Text(
                           "Header",
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
