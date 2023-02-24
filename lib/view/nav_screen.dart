@@ -43,9 +43,9 @@ class _RootScreen extends State<RootScreen> {
       return [
         PostList(),
         PostListDetail(),
-        WalletPage(),
+        const WalletPage(),
         PostList(),
-        UserProfile()
+        const UserProfile()
       ];
     }
 
@@ -53,15 +53,14 @@ class _RootScreen extends State<RootScreen> {
           PersistentBottomNavBarItem(
               icon: const Icon(Icons.home),
               title: "Home",
-              activeColorPrimary: Colors.blue,
-              inactiveColorPrimary: Colors.grey,
-              inactiveColorSecondary: Colors.purple),
+              activeColorPrimary: Colors.black,
+              inactiveColorPrimary: Colors.black),
           
           PersistentBottomNavBarItem(
             icon: const Icon(Icons.search),
             title: "Search",
-            activeColorPrimary: Colors.green,
-            inactiveColorPrimary: Colors.grey,
+            activeColorPrimary: Colors.black,
+            inactiveColorPrimary: Colors.black,
             // routeAndNavigatorSettings: RouteAndNavigatorSettings(
             //   initialRoute: "/",
             //   routes: {
@@ -73,8 +72,8 @@ class _RootScreen extends State<RootScreen> {
           PersistentBottomNavBarItem(
             icon: const Icon(Icons.wallet),
             title: "Wallet",
-            activeColorPrimary: Colors.deepOrange,
-            inactiveColorPrimary: Colors.grey,
+            activeColorPrimary: Colors.black,
+            inactiveColorPrimary: Colors.black,
             // routeAndNavigatorSettings: RouteAndNavigatorSettings(
             //   initialRoute: "/",
             //   routes: {
@@ -86,8 +85,8 @@ class _RootScreen extends State<RootScreen> {
           PersistentBottomNavBarItem(
             icon: const Icon(Icons.notifications),
             title: "Notification",
-            activeColorPrimary: Colors.teal,
-            inactiveColorPrimary: Colors.grey,
+            activeColorPrimary: Colors.black,
+            inactiveColorPrimary: Colors.black,
             // routeAndNavigatorSettings: RouteAndNavigatorSettings(
             //   initialRoute: "/",
             //   routes: {
@@ -99,8 +98,8 @@ class _RootScreen extends State<RootScreen> {
           PersistentBottomNavBarItem(
             icon: const Icon(Icons.person),
             title: "Profile",
-            activeColorPrimary: Colors.indigo,
-            inactiveColorPrimary: Colors.grey,
+            activeColorPrimary: Colors.black,
+            inactiveColorPrimary: Colors.black,
             // routeAndNavigatorSettings: RouteAndNavigatorSettings(
             //   initialRoute: "/",
             //   routes: {
@@ -125,17 +124,18 @@ class _RootScreen extends State<RootScreen> {
       hideNavigationBarWhenKeyboardShows:
           true, // Recommended to set 'resizeToAvoidBottomInset' as true while using this argument. Default is true.
       decoration: NavBarDecoration(
+        
         borderRadius: BorderRadius.circular(10.0),
         colorBehindNavBar: Colors.white,
       ),
       popAllScreensOnTapOfSelectedTab: true,
       popActionScreens: PopActionScreensType.all,
-      itemAnimationProperties: ItemAnimationProperties(
+      itemAnimationProperties: const ItemAnimationProperties(
         // Navigation Bar's items animation properties.
         duration: Duration(milliseconds: 200),
         curve: Curves.ease,
       ),
-      screenTransitionAnimation: ScreenTransitionAnimation(
+      screenTransitionAnimation: const ScreenTransitionAnimation(
         // Screen transition animation on change of selected tab.
         animateTabTransition: true,
         curve: Curves.ease,
