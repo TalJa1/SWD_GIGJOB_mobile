@@ -7,6 +7,8 @@ import 'package:gigjob_mobile/view/user_profile.dart';
 import 'package:gigjob_mobile/view/wallet.dart';
 import "package:persistent_bottom_nav_bar/persistent_tab_view.dart";
 
+import 'feeds.dart';
+
 class RootScreen extends StatefulWidget {
   @override
   _RootScreen createState() => _RootScreen();
@@ -44,7 +46,7 @@ class _RootScreen extends State<RootScreen> {
         PostList(),
         PostListDetail(),
         WalletPage(),
-        PostList(),
+        NotificationScreen(),
         UserProfile()
       ];
     }
