@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print, sized_box_for_whitespace
+// ignore_for_file: avoid_print, sized_box_for_whitespace, unnecessary_new
 
 import 'dart:io';
 import 'dart:typed_data';

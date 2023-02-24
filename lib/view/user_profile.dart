@@ -20,6 +20,9 @@ class _UserProfileState extends State<UserProfile> {
     super.initState();
   }
 
+  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
+      GlobalKey<RefreshIndicatorState>();
+
   bool isInfo = true;
   var userName = "Chau Tan Tai";
 
@@ -35,54 +38,53 @@ class _UserProfileState extends State<UserProfile> {
     // ignore: unused_local_variable
     // ignore: prefer_const_constructors
     return Scaffold(
-        resizeToAvoidBottomInset: false,
-        backgroundColor: Colors.white,
-        body: Column(
-          children: [
-            Expanded(
-              child: Stack(
-                alignment: Alignment.topCenter,
-                children: <Widget>[
-                  backGround(),
-                  Positioned(top: 120, child: profileImage()),
-                  // ignore: prefer_const_constructors
-                  Positioned(
-                      // bottom: 0,
-                      top: 270,
-                      child: SizedBox(
-                          height: 120,
-                          child: Padding(
-                            padding: const EdgeInsets.only(top: 10),
-                            child: Column(
-                              children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    Text(
-                                      getName(userName),
-                                      style: const TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 25,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    // editBtn()
-                                  ],
-                                ),
-                                stateButton()
-                              ],
-                            ),
-                          ))),
-                ],
-              ),
+      resizeToAvoidBottomInset: false,
+      backgroundColor: Colors.white,
+      body: Column(
+        children: [
+          Expanded(
+            child: Stack(
+              alignment: Alignment.topCenter,
+              children: <Widget>[
+                backGround(),
+                Positioned(top: 120, child: profileImage()),
+                // ignore: prefer_const_constructors
+                Positioned(
+                    top: 270,
+                    child: SizedBox(
+                        // height: 80,
+                        child: Padding(
+                      padding: const EdgeInsets.only(top: 10),
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Text(
+                                getName(userName),
+                                style: const TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 25,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              // editBtn()
+                            ],
+                          ),
+                          stateButton()
+                        ],
+                      ),
+                    ))),
+              ],
             ),
-            userData(isInfo),
-            editBtn(),
-            const SizedBox(
-              height: 15,
-            )
-          ],
-        ));
+          ),
+          userData(isInfo),
+          const SizedBox(
+            height: 15,
+          ),
+        ],
+      ),
+      floatingActionButton: editBtn(),
+    );
   }
 
   Widget backGround() {
@@ -133,8 +135,7 @@ class _UserProfileState extends State<UserProfile> {
   Widget stateButton() {
     return Container(
       decoration: const BoxDecoration(color: Colors.white),
-      // constraints: const BoxConstraints.expand(height: 100, width: 420),
-      height: 85,
+      height: 80,
       width: MediaQuery.of(context).size.width,
       child: AnimatedButtonBar(
         radius: 32.0,
@@ -174,6 +175,7 @@ class _UserProfileState extends State<UserProfile> {
                 height: MediaQuery.of(context).size.height,
                 padding: const EdgeInsets.only(left: 10, right: 10, bottom: 5),
                 child: SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
                   child: Center(
                       child: Padding(
                     padding: const EdgeInsets.only(top: 10, bottom: 10),
@@ -194,6 +196,7 @@ class _UserProfileState extends State<UserProfile> {
   }
 
   Widget userInfo(String tittle, String userdata) {
+    // ignore: sort_child_properties_last
     return SizedBox(
       width: MediaQuery.of(context).size.width,
       child: Card(
@@ -224,8 +227,8 @@ class _UserProfileState extends State<UserProfile> {
   }
 
   Widget editBtn() {
-    return FloatingActionButton.extended(
-      label: const Text('Edit'),
+    return FloatingActionButton(
+      child: const Icon(Icons.edit),
       onPressed: () {
         Navigator.push(
           context,
