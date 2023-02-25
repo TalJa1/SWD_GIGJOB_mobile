@@ -18,10 +18,6 @@ class _WalletPageState extends State<WalletPage> {
   double accBalance = 500;
   String userName = "Chau Tan Tai";
 
-  String getName() {
-    return '${userName.split(' ').last} ${userName.split(' ').first}';
-  }
-
   Color cashColor = Colors.green;
 
   List<WalletDTO> history = [
@@ -62,7 +58,7 @@ class _WalletPageState extends State<WalletPage> {
               child: Padding(
                   padding: const EdgeInsets.only(top: 10, bottom: 10),
                   child: Text(
-                    getName(),
+                    userName,
                     style: const TextStyle(
                         fontSize: 25, fontWeight: FontWeight.bold),
                   )),

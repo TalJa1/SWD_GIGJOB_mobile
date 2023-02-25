@@ -24,14 +24,9 @@ class _UserProfileState extends State<UserProfile> {
       GlobalKey<RefreshIndicatorState>();
 
   bool isInfo = true;
-  var userName = "Chau Tan Tai";
 
-  String getName(String userName) {
-    return userName.split(' ').last;
-  }
-
-  final user = new UserDTO("Chau Tan Tai", "tt@gmail.com", "Obispo Tajon",
-      "0909999999", "Nivel B1", "20/01/2022");
+  final user = new UserDTO("Nguyen Thi Bong Van Hoa", "tt@gmail.com",
+      "Obispo Tajon", "0909999999", "Nivel B1", "20/01/2022");
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +56,7 @@ class _UserProfileState extends State<UserProfile> {
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               Text(
-                                getName(userName),
+                                user.name.toString(),
                                 style: const TextStyle(
                                     color: Colors.black,
                                     fontSize: 25,
@@ -171,24 +166,23 @@ class _UserProfileState extends State<UserProfile> {
     return checkIsInfo
         ? Expanded(
             child: Container(
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height,
-                padding: const EdgeInsets.only(left: 10, right: 10, bottom: 5),
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height,
+            padding: const EdgeInsets.only(left: 10, right: 10, bottom: 5),
+            child: Center(
                 child: SingleChildScrollView(
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  child: Center(
-                      child: Padding(
-                    padding: const EdgeInsets.only(top: 10, bottom: 10),
-                    child: Column(children: [
-                      userInfo("Full Name", user.name.toString()),
-                      userInfo("Email", user.email.toString()),
-                      userInfo("Address", user.address.toString()),
-                      userInfo("Phone", user.phone.toString()),
-                      userInfo("Education", user.education.toString()),
-                      userInfo("Birth", user.birth.toString())
-                    ]),
-                  )),
-                )))
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: Column(children: [
+                  userInfo("Email", user.email.toString()),
+                  userInfo("Address", user.address.toString()),
+                  userInfo("Phone", user.phone.toString()),
+                  userInfo("Education", user.education.toString()),
+                  userInfo("Birth", user.birth.toString())
+                ]),
+              ),
+            )),
+          ))
         : Expanded(
             child: Padding(
                 padding: const EdgeInsets.only(left: 20, right: 20),

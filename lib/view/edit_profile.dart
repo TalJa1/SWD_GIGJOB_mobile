@@ -115,8 +115,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   ],
                 ),
                 Positioned(right: 20, top: 80, child: userImg()),
-                // Positioned(top: 230, child: formEdit()),
-                // Positioned(bottom: 5, child: uploadbtn())
               ],
             ),
             Expanded(child: formEdit()),
@@ -151,7 +149,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
               ),
             )
           : Container(
-              // constraints: const BoxConstraints.expand(width: 150, height: 150),
               width: 150.0,
               height: 150.0,
               decoration: BoxDecoration(
@@ -180,17 +177,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                textForm("name"),
-                textForm("address"),
+                textForm("email"),
                 textForm("education"),
                 textForm("address"),
-                textForm("address"),
-                textForm("address"),
-                textForm("address"),
-                textForm("education"),
-                textForm("address"),
-                textForm("address"),
-                textForm("address"),
+                textForm("phone"),
+                textForm("birth"),
               ],
             ),
           ),
