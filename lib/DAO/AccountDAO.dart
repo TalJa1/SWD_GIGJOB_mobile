@@ -10,7 +10,7 @@ class AccountDAO extends BaseDAO {
 
     try {
 
-      String path = "/account/login-google";
+      String path = "/account/login/google";
       Map<String, String> headers = {
         'idTokenString': idToken ?? "",
       };
