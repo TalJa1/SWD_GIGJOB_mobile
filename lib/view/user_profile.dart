@@ -42,12 +42,15 @@ class _UserProfileState extends State<UserProfile> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,
-      body: Column(
-        children: [
-          Expanded(
-            child: Stack(
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Stack(
               alignment: Alignment.topCenter,
               children: <Widget>[
+                const SizedBox(
+                  height: 370,
+                ),
                 backGround(),
                 Positioned(top: 120, child: profileImage()),
                 // ignore: prefer_const_constructors
@@ -78,12 +81,12 @@ class _UserProfileState extends State<UserProfile> {
                     ))),
               ],
             ),
-          ),
-          userData(isInfo),
-          const SizedBox(
-            height: 15,
-          ),
-        ],
+            userData(isInfo),
+            const SizedBox(
+              height: 15,
+            ),
+          ],
+        ),
       ),
       floatingActionButton: editBtn(),
     );
@@ -171,13 +174,11 @@ class _UserProfileState extends State<UserProfile> {
   Widget userData(bool checkIsInfo) {
     // final combinedList = _combineLists();
     return checkIsInfo
-        ? Expanded(
-            child: Container(
+        ? Container(
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height,
             padding: const EdgeInsets.only(left: 10, right: 10, bottom: 5),
             child: Center(
-                child: SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.only(bottom: 10),
                 child: Column(children: [
@@ -188,73 +189,66 @@ class _UserProfileState extends State<UserProfile> {
                   userInfo("Birth", user.birth.toString())
                 ]),
               ),
-            )),
-          ))
-        : Expanded(
-            child: SizedBox(
-              height: MediaQuery.of(context).size.height,
-              width: MediaQuery.of(context).size.width,
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    ListView.builder(
-                      physics: const NeverScrollableScrollPhysics(),
-                      scrollDirection: Axis.vertical,
-                      shrinkWrap: true,
-                      itemCount: user.experience!.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return ListTile(
-                          title: Card(
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.only(left: 10, right: 10),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+            ))
+        : SizedBox(
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width,
+            child: Column(
+              children: [
+                ListView.builder(
+                  physics: const NeverScrollableScrollPhysics(),
+                  scrollDirection: Axis.vertical,
+                  shrinkWrap: true,
+                  itemCount: user.experience!.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return ListTile(
+                      title: Card(
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 10, right: 10),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                user.experience![index].company.toString(),
+                                // ignore: prefer_const_constructors
+                                style: TextStyle(
+                                    fontSize: 20, fontWeight: FontWeight.bold),
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text(
-                                    user.experience![index].company.toString(),
-                                    // ignore: prefer_const_constructors
-                                    style: TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      const Text('Working for:'),
-                                      Text(user.experience![index].duration
-                                          .toString())
-                                    ],
-                                  ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      const Text('At position:'),
-                                      Text(user.experience![index].position
-                                          .toString())
-                                    ],
-                                  ),
-                                  const SizedBox(
-                                    height: 10,
-                                  )
+                                  const Text('Working for:'),
+                                  Text(user.experience![index].duration
+                                      .toString())
                                 ],
                               ),
-                            ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  const Text('At position:'),
+                                  Text(user.experience![index].position
+                                      .toString())
+                                ],
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              )
+                            ],
                           ),
-                        );
-                      },
-                    )
-                  ],
-                ),
-              ),
+                        ),
+                      ),
+                    );
+                  },
+                )
+              ],
             ),
           );
   }
