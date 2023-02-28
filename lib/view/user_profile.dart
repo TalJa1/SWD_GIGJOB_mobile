@@ -26,7 +26,14 @@ class _UserProfileState extends State<UserProfile> {
   bool isInfo = true;
 
   final user = new UserDTO("Nguyen Thi Bong Van Hoa", "tt@gmail.com",
-      "Obispo Tajon", "0909999999", "Nivel B1", "20/01/2022");
+      "Obispo Tajon", "0909999999", "Nivel B1", "20/01/2022", [
+    Experience("FPT", "Dev", "1 year"),
+    Experience("Google", "Manager", "6 months"),
+    Experience("HPT", "Master", "2 years"),
+    Experience("HPT", "Master", "2 years"),
+    Experience("HPT", "Master", "2 years"),
+    Experience("HPT", "Master", "2 years"),
+  ]);
 
   @override
   Widget build(BuildContext context) {
@@ -184,9 +191,72 @@ class _UserProfileState extends State<UserProfile> {
             )),
           ))
         : Expanded(
-            child: Padding(
-                padding: const EdgeInsets.only(left: 20, right: 20),
-                child: Text(user.name.toString())));
+            child: SizedBox(
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    ListView.builder(
+                      physics: const NeverScrollableScrollPhysics(),
+                      scrollDirection: Axis.vertical,
+                      shrinkWrap: true,
+                      itemCount: user.experience!.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return ListTile(
+                          title: Card(
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.only(left: 10, right: 10),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    user.experience![index].company.toString(),
+                                    // ignore: prefer_const_constructors
+                                    style: TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      const Text('Working for:'),
+                                      Text(user.experience![index].duration
+                                          .toString())
+                                    ],
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      const Text('At position:'),
+                                      Text(user.experience![index].position
+                                          .toString())
+                                    ],
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    )
+                  ],
+                ),
+              ),
+            ),
+          );
   }
 
   Widget userInfo(String tittle, String userdata) {

@@ -8,7 +8,7 @@ class UserDTO {
   List<Experience>? experience;
 
   UserDTO(this.name, this.email, this.address, this.phone, this.education,
-      this.birth);
+      this.birth, this.experience);
 
   UserDTO.fromJson(Map<String, dynamic> json) {
     name = json['name'];
