@@ -3,7 +3,7 @@ import 'package:dio/dio.dart';
 
 class ApiService {
   static const String baseUrl =
-      'http://ec2-3-1-81-248.ap-southeast-1.compute.amazonaws.com/api/v1';
+      'http://54.179.205.85/api/v1';
 
   static Map<String, String> baseHeaders = {
     'Content-Type': 'application/json',

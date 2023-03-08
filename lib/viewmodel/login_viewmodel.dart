@@ -16,6 +16,7 @@ class LoginViewModel extends BaseModel {
 
   Future<void> signinWithGoogle(BuildContext context) async {
     try {
+      FirebaseAuth.instance.signOut();
       GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
       GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
@@ -23,12 +24,9 @@ class LoginViewModel extends BaseModel {
       AuthCredential credential = GoogleAuthProvider.credential(
           accessToken: googleAuth?.accessToken, idToken: googleAuth?.idToken);
 
-      // print("access token ${googleAuth?.accessToken}");
-      // print("id token ${googleAuth?.idToken}");
 
       UserCredential userCre =
           await FirebaseAuth.instance.signInWithCredential(credential);
-      // print(userCre.credential?.token ?? "");
 
       String? token = await googleAuth?.idToken;
       String? fcmToken = await PushNotificationService.getInstance()?.getFcmToken();

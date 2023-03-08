@@ -4,8 +4,19 @@ import 'dart:convert';
 import 'package:gigjob_mobile/DAO/BaseDAO.dart';
 import 'package:gigjob_mobile/DTO/AccountDTO.dart';
 import 'package:gigjob_mobile/services/request.dart';
+import 'package:gigjob_mobile/utils/share_pref.dart';
 
 class AccountDAO extends BaseDAO {
+
+
+  Future<bool> isUserLoggedIn() async {
+    final isExpireToken = await expireToken();
+    final token = await getToken();
+    if (isExpireToken) return false;
+    if (token != null) ApiService.setToken(token);
+    return token != null;
+  }
+
   Future<void> postToken(String? idToken) async {
 
     try {
@@ -20,6 +31,7 @@ class AccountDAO extends BaseDAO {
     
       // final userDTO = AccountDTO.fromJson(response);
       ApiService.setToken(response["accessToken"]);
+      setToken(response["accessToken"]);
       // print(response);
       // return userDTO;
     } catch (e) {
@@ -32,7 +44,7 @@ class AccountDAO extends BaseDAO {
 
     try {
 
-      String path = "/send-notification";
+      String path = "/notification/send";
       Map<String, String> headers = {'Content-Type': 'application/json'};
       Map<String, dynamic> body = {
         "subject": "FROM ME",
