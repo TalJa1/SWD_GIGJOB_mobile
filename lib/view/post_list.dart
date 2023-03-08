@@ -20,14 +20,23 @@ class _PostListState extends State<PostList> {
   List<String> selectedItems = [];
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 48, 16, 0),
-          child: Column(
-            children: [
-              Stack(
+        child: Column(
+          children: [
+            Container(
+              color: Colors.white,
+              padding: const EdgeInsets.fromLTRB(16, 48, 16, 0),
+              child: Stack(
                 children: [
                   const Align(
                     alignment: Alignment.center,
@@ -42,6 +51,9 @@ class _PostListState extends State<PostList> {
                   Align(
                       alignment: Alignment.topRight,
                       child: ElevatedButton.icon(
+                        style: ElevatedButton.styleFrom(
+                            foregroundColor: Colors.white,
+                            backgroundColor: Colors.black),
                         onPressed: () {
                           showDialog<String>(
                               context: context,
@@ -53,18 +65,29 @@ class _PostListState extends State<PostList> {
                       )),
                 ],
               ),
-              const SizedBox(
-                height: 32,
-              ),
-              TextField(
-                decoration: const InputDecoration(
+            ),
+            Container(
+              color: Colors.white,
+              padding: const EdgeInsets.fromLTRB(16, 32, 16, 32),
+              child: TextField(
+                decoration: InputDecoration(
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                    borderSide: const BorderSide(color: Colors.black),
+                  ),
+                  filled: true,
+                  fillColor: Colors.white,
                   labelText: 'Search',
-                  border: OutlineInputBorder(
+                  labelStyle: const TextStyle(color: Colors.black),
+                  border: const OutlineInputBorder(
                     borderRadius: BorderRadius.all(
                       Radius.circular(32.0),
                     ),
                   ),
-                  suffixIcon: Icon(Icons.search),
+                  suffixIcon: const Icon(
+                    Icons.search,
+                    color: Colors.black,
+                  ),
                 ),
                 textInputAction: TextInputAction.search,
                 style: const TextStyle(fontSize: 16),
@@ -72,18 +95,15 @@ class _PostListState extends State<PostList> {
                   // Perform the search action
                 },
               ),
-              const SizedBox(
-                height: 32,
-              ),
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: arr.map((e) => _buildPostList(e)).toList(),
-                  ),
+            ),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: arr.map((e) => _buildPostList(e)).toList(),
                 ),
-              )
-            ],
-          ),
+              ),
+            )
+          ],
         ),
       ),
       // bottomNavigationBar: StatefulBuilder(
@@ -219,44 +239,58 @@ class _PostListState extends State<PostList> {
 
   Widget _buildPostList(int e) {
     return Container(
-      padding: const EdgeInsets.fromLTRB(0, 0, 0, 32),
+      padding: const EdgeInsets.fromLTRB(0, 16, 0, 0),
       child: Column(
         children: [
-          Image.asset(
-            'assets/images/Test_img.png',
-            width: 500,
-            height: 240,
-            fit: BoxFit.cover,
-          ),
-          Row(
-            children: const [
-              Padding(
-                padding: EdgeInsets.fromLTRB(0, 8, 0, 8),
-                child: Text(
-                  "Header",
-                  style: TextStyle(fontSize: 16),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+            child: Column(
+              children: [
+                Image.asset(
+                  'assets/images/Test_img.png',
+                  width: MediaQuery.of(context).size.width,
+                  height: 240,
+                  fit: BoxFit.cover,
                 ),
-              ),
-            ],
-          ),
-          Row(
-            children: const [
-              Expanded(
-                child: Text(
-                  "He'll want to use your yacht, and I don't want this thing smelling like fish.",
-                  style: TextStyle(fontSize: 14),
+                Row(
+                  children: const [
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(0, 8, 0, 8),
+                      child: Text(
+                        "Header",
+                        style: TextStyle(fontSize: 16),
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-            ],
+                Row(
+                  children: const [
+                    Expanded(
+                      child: Text(
+                        "He'll want to use your yacht, and I don't want this thing smelling like fish.",
+                        style: TextStyle(fontSize: 14),
+                      ),
+                    ),
+                  ],
+                ),
+                Row(
+                  children: const [
+                    Text(
+                      "8m ago",
+                      style: TextStyle(fontSize: 14),
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 16,
+                ),
+              ],
+            ),
           ),
-          Row(
-            children: const [
-              Text(
-                "8m ago",
-                style: TextStyle(fontSize: 14),
-              ),
-            ],
-          ),
+          const Divider(
+            thickness: 3,
+            color: Colors.grey,
+          )
         ],
       ),
     );
