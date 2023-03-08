@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gigjob_mobile/view/nav_screen.dart';
 import 'package:filter_list/filter_list.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:gigjob_mobile/viewmodel/job_viewmodel.dart';
 
 class PostList extends StatefulWidget {
   @override
@@ -19,11 +20,14 @@ class _PostListState extends State<PostList> {
   ];
   List<String> selectedItems = [];
 
+  late JobViewModel jobViewModel;
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-
+    jobViewModel = JobViewModel();
+    jobViewModel.getJobs();
     
   }
 

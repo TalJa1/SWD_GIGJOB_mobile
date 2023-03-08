@@ -47,6 +47,7 @@ class ApiService {
     headers ??= {};
     queryParams ??= {};
     try {
+      print(baseHeaders);
       final response = await dio.get(
         path,
         queryParameters: queryParams,
