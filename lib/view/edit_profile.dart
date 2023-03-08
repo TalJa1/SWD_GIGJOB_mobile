@@ -1,14 +1,9 @@
 // ignore_for_file: avoid_print, sized_box_for_whitespace, unnecessary_new
 
 import 'dart:io';
-import 'dart:typed_data';
-import 'package:flutter/services.dart';
-import 'package:http_parser/http_parser.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-
-import '../services/request.dart';
+import 'package:gigjob_mobile/services/UploadFile_service.dart';
 
 class EditProfilePage extends StatefulWidget {
   const EditProfilePage({Key? key}) : super(key: key);
@@ -44,25 +39,25 @@ class _EditProfilePageState extends State<EditProfilePage> {
   }
 
   //Post with DIO
-  Future<String> uploadImage(XFile? file) async {
-    Map<String, String> baseHeaders = ApiService.getHeader();
-    Dio dio = Dio();
-    dio.options.headers = baseHeaders;
-    String fileName = file!.path.split('/').last;
-    final Uint8List bytes = await file.readAsBytes();
-    FormData formData = FormData.fromMap({
-      "file": MultipartFile.fromBytes(bytes,
-          filename: fileName, contentType: new MediaType('image', 'jpeg')),
-    });
-    try {
-      Response response = await dio.post(
-          "http://ec2-13-229-83-87.ap-southeast-1.compute.amazonaws.com/api/v1/resource/upload",
-          data: formData);
-      return "Upload Status for $fileName ${response.statusCode}";
-    } catch (e) {
-      return e.toString();
-    }
-  }
+  // Future<String> uploadImage(XFile? file) async {
+  //   Map<String, String> baseHeaders = ApiService.getHeader();
+  //   Dio dio = Dio();
+  //   dio.options.headers = baseHeaders;
+  //   String fileName = file!.path.split('/').last;
+  //   final Uint8List bytes = await file.readAsBytes();
+  //   FormData formData = FormData.fromMap({
+  //     "file": MultipartFile.fromBytes(bytes,
+  //         filename: fileName, contentType: new MediaType('image', 'jpeg')),
+  //   });
+  //   try {
+  //     Response response = await dio.post(
+  //         "http://ec2-13-229-83-87.ap-southeast-1.compute.amazonaws.com/api/v1/resource/upload",
+  //         data: formData);
+  //     return "Upload Status for $fileName ${response.statusCode}";
+  //   } catch (e) {
+  //     return e.toString();
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -177,7 +172,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                textForm("email"),
+                // textForm("email"),
                 textForm("education"),
                 textForm("address"),
                 textForm("phone"),
@@ -219,7 +214,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
       padding: const EdgeInsets.only(left: 16, right: 16),
       child: TextButton(
         onPressed: () {
-          uploadImage(uploadfile!);
+          UploadFileService().uploadImage(uploadfile!);
         },
         style: ButtonStyle(
             backgroundColor: MaterialStateProperty.all(Colors.black),
