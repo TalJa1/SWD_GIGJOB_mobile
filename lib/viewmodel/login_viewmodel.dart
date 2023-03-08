@@ -23,7 +23,6 @@ class LoginViewModel extends BaseModel {
       AuthCredential credential = GoogleAuthProvider.credential(
           accessToken: googleAuth?.accessToken, idToken: googleAuth?.idToken);
 
-
       UserCredential userCre =
           await FirebaseAuth.instance.signInWithCredential(credential);
 
