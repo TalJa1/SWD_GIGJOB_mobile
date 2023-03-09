@@ -1,9 +1,12 @@
+// ignore_for_file: sized_box_for_whitespace
+
 import 'package:flutter/material.dart';
 import 'package:gigjob_mobile/DTO/JobDTO.dart';
 import 'package:gigjob_mobile/enum/view_status.dart';
 import 'package:gigjob_mobile/view/nav_screen.dart';
 import 'package:filter_list/filter_list.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:gigjob_mobile/view/post_list_detail.dart';
 import 'package:gigjob_mobile/viewmodel/job_viewmodel.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:jiffy/jiffy.dart';
@@ -108,10 +111,10 @@ class _PostListState extends State<PostList> {
               ScopedModelDescendant<JobViewModel>(
                 builder: (context, child, model) {
                   if (jobViewModel.status == ViewStatus.Loading) {
-                    return Container(
-                      width: 100,
-                      height: 100,
-                      child: const CircularProgressIndicator());
+                    return const SizedBox(
+                        width: 100,
+                        height: 100,
+                        child: CircularProgressIndicator());
                   } else {
                     return Expanded(
                       child: SingleChildScrollView(
@@ -266,53 +269,64 @@ class _PostListState extends State<PostList> {
       child: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
-            child: Column(
-              children: [
-                Image.asset(
-                  'assets/images/Test_img.png',
-                  width: MediaQuery.of(context).size.width,
-                  height: 240,
-                  fit: BoxFit.cover,
-                ),
-                Row(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.fromLTRB(0, 8, 0, 8),
-                      child: Text(
-                        "${job.title}",
-                        style: TextStyle(fontSize: 16),
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => PostListDetail(
+                        data: job,
                       ),
                     ),
-                  ],
-                ),
-                Row(
+                  );
+                },
+                child: Column(
                   children: [
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
-                        child: Text(
-                          "${job.description}",
+                    Image.asset(
+                      'assets/images/Test_img.png',
+                      width: MediaQuery.of(context).size.width,
+                      height: 240,
+                      fit: BoxFit.cover,
+                    ),
+                    Row(
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(0, 8, 0, 8),
+                          child: Text(
+                            "${job.title}",
+                            style: TextStyle(fontSize: 16),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
+                            child: Text(
+                              "${job.description}",
+                              style: TextStyle(fontSize: 14),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Text(
+                          Jiffy("${job.createdDate}").fromNow(),
                           style: TextStyle(fontSize: 14),
                         ),
-                      ),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 16,
                     ),
                   ],
                 ),
-                Row(
-                  children: [
-                    Text(
-                      Jiffy("${job.createdDate}").fromNow(),
-                      style: TextStyle(fontSize: 14),
-                    ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 16,
-                ),
-              ],
-            ),
-          ),
+              )),
           const Divider(
             thickness: 3,
             color: Colors.grey,

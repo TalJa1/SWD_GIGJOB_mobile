@@ -42,7 +42,7 @@ class _RootScreen extends State<RootScreen> {
     List<Widget> _buildScreens() {
       return [
         PostList(),
-        PostListDetail(),
+        PostList(),
         const WalletPage(),
         PostList(),
         const UserProfile()
@@ -55,7 +55,6 @@ class _RootScreen extends State<RootScreen> {
               title: "Home",
               activeColorPrimary: Colors.black,
               inactiveColorPrimary: Colors.black),
-          
           PersistentBottomNavBarItem(
             icon: const Icon(Icons.search),
             title: "Search",

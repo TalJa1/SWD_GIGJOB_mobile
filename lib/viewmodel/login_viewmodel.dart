@@ -21,7 +21,7 @@ class LoginViewModel extends BaseModel {
 
       GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
 
-      AuthCredential credential = GoogleAuthProvider.credential(
+      AuthCredential credential = await GoogleAuthProvider.credential(
           accessToken: googleAuth?.accessToken, idToken: googleAuth?.idToken);
 
       UserCredential userCre =

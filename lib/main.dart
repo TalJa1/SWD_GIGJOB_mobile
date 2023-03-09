@@ -18,7 +18,8 @@ import 'package:gigjob_mobile/view/user_profile.dart';
 const AndroidNotificationChannel channel = AndroidNotificationChannel(
     'high_importance_channel', // id
     'High Importance Notifications', // title
-    description: 'This channel is used for important notifications.', // description
+    description:
+        'This channel is used for important notifications.', // description
     importance: Importance.high,
     playSound: true);
 
@@ -88,19 +89,18 @@ class _MyAppState extends State<MyApp> {
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       print("Received a message: ${message.notification!.title}");
       print("Received a message: ${message.notification!.body}");
-      
 
-          flutterLocalNotificationsPlugin.show(
-        message.notification.hashCode,
-        message.notification?.title,
-        message.notification?.body,
-        NotificationDetails(
-            android: AndroidNotificationDetails(channel.id, channel.name,
-                channelDescription: channel.description,
-                importance: Importance.high,
-                color: Colors.blue,
-                playSound: true,
-                icon: '@mipmap/ic_launcher')));
+      flutterLocalNotificationsPlugin.show(
+          message.notification.hashCode,
+          message.notification?.title,
+          message.notification?.body,
+          NotificationDetails(
+              android: AndroidNotificationDetails(channel.id, channel.name,
+                  channelDescription: channel.description,
+                  importance: Importance.high,
+                  color: Colors.blue,
+                  playSound: true,
+                  icon: '@mipmap/ic_launcher')));
     });
 
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
@@ -128,15 +128,18 @@ class _MyAppState extends State<MyApp> {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(initialRoute: '/', routes: {
-      '/': (BuildContext context) => StartUpView(),
-      '/login': (BuildContext context) => LoginHome(),
-      '/confirm': (BuildContext context) => ConfirmationCode(),
-      '/signup': (BuildContext context) => SignUp(),
-      '/wallet': (BuildContext context) => WalletPage(),
-      '/profile': (BuildContext context) => UserProfile(),
-      '/home': (BuildContext context) => RootScreen(),
-    },
+    return MaterialApp(
+      initialRoute: '/',
+      routes: {
+        '/': (BuildContext context) => StartUpView(),
+        '/login': (BuildContext context) => LoginHome(),
+        '/confirm': (BuildContext context) => ConfirmationCode(),
+        '/signup': (BuildContext context) => SignUp(),
+        '/wallet': (BuildContext context) => WalletPage(),
+        '/profile': (BuildContext context) => UserProfile(),
+        '/home': (BuildContext context) => RootScreen(),
+        '/jobdetail': (BuildContext context) => PostList(),
+      },
     );
   }
 }
