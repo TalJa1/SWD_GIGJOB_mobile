@@ -124,8 +124,6 @@ class _RootScreen extends State<RootScreen> {
       hideNavigationBarWhenKeyboardShows:
           true, // Recommended to set 'resizeToAvoidBottomInset' as true while using this argument. Default is true.
       decoration: NavBarDecoration(
-        
-        borderRadius: BorderRadius.circular(10.0),
         colorBehindNavBar: Colors.white,
       ),
       popAllScreensOnTapOfSelectedTab: true,
@@ -143,44 +141,5 @@ class _RootScreen extends State<RootScreen> {
       ),
       navBarStyle: NavBarStyle.style1,
     );
-    // BottomNavigationBar(
-    //   items: const <BottomNavigationBarItem>[
-    //     BottomNavigationBarItem(
-    //       icon: Icon(
-    //         Icons.home_filled,
-    //         color: Colors.black,
-    //       ),
-
-    //       label: "",
-    //     ),
-    //     BottomNavigationBarItem(
-    //         icon: Icon(
-    //           Icons.notifications,
-    //           color: Colors.black,
-    //         ),
-    //         label: ""),
-    //     BottomNavigationBarItem(
-    //         icon: Icon(
-    //           Icons.search,
-    //           color: Colors.black,
-    //         ),
-
-    //         label: ""),
-    //     BottomNavigationBarItem(
-    //         icon: Icon(
-    //           Icons.wallet,
-    //           color: Colors.black,
-    //         ),
-    //         label: ""),
-    //     BottomNavigationBarItem(
-    //         icon: Icon(
-    //           Icons.person,
-    //           color: Colors.black,
-    //         ),
-    //         label: ""),
-    //   ],
-    //   currentIndex: _selectedIndex,
-    //   onTap: _onItemTapped,
-    // );
   }
 }

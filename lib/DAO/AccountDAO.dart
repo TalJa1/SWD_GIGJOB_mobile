@@ -5,6 +5,7 @@ import 'package:gigjob_mobile/DAO/BaseDAO.dart';
 import 'package:gigjob_mobile/DTO/AccountDTO.dart';
 import 'package:gigjob_mobile/services/request.dart';
 import 'package:gigjob_mobile/utils/share_pref.dart';
+import 'package:jwt_decode/jwt_decode.dart';
 
 class AccountDAO extends BaseDAO {
 
@@ -30,8 +31,18 @@ class AccountDAO extends BaseDAO {
 
     
       // final userDTO = AccountDTO.fromJson(response);
-      ApiService.setToken(response["accessToken"]);
-      setToken(response["accessToken"]);
+      Map<String, dynamic> decode = Jwt.parseJwt(response["accessToken"]);
+
+      print(decode);
+      var role = decode["account"]["role"];    
+      if(role == "WORKER"){
+        ApiService.setToken(response["accessToken"]);
+        setToken(response["accessToken"]);
+      } else {
+        throw Exception("Your account is invalid");
+      }
+
+      
       // print(response);
       // return userDTO;
     } catch (e) {
