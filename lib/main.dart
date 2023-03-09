@@ -140,6 +140,7 @@ class _MyAppState extends State<MyApp> {
         '/wallet': (BuildContext context) => WalletPage(),
         '/profile': (BuildContext context) => UserProfile(),
         '/home': (BuildContext context) => RootScreen(),
+        '/jobdetail': (BuildContext context) => PostList(),
       },
     );
   }

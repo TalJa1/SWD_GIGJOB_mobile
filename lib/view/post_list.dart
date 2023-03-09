@@ -1,7 +1,15 @@
+// ignore_for_file: sized_box_for_whitespace
+
 import 'package:flutter/material.dart';
+import 'package:gigjob_mobile/DTO/JobDTO.dart';
+import 'package:gigjob_mobile/enum/view_status.dart';
 import 'package:gigjob_mobile/view/nav_screen.dart';
 import 'package:filter_list/filter_list.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:gigjob_mobile/view/post_list_detail.dart';
+import 'package:gigjob_mobile/viewmodel/job_viewmodel.dart';
+import 'package:scoped_model/scoped_model.dart';
+import 'package:jiffy/jiffy.dart';
 
 class PostList extends StatefulWidget {
   @override
@@ -19,98 +27,116 @@ class _PostListState extends State<PostList> {
   ];
   List<String> selectedItems = [];
 
+  late JobViewModel jobViewModel;
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-
-    
+    jobViewModel = JobViewModel();
+    jobViewModel.getJobs();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Column(
-          children: [
-            Container(
-              color: Colors.white,
-              padding: const EdgeInsets.fromLTRB(16, 48, 16, 0),
-              child: Stack(
-                children: [
-                  const Align(
-                    alignment: Alignment.center,
-                    child: Text(
-                      "POST",
-                      style: TextStyle(
-                        fontWeight: FontWeight.w900,
-                        fontSize: 32.0,
+    return ScopedModel<JobViewModel>(
+      model: jobViewModel,
+      child: Scaffold(
+        body: SafeArea(
+          child: Column(
+            children: [
+              Container(
+                color: Colors.white,
+                padding: const EdgeInsets.fromLTRB(16, 48, 16, 0),
+                child: Stack(
+                  children: [
+                    const Align(
+                      alignment: Alignment.center,
+                      child: Text(
+                        "POST",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w900,
+                          fontSize: 32.0,
+                        ),
                       ),
                     ),
-                  ),
-                  Align(
-                      alignment: Alignment.topRight,
-                      child: ElevatedButton.icon(
-                        style: ElevatedButton.styleFrom(
-                            foregroundColor: Colors.white,
-                            backgroundColor: Colors.black),
-                        onPressed: () {
-                          showDialog<String>(
-                              context: context,
-                              builder: (BuildContext context) =>
-                                  _buildDialog(context));
-                        },
-                        icon: const Icon(Icons.filter_list_alt),
-                        label: const Text('Filter'),
-                      )),
-                ],
+                    Align(
+                        alignment: Alignment.topRight,
+                        child: ElevatedButton.icon(
+                          style: ElevatedButton.styleFrom(
+                              foregroundColor: Colors.white,
+                              backgroundColor: Colors.black),
+                          onPressed: () {
+                            showDialog<String>(
+                                context: context,
+                                builder: (BuildContext context) =>
+                                    _buildDialog(context));
+                          },
+                          icon: const Icon(Icons.filter_list_alt),
+                          label: const Text('Filter'),
+                        )),
+                  ],
+                ),
               ),
-            ),
-            Container(
-              color: Colors.white,
-              padding: const EdgeInsets.fromLTRB(16, 32, 16, 32),
-              child: TextField(
-                decoration: InputDecoration(
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20.0),
-                    borderSide: const BorderSide(color: Colors.black),
-                  ),
-                  filled: true,
-                  fillColor: Colors.white,
-                  labelText: 'Search',
-                  labelStyle: const TextStyle(color: Colors.black),
-                  border: const OutlineInputBorder(
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(32.0),
+              Container(
+                color: Colors.white,
+                padding: const EdgeInsets.fromLTRB(16, 32, 16, 32),
+                child: TextField(
+                  decoration: InputDecoration(
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20.0),
+                      borderSide: const BorderSide(color: Colors.black),
+                    ),
+                    filled: true,
+                    fillColor: Colors.white,
+                    labelText: 'Search',
+                    labelStyle: const TextStyle(color: Colors.black),
+                    border: const OutlineInputBorder(
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(32.0),
+                      ),
+                    ),
+                    suffixIcon: const Icon(
+                      Icons.search,
+                      color: Colors.black,
                     ),
                   ),
-                  suffixIcon: const Icon(
-                    Icons.search,
-                    color: Colors.black,
-                  ),
+                  textInputAction: TextInputAction.search,
+                  style: const TextStyle(fontSize: 16),
+                  onSubmitted: (value) {
+                    // Perform the search action
+                  },
                 ),
-                textInputAction: TextInputAction.search,
-                style: const TextStyle(fontSize: 16),
-                onSubmitted: (value) {
-                  // Perform the search action
+              ),
+              ScopedModelDescendant<JobViewModel>(
+                builder: (context, child, model) {
+                  if (jobViewModel.status == ViewStatus.Loading) {
+                    return const SizedBox(
+                        width: 100,
+                        height: 100,
+                        child: CircularProgressIndicator());
+                  } else {
+                    return Expanded(
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children: jobViewModel.jobs!
+                              .map((e) => _buildPostList(e))
+                              .toList(),
+                        ),
+                      ),
+                    );
+                  }
                 },
-              ),
-            ),
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  children: arr.map((e) => _buildPostList(e)).toList(),
-                ),
-              ),
-            )
-          ],
+              )
+            ],
+          ),
         ),
+        // bottomNavigationBar: StatefulBuilder(
+        //   builder: (BuildContext context, StateSetter setState) {
+        //     return AppFooter();
+        //   },
+        // ),
       ),
-      // bottomNavigationBar: StatefulBuilder(
-      //   builder: (BuildContext context, StateSetter setState) {
-      //     return AppFooter();
-      //   },
-      // ),
     );
   }
 
@@ -237,56 +263,70 @@ class _PostListState extends State<PostList> {
     );
   }
 
-  Widget _buildPostList(int e) {
+  Widget _buildPostList(JobDTO job) {
     return Container(
       padding: const EdgeInsets.fromLTRB(0, 16, 0, 0),
       child: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
-            child: Column(
-              children: [
-                Image.asset(
-                  'assets/images/Test_img.png',
-                  width: MediaQuery.of(context).size.width,
-                  height: 240,
-                  fit: BoxFit.cover,
-                ),
-                Row(
-                  children: const [
-                    Padding(
-                      padding: EdgeInsets.fromLTRB(0, 8, 0, 8),
-                      child: Text(
-                        "Header",
-                        style: TextStyle(fontSize: 16),
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => PostListDetail(
+                        data: job,
                       ),
                     ),
-                  ],
-                ),
-                Row(
-                  children: const [
-                    Expanded(
-                      child: Text(
-                        "He'll want to use your yacht, and I don't want this thing smelling like fish.",
-                        style: TextStyle(fontSize: 14),
-                      ),
+                  );
+                },
+                child: Column(
+                  children: [
+                    Image.asset(
+                      'assets/images/Test_img.png',
+                      width: MediaQuery.of(context).size.width,
+                      height: 240,
+                      fit: BoxFit.cover,
+                    ),
+                    Row(
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(0, 8, 0, 8),
+                          child: Text(
+                            "${job.title}",
+                            style: TextStyle(fontSize: 16),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
+                            child: Text(
+                              "${job.description}",
+                              style: TextStyle(fontSize: 14),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Text(
+                          Jiffy("${job.createdDate}").fromNow(),
+                          style: TextStyle(fontSize: 14),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 16,
                     ),
                   ],
                 ),
-                Row(
-                  children: const [
-                    Text(
-                      "8m ago",
-                      style: TextStyle(fontSize: 14),
-                    ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 16,
-                ),
-              ],
-            ),
-          ),
+              )),
           const Divider(
             thickness: 3,
             color: Colors.grey,

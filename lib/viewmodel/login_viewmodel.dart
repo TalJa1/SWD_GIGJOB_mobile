@@ -15,12 +15,13 @@ class LoginViewModel extends BaseModel {
 
   Future<void> signinWithGoogle(BuildContext context) async {
     try {
-      FirebaseAuth.instance.signOut();
-      GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+      // await FirebaseAuth.instance.signOut();
+      GoogleSignIn googleSignIn = GoogleSignIn();
+      GoogleSignInAccount? googleUser = await googleSignIn.signIn();
 
       GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
 
-      AuthCredential credential = GoogleAuthProvider.credential(
+      AuthCredential credential = await GoogleAuthProvider.credential(
           accessToken: googleAuth?.accessToken, idToken: googleAuth?.idToken);
 
       UserCredential userCre =
