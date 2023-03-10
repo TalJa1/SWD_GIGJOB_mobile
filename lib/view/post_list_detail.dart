@@ -3,6 +3,7 @@
 import 'dart:ffi';
 
 import 'package:flutter/material.dart';
+import 'package:gigjob_mobile/DAO/JobDAO.dart';
 import 'package:gigjob_mobile/DTO/JobDTO.dart';
 
 class PostListDetail extends StatefulWidget {
@@ -105,23 +106,27 @@ class _PostListDetailState extends State<PostListDetail> {
             context: context,
             builder: (BuildContext context) => _buildDialog(context)),
         child: Container(
-          height: 50,
-          width: double.infinity,
-          decoration: BoxDecoration(
-            color: Colors.black,
-            borderRadius: BorderRadius.circular(25),
-          ),
-          child: const Center(
-            child: Text(
-              'Apply Now!!!',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
+            height: 50,
+            width: double.infinity,
+            decoration: BoxDecoration(
+              color: Colors.black,
+              borderRadius: BorderRadius.circular(25),
             ),
-          ),
-        ),
+            child: GestureDetector(
+              onTap: () {
+                JobDAO().applyJob("", 10);
+              },
+              child: Center(
+                child: Text(
+                  'Apply Now!!!',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            )),
       ),
     );
   }
