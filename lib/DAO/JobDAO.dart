@@ -43,9 +43,9 @@ class JobDAO extends BaseDAO {
     return workerDTO;
   }
 
-  Future<List<ApplyJobDTO>> getJobApplied(String workerID) async {
+  Future<List<ApplyJobDTO>> getJobApplied(String? workerID) async {
     final res =
-        await ApiService.get('/v1/application/workers/${workerID}', null, null);
+        await ApiService.get('/v1/application/worker/${workerID}', null, null);
     List<ApplyJobDTO> applyJobDTO = ApplyJobDTO.fromList(res.data);
     return applyJobDTO;
   }

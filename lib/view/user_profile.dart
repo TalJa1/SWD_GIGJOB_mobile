@@ -42,7 +42,9 @@ class _UserProfileState extends State<UserProfile> {
     Experience("HPT", "Master", "2 years"),
   ]);
 
-  Future<void> reload() async {}
+  Future<void> reload() async {
+    userViewModel.getAppliedJob();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -188,7 +190,7 @@ class _UserProfileState extends State<UserProfile> {
     return checkIsInfo
         ? Container(
             width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height,
+            // height: MediaQuery.of(context).size.height,
             padding: const EdgeInsets.only(left: 10, right: 10, bottom: 5),
             child: Center(
               child: Padding(
@@ -203,7 +205,7 @@ class _UserProfileState extends State<UserProfile> {
               ),
             ))
         : SizedBox(
-            height: MediaQuery.of(context).size.height,
+            // height: MediaQuery.of(context).size.height,
             width: MediaQuery.of(context).size.width,
             child: Column(
               children: [
@@ -222,7 +224,7 @@ class _UserProfileState extends State<UserProfile> {
                             children: [
                               Text(
                                 // user.experience![index].company.toString(),
-                                "${userViewModel.appliedjob![index].job?.shop}",
+                                "${userViewModel.appliedjob![index].job?.shop?.name}",
                                 // ignore: prefer_const_constructors
                                 style: TextStyle(
                                     fontSize: 20, fontWeight: FontWeight.bold),

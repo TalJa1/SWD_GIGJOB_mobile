@@ -1,5 +1,6 @@
 import 'package:gigjob_mobile/DTO/ApplyJobDTO.dart';
 import 'package:gigjob_mobile/DTO/JobDTO.dart';
+import 'package:gigjob_mobile/DTO/WorkerDTO.dart';
 import 'package:gigjob_mobile/enum/view_status.dart';
 import 'package:gigjob_mobile/utils/share_pref.dart';
 import 'package:gigjob_mobile/viewmodel/base_model.dart';
@@ -11,15 +12,17 @@ class UserViewModel extends BaseModel {
   List<JobDTO>? jobs;
   List<ApplyJobDTO>? appliedjob;
   // ignore: non_constant_identifier_names
-  JobViewModel() {
+  UserViewModel() {
     jobDAO = JobDAO();
   }
 
   Future getAppliedJob() async {
     try {
-      String? accountId = await getAccountID();
+      
       setState(ViewStatus.Loading);
-      appliedjob = await jobDAO?.getJobApplied(accountId!);
+      String? accountId = await getAccountID();
+      WorkerDTO? workDTO = await jobDAO?.getWorkerId(accountId!);
+      appliedjob = await jobDAO?.getJobApplied(workDTO?.id);
       setState(ViewStatus.Completed);
     } catch (e) {
       throw Exception(e);
