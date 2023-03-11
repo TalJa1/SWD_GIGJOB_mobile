@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:gigjob_mobile/DAO/BaseDAO.dart';
+import 'package:gigjob_mobile/DAO/JobDAO.dart';
 import 'package:gigjob_mobile/DTO/AccountDTO.dart';
 import 'package:gigjob_mobile/services/request.dart';
 import 'package:gigjob_mobile/utils/share_pref.dart';
@@ -31,6 +32,7 @@ class AccountDAO extends BaseDAO {
       var role = decode["account"]["role"];
       if (role == "WORKER") {
         ApiService.setToken(response.data["accessToken"]);
+        setAccountId(decode["account"]["id"]);
         setToken(response.data["accessToken"]);
       } else {
         throw Exception("Your account is invalid");

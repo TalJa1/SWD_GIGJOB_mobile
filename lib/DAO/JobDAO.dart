@@ -1,6 +1,7 @@
-// ignore_for_file: file_names, unnecessary_brace_in_string_interps
+// ignore_for_file: file_names, unnecessary_brace_in_string_interps, unused_local_variable
 
 import 'package:gigjob_mobile/DAO/BaseDAO.dart';
+import 'package:gigjob_mobile/DTO/ApplyJobDTO.dart';
 import 'package:gigjob_mobile/DTO/JobDTO.dart';
 import 'package:gigjob_mobile/DTO/MetaDataDTO.dart';
 import 'package:gigjob_mobile/DTO/WorkerDTO.dart';
@@ -12,25 +13,24 @@ class JobDAO extends BaseDAO {
   MetaDataDTO get metaDataDTO => _metaDataDTO;
 
   Future<List<JobDTO>> getJob({Map<String, dynamic>? params}) async {
-    try{
-    final res = await ApiService.get('/v1/job', null, params);
-    List<dynamic> list = res.data;
-    final jobs = JobDTO.fromList(list);
-    return jobs;
+    try {
+      final res = await ApiService.get('/v1/job', null, params);
+      List<dynamic> list = res.data;
+      final jobs = JobDTO.fromList(list);
+      return jobs;
     } catch (e) {
       print(e);
       throw Exception(e);
     }
-    
   }
 
   Future<bool> applyJob(String? id, int jobId) async {
     try {
       final res = await ApiService.post('/v1/application', null,
-        {"workerId": id, "status": "PENDING", "jobId": jobId});
+          {"workerId": id, "status": "PENDING", "jobId": jobId});
       return true;
-    // ignore: avoid_print
-    print(res);
+      // ignore: avoid_print
+      print(res);
     } catch (e) {
       print(e);
       return false;
@@ -41,6 +41,13 @@ class JobDAO extends BaseDAO {
     final res = await ApiService.get('/workers/account/$accId', null, null);
     WorkerDTO workerDTO = WorkerDTO.fromJson(res.data);
     return workerDTO;
+  }
+
+  Future<List<ApplyJobDTO>> getJobApplied(String workerID) async {
+    final res =
+        await ApiService.get('/v1/application/workers/${workerID}', null, null);
+    List<ApplyJobDTO> applyJobDTO = ApplyJobDTO.fromList(res.data);
+    return applyJobDTO;
   }
 
   set metaDataDTO(MetaDataDTO value) {

@@ -9,6 +9,12 @@ Future<bool> setToken(String value) async {
   return prefs.setString('token', value);
 }
 
+Future<bool> setAccountId(String value) async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+  return prefs.setString('AccountID', value);
+}
+
 Future<bool> expireToken() async {
   try {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -24,4 +30,10 @@ Future<String?> getToken() async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
 
   return prefs.getString('token');
+}
+
+Future<String?> getAccountID() async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+  return prefs.getString('AccountID');
 }

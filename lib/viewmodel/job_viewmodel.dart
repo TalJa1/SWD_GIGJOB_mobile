@@ -1,16 +1,15 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:gigjob_mobile/DAO/JobDAO.dart';
+import 'package:gigjob_mobile/DTO/ApplyJobDTO.dart';
 import 'package:gigjob_mobile/DTO/JobDTO.dart';
 import 'package:gigjob_mobile/accesories/dialog.dart';
 import 'package:gigjob_mobile/enum/view_status.dart';
 import 'package:gigjob_mobile/viewmodel/base_model.dart';
 
 class JobViewModel extends BaseModel {
-
   JobDAO? jobDAO;
   List<JobDTO>? jobs;
+  ApplyJobDTO? appliedjob;
   JobViewModel() {
     jobDAO = JobDAO();
   }

@@ -129,15 +129,14 @@ class _PostListDetailState extends State<PostListDetail> {
           child: GestureDetector(
             onTap: () async {
               String accountID = await getAccountId();
-              WorkerDTO workerDTO =
-                  await JobDAO().getWorkerId(accountID);
-      
-              print(workerDTO.id);
-              bool isApply = await JobDAO().applyJob(workerDTO.id, widget.data.id!);
-              if(isApply) {
+              WorkerDTO workerDTO = await JobDAO().getWorkerId(accountID);
+
+              print("Worker id ${workerDTO.id}");
+              bool isApply =
+                  await JobDAO().applyJob(workerDTO.id, widget.data.id!);
+              if (isApply) {
                 showMyDialog(context, "SUCESS", "Apply success");
-              }
-              else {
+              } else {
                 showMyDialog(context, "FAIL", "Apply fail");
               }
             },

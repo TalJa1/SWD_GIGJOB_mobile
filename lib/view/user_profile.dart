@@ -1,8 +1,11 @@
 // ignore_for_file: avoid_print, unnecessary_new
 import 'package:flutter/material.dart';
 import 'package:animated_button_bar/animated_button_bar.dart';
+import 'package:gigjob_mobile/DAO/JobDAO.dart';
 import 'package:gigjob_mobile/DTO/UserDTO.dart';
 import 'package:gigjob_mobile/view/edit_profile.dart';
+import 'package:gigjob_mobile/viewmodel/job_viewmodel.dart';
+import 'package:gigjob_mobile/viewmodel/user_viewmodel.dart';
 
 // ignore: depend_on_referenced_packages
 
@@ -18,12 +21,16 @@ class _UserProfileState extends State<UserProfile> {
   @override
   void initState() {
     super.initState();
+    userViewModel = UserViewModel();
+    userViewModel.getAppliedJob();
   }
 
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       GlobalKey<RefreshIndicatorState>();
 
   bool isInfo = true;
+
+  late UserViewModel userViewModel;
 
   final user = new UserDTO("Nguyen Thi Bong Van Hoa", "tt@gmail.com",
       "Obispo Tajon", "0909999999", "Nivel B1", "20/01/2022", [
@@ -204,7 +211,7 @@ class _UserProfileState extends State<UserProfile> {
                   physics: const NeverScrollableScrollPhysics(),
                   scrollDirection: Axis.vertical,
                   shrinkWrap: true,
-                  itemCount: user.experience!.length,
+                  itemCount: userViewModel.appliedjob?.length,
                   itemBuilder: (BuildContext context, int index) {
                     return ListTile(
                       title: Card(
@@ -214,7 +221,8 @@ class _UserProfileState extends State<UserProfile> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                user.experience![index].company.toString(),
+                                // user.experience![index].company.toString(),
+                                "${userViewModel.appliedjob![index].job?.shop}",
                                 // ignore: prefer_const_constructors
                                 style: TextStyle(
                                     fontSize: 20, fontWeight: FontWeight.bold),
@@ -226,9 +234,9 @@ class _UserProfileState extends State<UserProfile> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  const Text('Working for:'),
-                                  Text(user.experience![index].duration
-                                      .toString())
+                                  const Text('Tittle:'),
+                                  Text(
+                                      "${userViewModel.appliedjob![index].job?.title}")
                                 ],
                               ),
                               const SizedBox(
@@ -238,9 +246,9 @@ class _UserProfileState extends State<UserProfile> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  const Text('At position:'),
-                                  Text(user.experience![index].position
-                                      .toString())
+                                  const Text('Status:'),
+                                  Text(
+                                      "${userViewModel.appliedjob![index].status}")
                                 ],
                               ),
                               const SizedBox(
