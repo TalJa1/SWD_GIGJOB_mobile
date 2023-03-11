@@ -17,7 +17,7 @@ class JobDAO extends BaseDAO {
   }
 
   Future applyJob(String id, int jobId) async {
-    final res = await ApiService.post('/job', ApiService.getHeader(),
+    final res = await ApiService.post('/application', null,
         {"workerId": id, "status": "PENDING", "jobId": jobId});
     // ignore: avoid_print
     print(res);

@@ -9,8 +9,7 @@ import 'package:gigjob_mobile/viewmodel/base_model.dart';
 class StartUpViewModel extends BaseModel {
   late BuildContext context;
 
-  StartUpViewModel({
-    required this.context}) {
+  StartUpViewModel({required this.context}) {
     handleStartUpLogic(context);
   }
 
@@ -18,12 +17,13 @@ class StartUpViewModel extends BaseModel {
     AccountDAO _accountDAO = AccountDAO();
     bool hasLoggedInUser = await _accountDAO.isUserLoggedIn();
 
-    if(hasLoggedInUser) {
+    if (hasLoggedInUser) {
       Route route = MaterialPageRoute(builder: (context) => RootScreen());
-        Navigator.push(context, route);
+
+      Navigator.push(context, route);
     } else {
       Route route = MaterialPageRoute(builder: (context) => LoginHome());
-        Navigator.push(context, route);
+      Navigator.push(context, route);
     }
   }
 }

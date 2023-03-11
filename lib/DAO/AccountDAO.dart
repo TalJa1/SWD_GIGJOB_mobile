@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-
 import 'package:gigjob_mobile/DAO/BaseDAO.dart';
 import 'package:gigjob_mobile/DTO/AccountDTO.dart';
 import 'package:gigjob_mobile/services/request.dart';
@@ -8,8 +7,6 @@ import 'package:gigjob_mobile/utils/share_pref.dart';
 import 'package:jwt_decode/jwt_decode.dart';
 
 class AccountDAO extends BaseDAO {
-
-
   Future<bool> isUserLoggedIn() async {
     final isExpireToken = await expireToken();
     final token = await getToken();
@@ -19,9 +16,7 @@ class AccountDAO extends BaseDAO {
   }
 
   Future<void> postToken(String? idToken) async {
-
     try {
-
       String path = "/account/login/google";
       Map<String, String> headers = {
         'idTokenString': idToken ?? "",
@@ -29,20 +24,18 @@ class AccountDAO extends BaseDAO {
 
       final response = await ApiService.post(path, headers, null);
 
-    
       // final userDTO = AccountDTO.fromJson(response);
       Map<String, dynamic> decode = Jwt.parseJwt(response["accessToken"]);
 
       print(decode);
-      var role = decode["account"]["role"];    
-      if(role == "WORKER"){
+      var role = decode["account"]["role"];
+      if (role == "WORKER") {
         ApiService.setToken(response["accessToken"]);
         setToken(response["accessToken"]);
       } else {
         throw Exception("Your account is invalid");
       }
 
-      
       // print(response);
       // return userDTO;
     } catch (e) {
@@ -52,9 +45,7 @@ class AccountDAO extends BaseDAO {
   }
 
   Future<bool> postFcmToken(String? fcmToken) async {
-
     try {
-
       String path = "/notification/send";
       Map<String, String> headers = {'Content-Type': 'application/json'};
       Map<String, dynamic> body = {
