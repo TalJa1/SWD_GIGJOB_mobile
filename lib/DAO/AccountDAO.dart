@@ -11,7 +11,7 @@ class AccountDAO extends BaseDAO {
     final isExpireToken = await expireToken();
     final token = await getToken();
     if (isExpireToken) return false;
-    if (token != null) ApiService.setToken(token);
+    if (token != null) ApiService.saveToken(token);
     return token != null;
   }
 
@@ -30,7 +30,7 @@ class AccountDAO extends BaseDAO {
       print(decode);
       var role = decode["account"]["role"];
       if (role == "WORKER") {
-        ApiService.setToken(response["accessToken"]);
+        ApiService.saveToken(response["accessToken"]);
         setToken(response["accessToken"]);
       } else {
         throw Exception("Your account is invalid");

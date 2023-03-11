@@ -42,9 +42,7 @@ class _RootScreen extends State<RootScreen> {
     List<Widget> _buildScreens() {
       return [
         PostList(),
-        PostList(),
         const WalletPage(),
-        PostList(),
         const UserProfile()
       ];
     }
@@ -56,34 +54,8 @@ class _RootScreen extends State<RootScreen> {
               activeColorPrimary: Colors.black,
               inactiveColorPrimary: Colors.black),
           PersistentBottomNavBarItem(
-            icon: const Icon(Icons.search),
-            title: "Search",
-            activeColorPrimary: Colors.black,
-            inactiveColorPrimary: Colors.black,
-            // routeAndNavigatorSettings: RouteAndNavigatorSettings(
-            //   initialRoute: "/",
-            //   routes: {
-            //     "/first": (final context) => const MainScreen2(),
-            //     "/second": (final context) => const MainScreen3(),
-            //   },
-            // ),
-          ),
-          PersistentBottomNavBarItem(
             icon: const Icon(Icons.wallet),
             title: "Wallet",
-            activeColorPrimary: Colors.black,
-            inactiveColorPrimary: Colors.black,
-            // routeAndNavigatorSettings: RouteAndNavigatorSettings(
-            //   initialRoute: "/",
-            //   routes: {
-            //     "/first": (final context) => const MainScreen2(),
-            //     "/second": (final context) => const MainScreen3(),
-            //   },
-            // ),
-          ),
-          PersistentBottomNavBarItem(
-            icon: const Icon(Icons.notifications),
-            title: "Notification",
             activeColorPrimary: Colors.black,
             inactiveColorPrimary: Colors.black,
             // routeAndNavigatorSettings: RouteAndNavigatorSettings(

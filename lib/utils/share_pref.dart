@@ -1,3 +1,4 @@
+import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
 
@@ -24,4 +25,21 @@ Future<String?> getToken() async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
 
   return prefs.getString('token');
+}
+
+Future<bool> setRefreshToken(String value) async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  return prefs.setString('refreshToken', value);
+}
+
+Future<String?> getRefreshToken() async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+  return prefs.getString('refreshToken');
+}
+
+Future<void> removeALL() async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  await prefs.clear();
+  Get.reset(clearRouteBindings: true);
 }

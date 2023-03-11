@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
+import 'package:gigjob_mobile/utils/share_pref.dart';
 
 class ApiService {
   static const String baseUrl = 'http://54.179.205.85:8080/api/v1';
@@ -55,7 +56,7 @@ class ApiService {
       return response.data;
     } on DioError catch (e) {
       if (e.response != null) {
-        throw Exception(e.response!.data);
+        throw Exception(e.response?.statusCode);
       } else {
         throw Exception(e.message);
       }
@@ -81,7 +82,27 @@ class ApiService {
     }
   }
 
-  static setToken(String token) {
+  static Future<void> refreshToken() async {
+  try {
+    final refreshToken = getRefreshToken(); // retrieve refresh token from storage
+    final response = await dio.post(
+      '/refresh_token',
+      data: {'refresh_token': refreshToken},
+    );
+    final accessToken = response.data['access_token'];
+    saveToken(accessToken); //save to headers
+    setToken(accessToken); //set to storage
+  } on DioError catch (e) {
+    if (e.response != null) {
+      throw Exception(e.response!.data);
+    } else {
+      throw Exception(e.message);
+    }
+  }
+}
+
+
+  static saveToken(String token) {
     baseHeaders["Authorization"] = "Bearer $token";
   }
 }

@@ -10,6 +10,7 @@ import 'package:gigjob_mobile/view/post_list_detail.dart';
 import 'package:gigjob_mobile/viewmodel/job_viewmodel.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:jiffy/jiffy.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 class PostList extends StatefulWidget {
   @override
@@ -29,19 +30,43 @@ class _PostListState extends State<PostList> {
 
   late JobViewModel jobViewModel;
 
+  static const _pageSize = 5;
+
+  final PagingController<int, JobDTO> _pagingController =
+      PagingController(firstPageKey: 0);
+
+  Map<String, String> params = {};
+  
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     jobViewModel = JobViewModel();
-    try {
-      jobViewModel.getJobs();
-    } catch (e) {
-      print(e);
-      Navigator.pushNamed(context, '/login');
-    }
+    jobViewModel.getJobs();
     
   }
+
+  // Future<void> _fetchPage(int pageKey) async {
+  //   try {
+  //     setState(() {
+  //       params = {
+  //         "page": pageKey.toString(),
+  //         "limit": _pageSize.toString()
+  //       };
+  //     });
+  //     await jobViewModel.getJobs(params: params);
+  //     final newItems = jobViewModel.jobs;
+  //     final isLastPage = newItems?.length ?? 0 < _pageSize;
+  //     if (isLastPage == true) {
+  //       _pagingController.appendLastPage(newItems!);
+  //     } else {
+  //       final nextPageKey = pageKey + newItems!.length;
+  //       _pagingController.appendPage(newItems, nextPageKey);
+  //     }
+  //   } catch (error) {
+  //     _pagingController.error = error;
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {

@@ -12,11 +12,10 @@ class JobDAO extends BaseDAO {
 
   Future<List<JobDTO>> getJob({Map<String, dynamic>? params}) async {
     try {
-      final res = await ApiService.get('/job', null, params);
+    final res = await ApiService.get('/job', null, params);
     final jobs = JobDTO.fromList(res);
     return jobs;
     } catch (e) {
-      print(e);
       throw Exception(e);
     }
     
