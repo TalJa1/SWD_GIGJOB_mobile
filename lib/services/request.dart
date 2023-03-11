@@ -15,7 +15,7 @@ class ApiService {
 
   static Dio dio = Dio(BaseOptions(baseUrl: baseUrl));
 
-  static Future<Map<String, dynamic>> post(
+  static Future<Response> post(
     String path,
     Map<String, String>? headers,
     Map<String, dynamic>? body,
@@ -28,40 +28,40 @@ class ApiService {
         data: body,
         options: Options(headers: {...baseHeaders, ...headers}),
       );
-      return response.data;
+      return response;
     } on DioError catch (e) {
       if (e.response != null) {
-        throw Exception(e.response!.data);
+        throw Exception(e.response);
       } else {
         throw Exception(e.message);
       }
     }
   }
 
-  static Future<String> postString(
-    String path,
-    Map<String, String>? headers,
-    Map<String, dynamic>? body,
-  ) async {
-    headers ??= {};
-    body ??= {};
-    try {
-      final response = await dio.post(
-        path,
-        data: body,
-        options: Options(headers: {...baseHeaders, ...headers}),
-      );
-      return response.data;
-    } on DioError catch (e) {
-      if (e.response != null) {
-        throw Exception(e.response!.data);
-      } else {
-        throw Exception(e.message);
-      }
-    }
-  }
+  // static Future<String> postString(
+  //   String path,
+  //   Map<String, String>? headers,
+  //   Map<String, dynamic>? body,
+  // ) async {
+  //   headers ??= {};
+  //   body ??= {};
+  //   try {
+  //     final response = await dio.post(
+  //       path,
+  //       data: body,
+  //       options: Options(headers: {...baseHeaders, ...headers}),
+  //     );
+  //     return response.data;
+  //   } on DioError catch (e) {
+  //     if (e.response != null) {
+  //       throw Exception(e.response!.data);
+  //     } else {
+  //       throw Exception(e.message);
+  //     }
+  //   }
+  // }
 
-  static Future<List<dynamic>> get(
+  static Future<Response> get(
     String path,
     Map<String, String>? headers,
     Map<String, dynamic>? queryParams,
@@ -75,7 +75,7 @@ class ApiService {
         queryParameters: queryParams,
         options: Options(headers: {...baseHeaders, ...headers}),
       );
-      return response.data;
+      return response;
     } on DioError catch (e) {
       if (e.response != null) {
         throw Exception(e.response!.data);
