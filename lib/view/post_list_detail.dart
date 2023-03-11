@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, avoid_print, unused_local_variable
 
 import 'dart:ffi';
 
@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:gigjob_mobile/DAO/AccountDAO.dart';
 import 'package:gigjob_mobile/DAO/JobDAO.dart';
 import 'package:gigjob_mobile/DTO/JobDTO.dart';
+import 'package:gigjob_mobile/DTO/WorkerDTO.dart';
 import 'package:gigjob_mobile/utils/share_pref.dart';
 import 'package:jwt_decode/jwt_decode.dart';
 
@@ -28,15 +29,17 @@ class _PostListDetailState extends State<PostListDetail> {
     });
   }
 
-  // Future<String>? getUserId() {
-  //   try {
-  //     Map<String, dynamic> decode = Jwt.parseJwt(getToken().toString());
-  //     return decode['id'];
-  //   } catch (e) {
-  //     print(e.toString());
-  //     return null;
-  //   }
-  // }
+  Future<String> getAccountId() async {
+    try {
+      String? token = await getToken();
+      Map<String, dynamic> decode = Jwt.parseJwt(token!);
+      print(decode['account']['id']);
+      return decode['account']['id'];
+    } catch (e) {
+      print(e.toString());
+    }
+    return "";
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -127,9 +130,13 @@ class _PostListDetailState extends State<PostListDetail> {
               borderRadius: BorderRadius.circular(25),
             ),
             child: GestureDetector(
-              onTap: () {
-                JobDAO().applyJob("04ef509f-fddf-47c7-bd94-ee89f6038523",
-                    widget.data.id!.toInt());
+              onTap: () async {
+                WorkerDTO workerDTO =
+                    await JobDAO().getWorkerId(getAccountId());
+
+                print(workerDTO.id);
+
+                await JobDAO().applyJob(workerDTO.id, widget.data.id!.toInt());
               },
               child: Center(
                 child: Text(
