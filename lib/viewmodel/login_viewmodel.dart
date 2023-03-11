@@ -12,8 +12,14 @@ class LoginViewModel extends BaseModel {
   AccountDAO dao = AccountDAO();
 
   AccountDTO? user;
+  bool _isSigningIn = false;
 
   Future<void> signinWithGoogle(BuildContext context) async {
+    if (_isSigningIn) {
+      return;
+    }
+    _isSigningIn = true;
+
     try {
       // await FirebaseAuth.instance.signOut();
       GoogleSignIn googleSignIn = GoogleSignIn();
@@ -33,12 +39,15 @@ class LoginViewModel extends BaseModel {
 
       // AccountDTO? accountDTO = await dao.postToken(token);
       await dao.postToken(token);
-      await dao.postFcmToken(fcmToken);
+      // await dao.postFcmToken(fcmToken);
 
       Route route = MaterialPageRoute(builder: (context) => RootScreen());
       Navigator.push(context, route);
     } catch (e) {
+      print(e);
       await showMyDialog(context, "Error", "Login fail");
+    } finally {
+      _isSigningIn = false;
     }
   }
 }

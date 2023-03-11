@@ -17,7 +17,7 @@ class AccountDAO extends BaseDAO {
 
   Future<void> postToken(String? idToken) async {
     try {
-      String path = "/account/login/google";
+      String path = "/v1/account/login/google";
       Map<String, String> headers = {
         'idTokenString': idToken ?? "",
       };
@@ -25,13 +25,13 @@ class AccountDAO extends BaseDAO {
       final response = await ApiService.post(path, headers, null);
 
       // final userDTO = AccountDTO.fromJson(response);
-      Map<String, dynamic> decode = Jwt.parseJwt(response["accessToken"]);
+      Map<String, dynamic> decode = Jwt.parseJwt(response.data["accessToken"]);
 
       print(decode);
       var role = decode["account"]["role"];
       if (role == "WORKER") {
-        ApiService.setToken(response["accessToken"]);
-        setToken(response["accessToken"]);
+        ApiService.setToken(response.data["accessToken"]);
+        setToken(response.data["accessToken"]);
       } else {
         throw Exception("Your account is invalid");
       }
@@ -46,7 +46,7 @@ class AccountDAO extends BaseDAO {
 
   Future<bool> postFcmToken(String? fcmToken) async {
     try {
-      String path = "/notification/send";
+      String path = "/v1/notification/send";
       Map<String, String> headers = {'Content-Type': 'application/json'};
       Map<String, dynamic> body = {
         "subject": "FROM ME",
