@@ -12,22 +12,29 @@ class JobDAO extends BaseDAO {
   MetaDataDTO get metaDataDTO => _metaDataDTO;
 
   Future<List<JobDTO>> getJob({Map<String, dynamic>? params}) async {
-    final res = await ApiService.get('/job', null, params);
+    final res = await ApiService.get('/v1/job', null, params);
     final jobs = JobDTO.fromList(res);
     return jobs;
   }
 
-  Future applyJob(String? id, int jobId) async {
-    final res = await ApiService.post('/application', null,
+  Future<bool> applyJob(String? id, int jobId) async {
+    try {
+      
+      final res = await ApiService.postString('/v1/application', null,
         {"workerId": id, "status": "PENDING", "jobId": jobId});
+      return true;
     // ignore: avoid_print
     print(res);
+    } catch (e) {
+      print(e);
+      return false;
+    }
   }
 
-  Future<WorkerDTO> getWorkerId(Future<String> accId) async {
-    final res = await ApiService.get('/workers/account/${accId}', null, null);
-
-    return res.first;
+  Future<WorkerDTO> getWorkerId(String accId) async {
+    final res = await ApiService.getMap('/workers/account/$accId', null, null);
+    WorkerDTO workerDTO = WorkerDTO.fromJson(res);
+    return workerDTO;
   }
 
   set metaDataDTO(MetaDataDTO value) {

@@ -17,7 +17,7 @@ class AccountDAO extends BaseDAO {
 
   Future<void> postToken(String? idToken) async {
     try {
-      String path = "/account/login/google";
+      String path = "/v1/account/login/google";
       Map<String, String> headers = {
         'idTokenString': idToken ?? "",
       };
@@ -46,7 +46,7 @@ class AccountDAO extends BaseDAO {
 
   Future<bool> postFcmToken(String? fcmToken) async {
     try {
-      String path = "/notification/send";
+      String path = "/v1/notification/send";
       Map<String, String> headers = {'Content-Type': 'application/json'};
       Map<String, dynamic> body = {
         "subject": "FROM ME",

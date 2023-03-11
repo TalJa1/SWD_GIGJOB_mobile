@@ -7,6 +7,7 @@ import 'package:gigjob_mobile/DAO/AccountDAO.dart';
 import 'package:gigjob_mobile/DAO/JobDAO.dart';
 import 'package:gigjob_mobile/DTO/JobDTO.dart';
 import 'package:gigjob_mobile/DTO/WorkerDTO.dart';
+import 'package:gigjob_mobile/accesories/dialog.dart';
 import 'package:gigjob_mobile/utils/share_pref.dart';
 import 'package:jwt_decode/jwt_decode.dart';
 
@@ -118,38 +119,39 @@ class _PostListDetailState extends State<PostListDetail> {
   Widget _buildButtonApply() {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 48, 16, 16),
-      child: InkWell(
-        onTap: () => showDialog<String>(
-            context: context,
-            builder: (BuildContext context) => _buildDialog(context)),
-        child: Container(
-            height: 50,
-            width: double.infinity,
-            decoration: BoxDecoration(
-              color: Colors.black,
-              borderRadius: BorderRadius.circular(25),
-            ),
-            child: GestureDetector(
-              onTap: () async {
-                WorkerDTO workerDTO =
-                    await JobDAO().getWorkerId(getAccountId());
-
-                print(workerDTO.id);
-
-                await JobDAO().applyJob(workerDTO.id, widget.data.id!.toInt());
-              },
-              child: Center(
-                child: Text(
-                  'Apply Now!!!',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
+      child: Container(
+          height: 50,
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: Colors.black,
+            borderRadius: BorderRadius.circular(25),
+          ),
+          child: GestureDetector(
+            onTap: () async {
+              String accountID = await getAccountId();
+              WorkerDTO workerDTO =
+                  await JobDAO().getWorkerId(accountID);
+      
+              print(workerDTO.id);
+              bool isApply = await JobDAO().applyJob(workerDTO.id, widget.data.id!);
+              if(isApply) {
+                showMyDialog(context, "SUCESS", "Apply success");
+              }
+              else {
+                showMyDialog(context, "FAIL", "Apply fail");
+              }
+            },
+            child: Center(
+              child: Text(
+                'Apply Now!!!',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
-            )),
-      ),
+            ),
+          )),
     );
   }
 
