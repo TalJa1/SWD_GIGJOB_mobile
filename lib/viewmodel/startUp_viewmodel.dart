@@ -18,9 +18,9 @@ class StartUpViewModel extends BaseModel {
     bool hasLoggedInUser = await _accountDAO.isUserLoggedIn();
 
     if (hasLoggedInUser) {
-      Navigator.pushNamed(context, '/home');
+      Get.to(RootScreen());
     } else {
-      Navigator.pushNamed(context, '/login');
+      Get.to(LoginHome());
     }
   }
 }

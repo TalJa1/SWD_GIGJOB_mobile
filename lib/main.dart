@@ -130,18 +130,32 @@ class _MyAppState extends State<MyApp> {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      initialRoute: '/',
-      routes: {
-        '/': (BuildContext context) => StartUpView(),
-        '/login': (BuildContext context) => LoginHome(),
-        '/confirm': (BuildContext context) => ConfirmationCode(),
-        '/signup': (BuildContext context) => SignUp(),
-        '/wallet': (BuildContext context) => WalletPage(),
-        '/profile': (BuildContext context) => UserProfile(),
-        '/home': (BuildContext context) => RootScreen(),
-        '/jobdetail': (BuildContext context) => PostList(),
-      },
+    return GetMaterialApp(
+      home: StartUpView(),
+      enableLog: true,
+      debugShowCheckedModeBanner: false,
+      getPages: [
+        GetPage(
+          name: '/',
+          page: () => StartUpView(),
+        ),
+        GetPage(name: '/login', page: () => LoginHome()),
+        GetPage(name: '/home', page: () => RootScreen()),
+      ],
     );
+
+    // MaterialApp(
+    //   initialRoute: '/',
+    //   routes: {
+    //     '/': (BuildContext context) => StartUpView(),
+    //     '/login': (context) => LoginHome(),
+    //     '/confirm': (BuildContext context) => ConfirmationCode(),
+    //     '/signup': (BuildContext context) => SignUp(),
+    //     '/wallet': (BuildContext context) => WalletPage(),
+    //     '/profile': (BuildContext context) => UserProfile(),
+    //     '/home': (BuildContext context) => RootScreen(),
+    //     '/jobdetail': (BuildContext context) => PostList(),
+    //   },
+    // );
   }
 }

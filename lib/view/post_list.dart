@@ -36,14 +36,13 @@ class _PostListState extends State<PostList> {
       PagingController(firstPageKey: 0);
 
   Map<String, String> params = {};
-  
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     jobViewModel = JobViewModel();
     jobViewModel.getJobs();
-    
   }
 
   // Future<void> _fetchPage(int pageKey) async {

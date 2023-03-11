@@ -1,8 +1,13 @@
 // ignore_for_file: avoid_print, unnecessary_new
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:animated_button_bar/animated_button_bar.dart';
+import 'package:get/get.dart';
 import 'package:gigjob_mobile/DTO/UserDTO.dart';
+import 'package:gigjob_mobile/utils/share_pref.dart';
 import 'package:gigjob_mobile/view/edit_profile.dart';
+import 'package:gigjob_mobile/view/login_home.dart';
+import 'package:gigjob_mobile/viewmodel/account_viewmodel.dart';
 
 // ignore: depend_on_referenced_packages
 
@@ -15,8 +20,12 @@ class UserProfile extends StatefulWidget {
 }
 
 class _UserProfileState extends State<UserProfile> {
+
+  late AccountViewModel accountViewModel;
+
   @override
   void initState() {
+    accountViewModel = AccountViewModel();
     super.initState();
   }
 
@@ -85,6 +94,15 @@ class _UserProfileState extends State<UserProfile> {
             const SizedBox(
               height: 15,
             ),
+            InkWell(
+                onTap: () async {
+                  try {
+                    accountViewModel.logout();
+                  } catch (e) {
+                    print(e);
+                  }
+                },
+                child: Text("Log out"))
           ],
         ),
       ),
