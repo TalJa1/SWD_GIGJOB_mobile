@@ -34,7 +34,13 @@ class _PostListState extends State<PostList> {
     // TODO: implement initState
     super.initState();
     jobViewModel = JobViewModel();
-    jobViewModel.getJobs();
+    try {
+      jobViewModel.getJobs();
+    } catch (e) {
+      print(e);
+      Navigator.pushNamed(context, '/login');
+    }
+    
   }
 
   @override
