@@ -25,3 +25,8 @@ Future<String?> getToken() async {
 
   return prefs.getString('token');
 }
+
+Future<void> removeALL() async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  await prefs.clear();
+}

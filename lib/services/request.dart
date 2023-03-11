@@ -3,7 +3,7 @@ import 'package:dio/dio.dart';
 
 class ApiService {
   static const String baseUrl =
-      'http://54.179.205.85/api/v1';
+      'http://54.179.205.85:8080/api/v1';
 
   static Map<String, String> baseHeaders = {
     'Content-Type': 'application/json',
@@ -47,6 +47,7 @@ class ApiService {
     headers ??= {};
     queryParams ??= {};
     try {
+      print(baseHeaders);
       final response = await dio.get(
         path,
         queryParameters: queryParams,

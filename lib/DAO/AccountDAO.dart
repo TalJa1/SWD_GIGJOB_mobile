@@ -1,8 +1,10 @@
 import 'dart:convert';
 
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:gigjob_mobile/DAO/BaseDAO.dart';
 import 'package:gigjob_mobile/DTO/AccountDTO.dart';
+import 'package:gigjob_mobile/services/push_notification_service.dart';
 import 'package:gigjob_mobile/services/request.dart';
 import 'package:gigjob_mobile/utils/share_pref.dart';
 import 'package:jwt_decode/jwt_decode.dart';
@@ -58,8 +60,8 @@ class AccountDAO extends BaseDAO {
       String path = "/notification/send";
       Map<String, String> headers = {'Content-Type': 'application/json'};
       Map<String, dynamic> body = {
-        "subject": "FROM ME",
-        "content": "TO HUY",
+        "subject": "GIG JOB",
+        "content": "Login Success",
         "imageUrl": "",
         "data": {
           "additionalProp1": "",
@@ -77,5 +79,11 @@ class AccountDAO extends BaseDAO {
       print(e);
     }
     return false;
+  }
+
+  Future<void> logOut() async {
+    await FirebaseAuth.instance.signOut();
+    String? fcmToken = await PushNotificationService.getInstance()?.getFcmToken();
+    // await ApiService.post("logout", data: {"fcm_token": fcmToken});
   }
 }
