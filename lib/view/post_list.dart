@@ -123,11 +123,16 @@ class _PostListState extends State<PostList> {
                         child: CircularProgressIndicator());
                   } else {
                     return Expanded(
-                      child: SingleChildScrollView(
-                        child: Column(
-                          children: jobViewModel.jobs!
-                              .map((e) => _buildPostList(e))
-                              .toList(),
+                      child: RefreshIndicator(
+                        onRefresh: () async {
+                          jobViewModel.getJobs();
+                        },
+                        child: SingleChildScrollView(
+                          child: Column(
+                            children: jobViewModel.jobs!
+                                .map((e) => _buildPostList(e))
+                                .toList(),
+                          ),
                         ),
                       ),
                     );

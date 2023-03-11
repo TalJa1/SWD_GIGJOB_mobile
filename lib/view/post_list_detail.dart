@@ -97,7 +97,7 @@ class _PostListDetailState extends State<PostListDetail> {
                 children: [
                   Expanded(
                       child: Text(
-                    widget.data.shopId.toString(),
+                    widget.data.skill.toString(),
                     style: TextStyle(fontSize: 16),
                   ))
                 ],
@@ -117,29 +117,21 @@ class _PostListDetailState extends State<PostListDetail> {
   }
 
   Widget _buildButtonApply() {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 48, 16, 16),
-      child: Container(
-          height: 50,
-          width: double.infinity,
-          decoration: BoxDecoration(
-            color: Colors.black,
-            borderRadius: BorderRadius.circular(25),
-          ),
-          child: GestureDetector(
-            onTap: () async {
-              String accountID = await getAccountId();
-              WorkerDTO workerDTO = await JobDAO().getWorkerId(accountID);
-
-              print("Worker id ${workerDTO.id}");
-              bool isApply =
-                  await JobDAO().applyJob(workerDTO.id, widget.data.id!);
-              if (isApply) {
-                showMyDialog(context, "SUCESS", "Apply success");
-              } else {
-                showMyDialog(context, "FAIL", "Apply fail");
-              }
-            },
+    return InkWell(
+      onTap: () {
+        showDialog<String>(
+            context: context,
+            builder: (BuildContext context) => _buildDialog(context));
+      },
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(16, 48, 16, 16),
+        child: Container(
+            height: 50,
+            width: double.infinity,
+            decoration: BoxDecoration(
+              color: Colors.black,
+              borderRadius: BorderRadius.circular(25),
+            ),
             child: Center(
               child: Text(
                 'Apply Now!!!',
@@ -149,8 +141,8 @@ class _PostListDetailState extends State<PostListDetail> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-            ),
-          )),
+            )),
+      ),
     );
   }
 
@@ -160,11 +152,26 @@ class _PostListDetailState extends State<PostListDetail> {
       content: const Text('Do you want to apply this company?'),
       actions: <Widget>[
         TextButton(
-          onPressed: () => Navigator.pop(context, 'Cancel'),
+          onPressed: () async {
+            Navigator.pop(context, 'Cancel');
+          },
           child: const Text('Cancel'),
         ),
         TextButton(
-          onPressed: () => Navigator.pop(context, 'OK'),
+          onPressed: () async {
+            String accountID = await getAccountId();
+            WorkerDTO workerDTO = await JobDAO().getWorkerId(accountID);
+
+            print("Worker id ${workerDTO.id}");
+            bool isApply =
+                await JobDAO().applyJob(workerDTO.id, widget.data.id!);
+            Navigator.pop(context, 'OK');
+            if (isApply) {
+              showMyDialog(context, "SUCESS", "Apply success");
+            } else {
+              showMyDialog(context, "FAIL", "Apply fail");
+            }
+          },
           child: const Text('Apply'),
         ),
       ],
