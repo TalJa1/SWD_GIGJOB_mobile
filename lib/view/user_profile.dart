@@ -165,7 +165,7 @@ class _UserProfileState extends State<UserProfile> {
                       print("isInfo $isInfo");
                     })
                   },
-              child: const Text('Experience')),
+              child: const Text('Applied job')),
         ],
       ),
     );
