@@ -35,6 +35,8 @@ class _UserProfileState extends State<UserProfile> {
     Experience("HPT", "Master", "2 years"),
   ]);
 
+  Future<void> reload() async {}
+
   @override
   Widget build(BuildContext context) {
     // ignore: unused_local_variable
@@ -42,50 +44,53 @@ class _UserProfileState extends State<UserProfile> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Stack(
-              alignment: Alignment.topCenter,
-              children: <Widget>[
-                const SizedBox(
-                  height: 370,
-                ),
-                backGround(),
-                Positioned(top: 120, child: profileImage()),
-                // ignore: prefer_const_constructors
-                Positioned(
-                    top: 270,
-                    child: SizedBox(
-                        // height: 80,
-                        child: Padding(
-                      padding: const EdgeInsets.only(top: 10),
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Text(
-                                user.name.toString(),
-                                style: const TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 25,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                              // editBtn()
-                            ],
-                          ),
-                          stateButton()
-                        ],
-                      ),
-                    ))),
-              ],
-            ),
-            userData(isInfo),
-            const SizedBox(
-              height: 15,
-            ),
-          ],
+      body: RefreshIndicator(
+        onRefresh: reload,
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Stack(
+                alignment: Alignment.topCenter,
+                children: <Widget>[
+                  const SizedBox(
+                    height: 370,
+                  ),
+                  backGround(),
+                  Positioned(top: 120, child: profileImage()),
+                  // ignore: prefer_const_constructors
+                  Positioned(
+                      top: 270,
+                      child: SizedBox(
+                          // height: 80,
+                          child: Padding(
+                        padding: const EdgeInsets.only(top: 10),
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Text(
+                                  user.name.toString(),
+                                  style: const TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 25,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                // editBtn()
+                              ],
+                            ),
+                            stateButton()
+                          ],
+                        ),
+                      ))),
+                ],
+              ),
+              userData(isInfo),
+              const SizedBox(
+                height: 15,
+              ),
+            ],
+          ),
         ),
       ),
       floatingActionButton: editBtn(),
