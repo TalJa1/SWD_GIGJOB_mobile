@@ -25,13 +25,13 @@ class AccountDAO extends BaseDAO {
       final response = await ApiService.post(path, headers, null);
 
       // final userDTO = AccountDTO.fromJson(response);
-      Map<String, dynamic> decode = Jwt.parseJwt(response["accessToken"]);
+      Map<String, dynamic> decode = Jwt.parseJwt(response.data["accessToken"]);
 
       print(decode);
       var role = decode["account"]["role"];
       if (role == "WORKER") {
-        ApiService.setToken(response["accessToken"]);
-        setToken(response["accessToken"]);
+        ApiService.setToken(response.data["accessToken"]);
+        setToken(response.data["accessToken"]);
       } else {
         throw Exception("Your account is invalid");
       }

@@ -34,7 +34,13 @@ class _PostListState extends State<PostList> {
     // TODO: implement initState
     super.initState();
     jobViewModel = JobViewModel();
-    jobViewModel.getJobs();
+    try {
+      jobViewModel.getJobs();
+    } catch (e) {
+      print(e);
+      Navigator.pushNamed(context, '/login');
+    }
+    
   }
 
   @override
@@ -264,74 +270,73 @@ class _PostListState extends State<PostList> {
   }
 
   Widget _buildPostList(JobDTO job) {
-    return Container(
-      padding: const EdgeInsets.fromLTRB(0, 16, 0, 0),
-      child: Column(
-        children: [
-          Padding(
-              padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => PostListDetail(
-                        data: job,
-                      ),
-                    ),
-                  );
-                },
-                child: Column(
-                  children: [
-                    Image.asset(
-                      'assets/images/Test_img.png',
-                      width: MediaQuery.of(context).size.width,
-                      height: 240,
-                      fit: BoxFit.cover,
-                    ),
-                    Row(
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(0, 8, 0, 8),
-                          child: Text(
-                            "${job.title}",
-                            style: TextStyle(fontSize: 16),
-                          ),
+    return Card(
+      child: Container(
+        padding: const EdgeInsets.fromLTRB(0, 16, 0, 0),
+        child: Column(
+          children: [
+            Padding(
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => PostListDetail(
+                          data: job,
                         ),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
+                      ),
+                    );
+                  },
+                  child: Column(
+                    children: [
+                      Image.asset(
+                        'assets/images/Test_img.png',
+                        width: MediaQuery.of(context).size.width,
+                        height: 240,
+                        fit: BoxFit.cover,
+                      ),
+                      Row(
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.fromLTRB(0, 8, 0, 8),
                             child: Text(
-                              "${job.description}",
-                              style: TextStyle(fontSize: 14),
+                              "${job.title}",
+                              style: TextStyle(fontSize: 16),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Text(
-                          Jiffy("${job.createdDate}").fromNow(),
-                          style: TextStyle(fontSize: 14),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 16,
-                    ),
-                  ],
-                ),
-              )),
-          const Divider(
-            thickness: 3,
-            color: Colors.grey,
-          )
-        ],
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
+                              child: Text(
+                                "${job.description}",
+                                style: TextStyle(fontSize: 14),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Text(
+                            Jiffy("${job.createdDate}").fromNow(),
+                            style: TextStyle(fontSize: 14),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 16,
+                      ),
+                    ],
+                  ),
+                )),
+            
+          ],
+        ),
       ),
     );
   }

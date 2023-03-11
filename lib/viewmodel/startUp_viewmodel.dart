@@ -18,12 +18,9 @@ class StartUpViewModel extends BaseModel {
     bool hasLoggedInUser = await _accountDAO.isUserLoggedIn();
 
     if (hasLoggedInUser) {
-      Route route = MaterialPageRoute(builder: (context) => RootScreen());
-
-      Navigator.push(context, route);
+      Navigator.pushNamed(context, '/home');
     } else {
-      Route route = MaterialPageRoute(builder: (context) => LoginHome());
-      Navigator.push(context, route);
+      Navigator.pushNamed(context, '/login');
     }
   }
 }
