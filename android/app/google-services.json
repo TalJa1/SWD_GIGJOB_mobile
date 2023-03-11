@@ -23,6 +23,14 @@
           }
         },
         {
+          "client_id": "395540117439-u81jcnces81em0blljhed7d60fep8e9k.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.gigjob_mobile",
+            "certificate_hash": "5d2f5ab43eea84b20c30f682d3db32c2315bfbcd"
+          }
+        },
+        {
           "client_id": "395540117439-vm7157r90l3c0devegctefnll7qpr78m.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
@@ -67,11 +75,27 @@
       },
       "oauth_client": [
         {
+          "client_id": "395540117439-2r1qj5ivoomq213d8ien4hsuct27re33.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.firebaseservice",
+            "certificate_hash": "5d2f5ab43eea84b20c30f682d3db32c2315bfbcd"
+          }
+        },
+        {
           "client_id": "395540117439-57eejugtdi1jh2m7s9mlm7up6ua03psq.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.firebaseservice",
             "certificate_hash": "d908c8f85cb105714496a0e1b522e568fa2188fc"
+          }
+        },
+        {
+          "client_id": "395540117439-dt0jpqe9pqu3gif9canl6k9e0uoibs4l.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.firebaseservice",
+            "certificate_hash": "088816c09b3d088a217e374144f2948b3673e93f"
           }
         },
         {
