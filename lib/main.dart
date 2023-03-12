@@ -133,7 +133,7 @@ class _MyAppState extends State<MyApp> {
     return GetMaterialApp(
       // Remove the debug banner
       debugShowCheckedModeBanner: false,
-      title: 'Kindacode.com',
+      title: 'GIGJOB',
       theme: ThemeData(
         // enable Material 3
         // useMaterial3: true,
@@ -149,19 +149,5 @@ class _MyAppState extends State<MyApp> {
         GetPage(name: '/home', page: () => RootScreen()),
       ],
     );
-
-    // MaterialApp(
-    //   initialRoute: '/',
-    //   routes: {
-    //     '/': (BuildContext context) => StartUpView(),
-    //     '/login': (BuildContext context) => LoginHome(),
-    //     '/confirm': (BuildContext context) => ConfirmationCode(),
-    //     '/signup': (BuildContext context) => SignUp(),
-    //     '/wallet': (BuildContext context) => WalletPage(),
-    //     '/profile': (BuildContext context) => UserProfile(),
-    //     '/home': (BuildContext context) => RootScreen(),
-    //     '/jobdetail': (BuildContext context) => PostList(),
-    //   },
-    // );
   }
 }

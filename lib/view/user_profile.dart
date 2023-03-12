@@ -4,9 +4,11 @@ import 'package:animated_button_bar/animated_button_bar.dart';
 import 'package:get/get.dart';
 import 'package:gigjob_mobile/DAO/JobDAO.dart';
 import 'package:gigjob_mobile/DTO/UserDTO.dart';
+import 'package:gigjob_mobile/enum/view_status.dart';
 import 'package:gigjob_mobile/view/edit_profile.dart';
 import 'package:gigjob_mobile/viewmodel/job_viewmodel.dart';
 import 'package:gigjob_mobile/viewmodel/user_viewmodel.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 // ignore: depend_on_referenced_packages
 
@@ -51,60 +53,87 @@ class _UserProfileState extends State<UserProfile> {
   Widget build(BuildContext context) {
     // ignore: unused_local_variable
     // ignore: prefer_const_constructors
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      backgroundColor: Colors.white,
-      body: RefreshIndicator(
-        onRefresh: reload,
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Stack(
-                alignment: Alignment.topCenter,
-                children: <Widget>[
-
-                  const SizedBox(
-                    height: 370,
-                  ),
-                  backGround(),
-                  Positioned(top: 120, child: profileImage()),
-                  // ignore: prefer_const_constructors
-                  Positioned(
-                      top: 270,
-                      child: SizedBox(
-                          // height: 80,
-                          child: Padding(
-                        padding: const EdgeInsets.only(top: 10),
-                        child: Column(
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Text(
-                                  user.name.toString(),
-                                  style: const TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 25,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                // editBtn()
-                              ],
-                            ),
-                            stateButton()
-                          ],
-                        ),
-                      ))),
-                ],
-              ),
-              userData(isInfo),
-              const SizedBox(
-                height: 15,
-              ),
-            ],
+    return ScopedModel<UserViewModel>(
+      model: userViewModel,
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        backgroundColor: Colors.white,
+        body: RefreshIndicator(
+          onRefresh: reload,
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                Stack(
+                  alignment: Alignment.topCenter,
+                  children: <Widget>[
+      
+                    const SizedBox(
+                      height: 370,
+                    ),
+                    backGround(),
+                    // ignore: prefer_const_constructors
+                    Positioned(
+                      right: 28,
+                      top: 40,
+                      child: InkWell(
+                        onTap: (){
+                          userViewModel.processLogout();
+                        },
+                        child: const Text("Logout",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16
+                        ),),
+                      )),
+                    Positioned(top: 120, child: profileImage()),
+                    // ignore: prefer_const_constructors
+                    Positioned(
+                        top: 270,
+                        child: SizedBox(
+                            // height: 80,
+                            child: Padding(
+                          padding: const EdgeInsets.only(top: 10),
+                          child: Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Text(
+                                    user.name.toString(),
+                                    style: const TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 25,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  // editBtn()
+                                ],
+                              ),
+                              stateButton()
+                            ],
+                          ),
+                        ))),
+                  ],
+                ),
+                ScopedModelDescendant<UserViewModel>(
+                  builder: (context, child, model) {
+                    if(userViewModel.status == ViewStatus.Loading){
+                      return CircularProgressIndicator();
+                    } else if(userViewModel.status == ViewStatus.Completed){
+                      return userData(isInfo);
+                    } 
+                    return Container();
+                  }),
+              
+                
+                const SizedBox(
+                  height: 15,
+                ),
+              ],
+            ),
           ),
         ),
+        floatingActionButton: editBtn(),
       ),
-      floatingActionButton: editBtn(),
     );
   }
 
