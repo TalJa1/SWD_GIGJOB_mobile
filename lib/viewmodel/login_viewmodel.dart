@@ -2,6 +2,7 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:gigjob_mobile/DAO/AccountDAO.dart';
 import 'package:gigjob_mobile/DTO/AccountDTO.dart';
 import 'package:gigjob_mobile/accesories/dialog.dart';
@@ -43,8 +44,7 @@ class LoginViewModel extends BaseModel {
       await dao.postToken(token);
       // await dao.postFcmToken(fcmToken);
 
-      Route route = MaterialPageRoute(builder: (context) => RootScreen());
-      Navigator.push(context, route);
+      Get.to(RootScreen());
     } catch (e) {
       print(e);
       await showMyDialog(context, "Error", "Login fail");

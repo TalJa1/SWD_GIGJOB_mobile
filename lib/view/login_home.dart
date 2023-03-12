@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:gigjob_mobile/DTO/AccountDTO.dart';
 import 'package:gigjob_mobile/accesories/dialog.dart';
 import 'package:gigjob_mobile/services/push_notification_service.dart';
@@ -163,9 +164,7 @@ class _LoginHomeState extends State<LoginHome> {
                     ),
                     recognizer: TapGestureRecognizer()
                       ..onTap = () {
-                        Route route =
-                            MaterialPageRoute(builder: (context) => SignUp());
-                        Navigator.push(context, route);
+                        Get.to(SignUp());
                       }),
               ]),
             ),

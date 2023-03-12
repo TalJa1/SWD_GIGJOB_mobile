@@ -3,6 +3,7 @@
 import 'dart:ffi';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:gigjob_mobile/DAO/AccountDAO.dart';
 import 'package:gigjob_mobile/DAO/JobDAO.dart';
 import 'package:gigjob_mobile/DTO/JobDTO.dart';
@@ -56,7 +57,7 @@ class _PostListDetailState extends State<PostListDetail> {
                       alignment: Alignment.topLeft,
                       child: GestureDetector(
                         onTap: () {
-                          Navigator.pop(context);
+                          Get.back();
                         },
                         child: Text(
                           "Back",

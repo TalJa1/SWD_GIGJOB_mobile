@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_print, unnecessary_new
 import 'package:flutter/material.dart';
 import 'package:animated_button_bar/animated_button_bar.dart';
+import 'package:get/get.dart';
 import 'package:gigjob_mobile/DAO/JobDAO.dart';
 import 'package:gigjob_mobile/DTO/UserDTO.dart';
 import 'package:gigjob_mobile/view/edit_profile.dart';
@@ -61,6 +62,7 @@ class _UserProfileState extends State<UserProfile> {
               Stack(
                 alignment: Alignment.topCenter,
                 children: <Widget>[
+
                   const SizedBox(
                     height: 370,
                   ),
@@ -250,7 +252,10 @@ class _UserProfileState extends State<UserProfile> {
                                 children: [
                                   const Text('Status:'),
                                   Text(
-                                      "${userViewModel.appliedjob![index].status}")
+                                      "${userViewModel.appliedjob![index].status}",
+                                      style: TextStyle(
+                                        color: Colors.green
+                                      ),)
                                 ],
                               ),
                               const SizedBox(
@@ -303,10 +308,7 @@ class _UserProfileState extends State<UserProfile> {
     return FloatingActionButton(
       child: const Icon(Icons.edit),
       onPressed: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const EditProfilePage()),
-        );
+        Get.to(EditProfilePage());
       },
     );
   }

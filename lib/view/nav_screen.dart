@@ -13,25 +13,6 @@ class RootScreen extends StatefulWidget {
 }
 
 class _RootScreen extends State<RootScreen> {
-  // int _selectedIndex = 0;
-
-  // final List<String> _pageNames = [''];
-  // final List<Widget> _screen = [
-  //   PostList(),
-  //   PostList(),
-  //   PostList(),
-  //   PostList(),
-  //   UserProfile(),
-  // ];
-
-  // void _onItemTapped(int index) {
-  //   if (index != _selectedIndex) {
-  //     setState(() {
-  //       _selectedIndex = index;
-  //     });
-  //     Navigator.pushNamed(context, '/${_pageNames[index]}');
-  //   }
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -58,26 +39,12 @@ class _RootScreen extends State<RootScreen> {
             title: "Wallet",
             activeColorPrimary: Colors.black,
             inactiveColorPrimary: Colors.black,
-            // routeAndNavigatorSettings: RouteAndNavigatorSettings(
-            //   initialRoute: "/",
-            //   routes: {
-            //     "/first": (final context) => const MainScreen2(),
-            //     "/second": (final context) => const MainScreen3(),
-            //   },
-            // ),
           ),
           PersistentBottomNavBarItem(
             icon: const Icon(Icons.person),
             title: "Profile",
             activeColorPrimary: Colors.black,
             inactiveColorPrimary: Colors.black,
-            // routeAndNavigatorSettings: RouteAndNavigatorSettings(
-            //   initialRoute: "/",
-            //   routes: {
-            //     "/first": (final context) => const MainScreen2(),
-            //     "/second": (final context) => const MainScreen3(),
-            //   },
-            // ),
           ),
         ];
 

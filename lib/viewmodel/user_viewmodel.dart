@@ -1,8 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:get/get.dart';
 import 'package:gigjob_mobile/DTO/ApplyJobDTO.dart';
 import 'package:gigjob_mobile/DTO/JobDTO.dart';
 import 'package:gigjob_mobile/DTO/WorkerDTO.dart';
 import 'package:gigjob_mobile/enum/view_status.dart';
 import 'package:gigjob_mobile/utils/share_pref.dart';
+import 'package:gigjob_mobile/view/login_home.dart';
 import 'package:gigjob_mobile/viewmodel/base_model.dart';
 
 import '../DAO/JobDAO.dart';
@@ -26,6 +29,16 @@ class UserViewModel extends BaseModel {
       setState(ViewStatus.Completed);
     } catch (e) {
       throw Exception(e);
+    }
+  }
+
+  Future processLogout() async {
+    try {
+      await FirebaseAuth.instance.signOut();
+      await removeALL();
+      Get.offAll(LoginHome());
+    } catch (e) {
+      print(e);
     }
   }
 }

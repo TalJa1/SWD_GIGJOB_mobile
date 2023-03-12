@@ -1,10 +1,13 @@
 import 'dart:convert';
 
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:get/get.dart';
 import 'package:gigjob_mobile/DAO/BaseDAO.dart';
 import 'package:gigjob_mobile/DAO/JobDAO.dart';
 import 'package:gigjob_mobile/DTO/AccountDTO.dart';
 import 'package:gigjob_mobile/services/request.dart';
 import 'package:gigjob_mobile/utils/share_pref.dart';
+import 'package:gigjob_mobile/view/login_home.dart';
 import 'package:jwt_decode/jwt_decode.dart';
 
 class AccountDAO extends BaseDAO {

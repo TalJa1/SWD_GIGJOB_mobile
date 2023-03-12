@@ -37,3 +37,8 @@ Future<String?> getAccountID() async {
 
   return prefs.getString('AccountID');
 }
+
+Future<void> removeALL() async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  await prefs.clear();
+}

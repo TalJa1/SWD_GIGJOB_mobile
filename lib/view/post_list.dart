@@ -1,6 +1,7 @@
 // ignore_for_file: sized_box_for_whitespace
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:gigjob_mobile/DTO/JobDTO.dart';
 import 'package:gigjob_mobile/enum/view_status.dart';
 import 'package:gigjob_mobile/view/nav_screen.dart';
@@ -38,7 +39,6 @@ class _PostListState extends State<PostList> {
       jobViewModel.getJobs();
     } catch (e) {
       print(e);
-      Navigator.pushNamed(context, '/login');
     }
     
   }
@@ -284,14 +284,7 @@ class _PostListState extends State<PostList> {
                 padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
                 child: GestureDetector(
                   onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => PostListDetail(
-                          data: job,
-                        ),
-                      ),
-                    );
+                    Get.to(PostListDetail(data: job));
                   },
                   child: Column(
                     children: [
@@ -313,16 +306,26 @@ class _PostListState extends State<PostList> {
                         ],
                       ),
                       Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Expanded(
                             child: Padding(
-                              padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
+                              padding: const EdgeInsets.fromLTRB(0, 0, 30, 8),
                               child: Text(
                                 "${job.description}",
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
                                 style: TextStyle(fontSize: 14),
                               ),
                             ),
                           ),
+                          Container(
+                            width: 64,
+                            height: 64,
+                            child: CircleAvatar(
+                              
+                            ),
+                          )
                         ],
                       ),
                       Row(
