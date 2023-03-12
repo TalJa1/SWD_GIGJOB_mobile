@@ -1,7 +1,9 @@
+import 'package:gigjob_mobile/DTO/ApplyJobDTO.dart';
+
 class JobDTO {
   int? id;
-  String? shopId;
-  int? jobTypeId;
+  Shop? shop;
+  JobType? jobType;
   String? title;
   String? description;
   String? skill;
@@ -12,8 +14,8 @@ class JobDTO {
 
   JobDTO(
       {this.id,
-      this.shopId,
-      this.jobTypeId,
+      this.shop,
+      this.jobType,
       this.title,
       this.description,
       this.skill,
@@ -24,8 +26,9 @@ class JobDTO {
 
   JobDTO.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    shopId = json['shopId'];
-    jobTypeId = json['jobTypeId'];
+    shop = json['shop'] != null ? new Shop.fromJson(json['shop']) : null;
+    jobType =
+        json['jobType'] != null ? new JobType.fromJson(json['jobType']) : null;
     title = json['title'];
     description = json['description'];
     skill = json['skill'];
@@ -38,8 +41,12 @@ class JobDTO {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
-    data['shopId'] = this.shopId;
-    data['jobTypeId'] = this.jobTypeId;
+    if (this.shop != null) {
+      data['shop'] = this.shop!.toJson();
+    }
+    if (this.jobType != null) {
+      data['jobType'] = this.jobType!.toJson();
+    }
     data['title'] = this.title;
     data['description'] = this.description;
     data['skill'] = this.skill;

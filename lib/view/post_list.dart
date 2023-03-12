@@ -40,7 +40,6 @@ class _PostListState extends State<PostList> {
     } catch (e) {
       print(e);
     }
-    
   }
 
   @override
@@ -85,8 +84,8 @@ class _PostListState extends State<PostList> {
                 ),
               ),
               Container(
-                color: Colors.white,
                 padding: const EdgeInsets.fromLTRB(16, 32, 16, 32),
+                decoration: BoxDecoration(color: Colors.white, ),
                 child: TextField(
                   decoration: InputDecoration(
                     focusedBorder: OutlineInputBorder(
@@ -130,7 +129,7 @@ class _PostListState extends State<PostList> {
                         child: SingleChildScrollView(
                           child: Column(
                             children: jobViewModel.jobs!
-                                .map((e) => _buildPostList(e))
+                                .map((e) => _buildPostLists(e))
                                 .toList(),
                           ),
                         ),
@@ -274,6 +273,72 @@ class _PostListState extends State<PostList> {
     );
   }
 
+  Widget _buildPostLists(JobDTO job) {
+    return GestureDetector(
+      onTap: () {
+        Get.to(PostListDetail(data: job));
+      },
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Card(
+          color: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(16),
+                  bottomLeft: Radius.circular(16),
+                ),
+                child: Image.network(
+                  "https://cdn.searchenginejournal.com/wp-content/uploads/2017/06/shutterstock_268688447.jpg",
+                  width: 140,
+                  height: 140,
+                  fit: BoxFit.cover,
+                ),
+              ),
+              SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(height: 16),
+                    Text(
+                      "${job.title}",
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Colors.indigo,
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      "Skill: ${job.skill}",
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.grey[600],
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      Jiffy("${job.createdDate}").fromNow(),
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.grey[600],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget _buildPostList(JobDTO job) {
     return Card(
       child: Container(
@@ -322,9 +387,7 @@ class _PostListState extends State<PostList> {
                           Container(
                             width: 64,
                             height: 64,
-                            child: CircleAvatar(
-                              
-                            ),
+                            child: CircleAvatar(),
                           )
                         ],
                       ),
@@ -342,7 +405,6 @@ class _PostListState extends State<PostList> {
                     ],
                   ),
                 )),
-            
           ],
         ),
       ),

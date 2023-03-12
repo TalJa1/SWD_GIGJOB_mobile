@@ -2,6 +2,7 @@
 
 import 'dart:ffi';
 
+import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:gigjob_mobile/DAO/AccountDAO.dart';
@@ -48,73 +49,214 @@ class _PostListDetailState extends State<PostListDetail> {
     return Scaffold(
         body: Padding(
           padding: const EdgeInsets.fromLTRB(16, 48, 16, 0),
-          child: Column(
-            children: [
-              Stack(
-                // ignore: prefer_const_literals_to_create_immutables
-                children: [
-                  Align(
-                      alignment: Alignment.topLeft,
-                      child: GestureDetector(
-                        onTap: () {
-                          Get.back();
-                        },
-                        child: Text(
-                          "Back",
-                          style: TextStyle(
-                            fontSize: 16.0,
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                Stack(
+                  // ignore: prefer_const_literals_to_create_immutables
+                  children: [
+                    Align(
+                        alignment: Alignment.topLeft,
+                        child: GestureDetector(
+                          onTap: () {
+                            Get.back();
+                          },
+                          child: Text(
+                            "Back",
+                            style: TextStyle(
+                              fontSize: 16.0,
+                            ),
                           ),
+                        ))
+                  ],
+                ),
+                const SizedBox(
+                  height: 16,
+                ),
+                Card(
+                  elevation: 4,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Column(
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(16),
+                          topRight: Radius.circular(16),
                         ),
-                      ))
-                ],
-              ),
-              const SizedBox(
-                height: 16,
-              ),
-              Image.asset(
-                'assets/images/Test_img.png',
-                width: 500,
-                height: 240,
-                fit: BoxFit.cover,
-              ),
-              const SizedBox(
-                height: 16,
-              ),
-              Row(
-                // ignore: prefer_const_literals_to_create_immutables
-                children: [
-                  Expanded(
-                      child: Text(
-                    widget.data.title.toString(),
-                    style: TextStyle(fontSize: 24.0),
-                  ))
-                ],
-              ),
-              const SizedBox(
-                height: 12,
-              ),
-              Row(
-                // ignore: prefer_const_literals_to_create_immutables
-                children: [
-                  Expanded(
-                      child: Text(
-                    widget.data.skill.toString(),
-                    style: TextStyle(fontSize: 16),
-                  ))
-                ],
-              ),
-              const SizedBox(
-                height: 12,
-              ),
-              Row(
-                children: [
-                  Expanded(child: Text(widget.data.description.toString()))
-                ],
-              )
-            ],
+                        child: Image.network(
+                          'https://cdn.searchenginejournal.com/wp-content/uploads/2017/06/shutterstock_268688447.jpg',
+                          width: 500,
+                          height: 240,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            CircleAvatar(
+                              radius: 32, // Image radius
+                              backgroundImage: NetworkImage(
+                                  'https://cdn.searchenginejournal.com/wp-content/uploads/2017/06/shutterstock_268688447.jpg'),
+                            ),
+                            Text(
+                              "${widget.data.shop?.name}",
+                              style: TextStyle(
+                                  fontSize: 18,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Divider(
+                        thickness: 2,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Text(
+                              "${widget.data.title}",
+                              style: TextStyle(
+                                  fontSize: 24,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+                const SizedBox(
+                  height: 16,
+                ),
+                Column(
+                  children: [],
+                ),
+                Row(
+                  // ignore: prefer_const_literals_to_create_immutables
+                  children: [
+                    Expanded(
+                        child: Text(
+                      "Description",
+                      style: TextStyle(fontSize: 24.0),
+                    ))
+                  ],
+                ),
+                const SizedBox(
+                  height: 12,
+                ),
+                Row(
+                  // ignore: prefer_const_literals_to_create_immutables
+                  children: [
+                    Expanded(
+                        child: Text(
+                      widget.data.description.toString(),
+                      style: TextStyle(fontSize: 16),
+                    ))
+                  ],
+                ),
+                _buildTabView(),
+                // const SizedBox(
+                //   height: 12,
+                // ),
+                // Text("Job type"),
+                // Row(
+                //   children: [
+                //     Expanded(child: Text(widget.data.description.toString()))
+                //   ],
+                // )
+              ],
+            ),
           ),
         ),
         bottomNavigationBar: _buildButtonApply());
+  }
+
+  Widget _buildTabView() {
+    return DefaultTabController(
+        length: 4, // length of tabs
+        initialIndex: 0,
+        child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              Container(
+                child: TabBar(
+                  labelColor: Colors.black,
+                  indicatorColor: Colors.black,
+                  enableFeedback: true,
+
+                  unselectedLabelColor: Colors.grey,
+                  tabs: [
+                    Tab(text: 'Job type'),
+                    Tab(text: 'Skill'),
+                    Tab(text: 'Benifit'),
+                    Tab(text: 'Shop info'),
+                  ],
+                ),
+              ),
+              Container(
+                  height: 200,//height of TabBarView
+                  decoration: BoxDecoration(
+                      border: Border(
+                          top: BorderSide(color: Colors.grey, width: 0.5))),
+                  child: TabBarView(children: <Widget>[
+                    Container(
+                      padding: EdgeInsets.fromLTRB(0, 12, 0, 12),
+                      child: Text('${widget.data.jobType?.name}',
+                          style: TextStyle(fontSize: 16)),
+                    ),
+                    Container(
+                      padding: EdgeInsets.fromLTRB(0, 12, 0, 12),
+                      child: Text('${widget.data.skill}',
+                          style: TextStyle(fontSize: 16)),
+                    ),
+                    Container(
+                      padding: EdgeInsets.fromLTRB(0, 12, 0, 12),
+                      child: Text('${widget.data.benefit}',
+                          style: TextStyle(fontSize: 16)),
+                    ),
+                    Container(
+                      padding: EdgeInsets.fromLTRB(0, 12, 0, 12),
+                      child: Column(children: [
+                        Row(
+                          children: [
+                            Text("Shop Name:", style: TextStyle(fontSize: 16)),
+                            Text(" ${widget.data.shop?.name}",
+                            )
+                          ],
+                        ),
+                        SizedBox(
+                          height: 12,
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Description:",
+                              style: TextStyle(fontSize: 16),
+                            ),
+                            SizedBox(height: 4),
+                            Row(
+                              children: [
+                                Flexible(
+                                  child:
+                                      Text("${widget.data.shop?.description}"),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ]),
+                    ),
+                  ]))
+            ]));
   }
 
   Widget _buildButtonApply() {
