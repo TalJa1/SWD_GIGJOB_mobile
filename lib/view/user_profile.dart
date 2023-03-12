@@ -20,7 +20,6 @@ class UserProfile extends StatefulWidget {
 }
 
 class _UserProfileState extends State<UserProfile> {
-
   late AccountViewModel accountViewModel;
 
   @override
@@ -48,65 +47,68 @@ class _UserProfileState extends State<UserProfile> {
   Widget build(BuildContext context) {
     // ignore: unused_local_variable
     // ignore: prefer_const_constructors
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      backgroundColor: Colors.white,
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Stack(
-              alignment: Alignment.topCenter,
-              children: <Widget>[
-                const SizedBox(
-                  height: 370,
+    return Builder(
+      builder: (context) => Scaffold(
+        resizeToAvoidBottomInset: false,
+        backgroundColor: Colors.white,
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              Stack(
+                alignment: Alignment.topCenter,
+                children: <Widget>[
+                  const SizedBox(
+                    height: 370,
+                  ),
+                  backGround(),
+                  Positioned(top: 120, child: profileImage()),
+                  // ignore: prefer_const_constructors
+                  Positioned(
+                      top: 270,
+                      child: SizedBox(
+                          // height: 80,
+                          child: Padding(
+                        padding: const EdgeInsets.only(top: 10),
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Text(
+                                  user.name.toString(),
+                                  style: const TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 25,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                // editBtn()
+                              ],
+                            ),
+                            stateButton()
+                          ],
+                        ),
+                      ))),
+                ],
+              ),
+              userData(isInfo),
+              const SizedBox(
+                height: 15,
+              ),
+              Center(
+                child: ElevatedButton(
+                  onPressed: () async {
+                    await FirebaseAuth.instance.signOut();
+                    await removeALL();
+                    Get.to(() => LoginHome());
+                  },
+                  child: Text('Log out'),
                 ),
-                backGround(),
-                Positioned(top: 120, child: profileImage()),
-                // ignore: prefer_const_constructors
-                Positioned(
-                    top: 270,
-                    child: SizedBox(
-                        // height: 80,
-                        child: Padding(
-                      padding: const EdgeInsets.only(top: 10),
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Text(
-                                user.name.toString(),
-                                style: const TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 25,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                              // editBtn()
-                            ],
-                          ),
-                          stateButton()
-                        ],
-                      ),
-                    ))),
-              ],
-            ),
-            userData(isInfo),
-            const SizedBox(
-              height: 15,
-            ),
-            InkWell(
-                onTap: () async {
-                  try {
-                    accountViewModel.logout();
-                  } catch (e) {
-                    print(e);
-                  }
-                },
-                child: Text("Log out"))
-          ],
+              ),
+            ],
+          ),
         ),
+        floatingActionButton: editBtn(),
       ),
-      floatingActionButton: editBtn(),
     );
   }
 

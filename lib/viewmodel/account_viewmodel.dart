@@ -11,6 +11,6 @@ class AccountViewModel extends BaseModel {
   Future logout() async {
     await FirebaseAuth.instance.signOut();
     await removeALL();
-    await Get.to(LoginHome());
+    await Get.to(() => LoginHome());
   }
 }

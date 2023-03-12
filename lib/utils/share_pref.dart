@@ -41,5 +41,5 @@ Future<String?> getRefreshToken() async {
 Future<void> removeALL() async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   await prefs.clear();
-  Get.reset(clearRouteBindings: true);
+  // Get.reset(clearRouteBindings: true);
 }
