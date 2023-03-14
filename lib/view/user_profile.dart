@@ -35,15 +35,25 @@ class _UserProfileState extends State<UserProfile> {
 
   late UserViewModel userViewModel;
 
-  final user = new UserDTO("Nguyen Thi Bong Van Hoa", "tt@gmail.com",
-      "Obispo Tajon", "0909999999", "Nivel B1", "20/01/2022", [
-    Experience("FPT", "Dev", "1 year"),
-    Experience("Google", "Manager", "6 months"),
-    Experience("HPT", "Master", "2 years"),
-    Experience("HPT", "Master", "2 years"),
-    Experience("HPT", "Master", "2 years"),
-    Experience("HPT", "Master", "2 years"),
-  ]);
+  UserDTO? user = UserViewModel().userDTO;
+
+  // final user = new UserDTO("Nguyen Thi Bong Van Hoa", "tt@gmail.com",
+  //     "Obispo Tajon", "0909999999", "Nivel B1", "20/01/2022", [
+  //   Experience("FPT", "Dev", "1 year"),
+  //   Experience("Google", "Manager", "6 months"),
+  //   Experience("HPT", "Master", "2 years"),
+  //   Experience("HPT", "Master", "2 years"),
+  //   Experience("HPT", "Master", "2 years"),
+  //   Experience("HPT", "Master", "2 years"),
+  // ]);
+
+  String? combineName() {
+    String? n1 = user!.firstName;
+    // String? n2 = user!.middleName;
+    // String? n3 = user!.lastName;
+    // String? nameCombine = n1 + n2 + n3;
+    return n1 ?? "Quest";
+  }
 
   Future<void> reload() async {
     userViewModel.getAppliedJob();
@@ -66,25 +76,23 @@ class _UserProfileState extends State<UserProfile> {
                 Stack(
                   alignment: Alignment.topCenter,
                   children: <Widget>[
-      
                     const SizedBox(
                       height: 370,
                     ),
                     backGround(),
                     // ignore: prefer_const_constructors
                     Positioned(
-                      right: 28,
-                      top: 40,
-                      child: InkWell(
-                        onTap: (){
-                          userViewModel.processLogout();
-                        },
-                        child: const Text("Logout",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16
-                        ),),
-                      )),
+                        right: 28,
+                        top: 40,
+                        child: InkWell(
+                          onTap: () {
+                            userViewModel.processLogout();
+                          },
+                          child: const Text(
+                            "Logout",
+                            style: TextStyle(color: Colors.white, fontSize: 16),
+                          ),
+                        )),
                     Positioned(top: 120, child: profileImage()),
                     // ignore: prefer_const_constructors
                     Positioned(
@@ -96,10 +104,11 @@ class _UserProfileState extends State<UserProfile> {
                           child: Column(
                             children: [
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
                                 children: [
                                   Text(
-                                    user.name.toString(),
+                                    user!.firstName ?? "Quest",
                                     style: const TextStyle(
                                         color: Colors.black,
                                         fontSize: 25,
@@ -115,16 +124,14 @@ class _UserProfileState extends State<UserProfile> {
                   ],
                 ),
                 ScopedModelDescendant<UserViewModel>(
-                  builder: (context, child, model) {
-                    if(userViewModel.status == ViewStatus.Loading){
-                      return CircularProgressIndicator();
-                    } else if(userViewModel.status == ViewStatus.Completed){
-                      return userData(isInfo);
-                    } 
-                    return Container();
-                  }),
-              
-                
+                    builder: (context, child, model) {
+                  if (userViewModel.status == ViewStatus.Loading) {
+                    return CircularProgressIndicator();
+                  } else if (userViewModel.status == ViewStatus.Completed) {
+                    return userData(isInfo);
+                  }
+                  return Container();
+                }),
                 const SizedBox(
                   height: 15,
                 ),
@@ -227,11 +234,11 @@ class _UserProfileState extends State<UserProfile> {
               child: Padding(
                 padding: const EdgeInsets.only(bottom: 10),
                 child: Column(children: [
-                  userInfo("Email", user.email.toString()),
-                  userInfo("Address", user.address.toString()),
-                  userInfo("Phone", user.phone.toString()),
-                  userInfo("Education", user.education.toString()),
-                  userInfo("Birth", user.birth.toString())
+                  userInfo("Email", "Email"),
+                  // userInfo("Address", user.address.toString()),
+                  // userInfo("Phone", user.phone.toString()),
+                  userInfo("Education", user!.education.toString()),
+                  userInfo("Birth", user!.birthday.toString())
                 ]),
               ),
             ))
@@ -281,10 +288,9 @@ class _UserProfileState extends State<UserProfile> {
                                 children: [
                                   const Text('Status:'),
                                   Text(
-                                      "${userViewModel.appliedjob![index].status}",
-                                      style: TextStyle(
-                                        color: Colors.green
-                                      ),)
+                                    "${userViewModel.appliedjob![index].status}",
+                                    style: TextStyle(color: Colors.green),
+                                  )
                                 ],
                               ),
                               const SizedBox(
