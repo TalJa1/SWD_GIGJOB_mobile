@@ -14,12 +14,14 @@ import '../DAO/JobDAO.dart';
 
 class UserViewModel extends BaseModel {
   JobDAO? jobDAO;
+  UserDAO? userDAO;
   List<JobDTO>? jobs;
   List<ApplyJobDTO>? appliedjob;
   UserDTO? userDTO;
   // ignore: non_constant_identifier_names
   UserViewModel() {
     jobDAO = JobDAO();
+    userDAO = UserDAO();
   }
 
   Future getAppliedJob() async {
@@ -45,11 +47,12 @@ class UserViewModel extends BaseModel {
   }
 
   Future getUserProfile() async {
-    try {} catch (e) {
+    try {
       String? accountId = await getAccountID();
       setState(ViewStatus.Loading);
-      userDTO = await UserDAO().getProfile(accountId!);
+      userDTO = await userDAO?.getProfile(accountId!);
       setState(ViewStatus.Completed);
+    } catch (e) {
       throw Exception(e);
     }
   }

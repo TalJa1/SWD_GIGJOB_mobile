@@ -12,7 +12,8 @@ class JobDAO extends BaseDAO {
 
   MetaDataDTO get metaDataDTO => _metaDataDTO;
 
-  Future<List<JobDTO>> getJob({Map<String, dynamic>? params, Map<String, dynamic>? body}) async {
+  Future<List<JobDTO>> getJob(
+      {Map<String, dynamic>? params, Map<String, dynamic>? body}) async {
     try {
       Map<String, dynamic>? body = {
         "filterKey": "",

@@ -8,6 +8,7 @@ import 'package:gigjob_mobile/enum/view_status.dart';
 import 'package:gigjob_mobile/view/edit_profile.dart';
 import 'package:gigjob_mobile/viewmodel/job_viewmodel.dart';
 import 'package:gigjob_mobile/viewmodel/user_viewmodel.dart';
+import 'package:intl/intl.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 // ignore: depend_on_referenced_packages
@@ -26,6 +27,7 @@ class _UserProfileState extends State<UserProfile> {
     super.initState();
     userViewModel = UserViewModel();
     userViewModel.getAppliedJob();
+    userViewModel.getUserProfile();
   }
 
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
@@ -34,26 +36,6 @@ class _UserProfileState extends State<UserProfile> {
   bool isInfo = true;
 
   late UserViewModel userViewModel;
-
-  UserDTO? user = UserViewModel().userDTO;
-
-  // final user = new UserDTO("Nguyen Thi Bong Van Hoa", "tt@gmail.com",
-  //     "Obispo Tajon", "0909999999", "Nivel B1", "20/01/2022", [
-  //   Experience("FPT", "Dev", "1 year"),
-  //   Experience("Google", "Manager", "6 months"),
-  //   Experience("HPT", "Master", "2 years"),
-  //   Experience("HPT", "Master", "2 years"),
-  //   Experience("HPT", "Master", "2 years"),
-  //   Experience("HPT", "Master", "2 years"),
-  // ]);
-
-  String? combineName() {
-    String? n1 = user!.firstName;
-    // String? n2 = user!.middleName;
-    // String? n3 = user!.lastName;
-    // String? nameCombine = n1 + n2 + n3;
-    return n1 ?? "Quest";
-  }
 
   Future<void> reload() async {
     userViewModel.getAppliedJob();
@@ -108,7 +90,7 @@ class _UserProfileState extends State<UserProfile> {
                                     MainAxisAlignment.spaceEvenly,
                                 children: [
                                   Text(
-                                    user!.firstName ?? "Quest",
+                                    "${userViewModel.userDTO!.firstName!.toUpperCase()} ${userViewModel.userDTO!.lastName!.toUpperCase()}",
                                     style: const TextStyle(
                                         color: Colors.black,
                                         fontSize: 25,
@@ -224,7 +206,10 @@ class _UserProfileState extends State<UserProfile> {
   }
 
   Widget userData(bool checkIsInfo) {
-    // final combinedList = _combineLists();
+    String? birth = userViewModel.userDTO!.birthday;
+    int firstSpaceIndex = birth!.indexOf("T");
+    String firstWord = birth.substring(0, firstSpaceIndex);
+    // String? getBirth = birth?.split(" ");
     return checkIsInfo
         ? Container(
             width: MediaQuery.of(context).size.width,
@@ -237,8 +222,8 @@ class _UserProfileState extends State<UserProfile> {
                   userInfo("Email", "Email"),
                   // userInfo("Address", user.address.toString()),
                   // userInfo("Phone", user.phone.toString()),
-                  userInfo("Education", user!.education.toString()),
-                  userInfo("Birth", user!.birthday.toString())
+                  userInfo("Education", "${userViewModel.userDTO!.education}"),
+                  userInfo("Birth", firstWord)
                 ]),
               ),
             ))
@@ -310,33 +295,37 @@ class _UserProfileState extends State<UserProfile> {
 
   Widget userInfo(String tittle, String userdata) {
     // ignore: sort_child_properties_last
-    return SizedBox(
-      width: MediaQuery.of(context).size.width,
-      child: Card(
-        child: Column(
-          children: [
-            Title(
-                color: Colors.black,
-                // ignore: prefer_const_constructors
-                child: Text(
-                  tittle,
-                  style: const TextStyle(
-                      fontSize: 20, fontWeight: FontWeight.bold),
-                )),
-            const SizedBox(
-              height: 10,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 20, right: 20),
-              child: Text(userdata),
-            ),
-            const SizedBox(
-              height: 10,
-            )
-          ],
+    if (userdata != null) {
+      return SizedBox(
+        width: MediaQuery.of(context).size.width,
+        child: Card(
+          child: Column(
+            children: [
+              Title(
+                  color: Colors.black,
+                  // ignore: prefer_const_constructors
+                  child: Text(
+                    tittle,
+                    style: const TextStyle(
+                        fontSize: 20, fontWeight: FontWeight.bold),
+                  )),
+              const SizedBox(
+                height: 10,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 20, right: 20),
+                child: Text(userdata),
+              ),
+              const SizedBox(
+                height: 10,
+              )
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    } else {
+      return userInfo(tittle, "No infomation");
+    }
   }
 
   Widget editBtn() {

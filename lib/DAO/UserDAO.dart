@@ -11,8 +11,9 @@ class UserDAO extends BaseDAO {
   MetaDataDTO get metaDataDTO => _metaDataDTO;
 
   Future<UserDTO> getProfile(String id) async {
-    final res = await ApiService.get("/workers/account/$id", null, null);
-    UserDTO userDTO = res.data;
+    // ignore: unnecessary_brace_in_string_interps
+    final res = await ApiService.get("/workers/account/${id}", null, null);
+    UserDTO userDTO = UserDTO.fromJson(res.data);
     return userDTO;
   }
 }
