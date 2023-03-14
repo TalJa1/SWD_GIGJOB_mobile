@@ -41,88 +41,117 @@ class _UserProfileState extends State<UserProfile> {
     userViewModel.getAppliedJob();
   }
 
+  Future<UserDTO?> fetchData() async {
+    try {
+      final UserDTO? user = userViewModel.userDTO;
+      return user;
+    } catch (e) {
+      print(e);
+      return null;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     // ignore: unused_local_variable
     // ignore: prefer_const_constructors
-    return ScopedModel<UserViewModel>(
-      model: userViewModel,
-      child: Scaffold(
-        resizeToAvoidBottomInset: false,
-        backgroundColor: Colors.white,
-        body: RefreshIndicator(
-          onRefresh: reload,
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                Stack(
-                  alignment: Alignment.topCenter,
-                  children: <Widget>[
-                    const SizedBox(
-                      height: 370,
-                    ),
-                    backGround(),
-                    // ignore: prefer_const_constructors
-                    Positioned(
-                        right: 28,
-                        top: 40,
-                        child: InkWell(
-                          onTap: () {
-                            userViewModel.processLogout();
-                          },
-                          child: const Text(
-                            "Logout",
-                            style: TextStyle(color: Colors.white, fontSize: 16),
+    return FutureBuilder<UserDTO?>(
+      future: fetchData(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          // Data has been successfully fetched, display it here
+          return ScopedModel<UserViewModel>(
+            model: userViewModel,
+            child: Scaffold(
+              resizeToAvoidBottomInset: false,
+              backgroundColor: Colors.white,
+              body: RefreshIndicator(
+                onRefresh: reload,
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Stack(
+                        alignment: Alignment.topCenter,
+                        children: <Widget>[
+                          const SizedBox(
+                            height: 370,
                           ),
-                        )),
-                    Positioned(top: 120, child: profileImage()),
-                    // ignore: prefer_const_constructors
-                    Positioned(
-                        top: 270,
-                        child: SizedBox(
-                            // height: 80,
-                            child: Padding(
-                          padding: const EdgeInsets.only(top: 10),
-                          child: Column(
-                            children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  Text(
-                                    "${userViewModel.userDTO!.firstName!.toUpperCase()} ${userViewModel.userDTO!.lastName!.toUpperCase()}",
-                                    style: const TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 25,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  // editBtn()
-                                ],
-                              ),
-                              stateButton()
-                            ],
-                          ),
-                        ))),
-                  ],
+                          backGround(),
+                          // ignore: prefer_const_constructors
+                          Positioned(
+                              right: 28,
+                              top: 40,
+                              child: InkWell(
+                                onTap: () {
+                                  userViewModel.processLogout();
+                                },
+                                child: const Text(
+                                  "Logout",
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 16),
+                                ),
+                              )),
+                          Positioned(top: 120, child: profileImage()),
+                          // ignore: prefer_const_constructors
+                          Positioned(
+                              top: 270,
+                              child: SizedBox(
+                                  // height: 80,
+                                  child: Padding(
+                                padding: const EdgeInsets.only(top: 10),
+                                child: Column(
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        Text(
+                                          "${userViewModel.userDTO!.firstName!.toUpperCase()} ${userViewModel.userDTO!.lastName!.toUpperCase()}",
+                                          style: const TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 25,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        // editBtn()
+                                      ],
+                                    ),
+                                    stateButton()
+                                  ],
+                                ),
+                              ))),
+                        ],
+                      ),
+                      ScopedModelDescendant<UserViewModel>(
+                          builder: (context, child, model) {
+                        if (userViewModel.status == ViewStatus.Loading) {
+                          return CircularProgressIndicator();
+                        } else if (userViewModel.status ==
+                            ViewStatus.Completed) {
+                          return userData(isInfo);
+                        }
+                        return Container();
+                      }),
+                      const SizedBox(
+                        height: 15,
+                      ),
+                    ],
+                  ),
                 ),
-                ScopedModelDescendant<UserViewModel>(
-                    builder: (context, child, model) {
-                  if (userViewModel.status == ViewStatus.Loading) {
-                    return CircularProgressIndicator();
-                  } else if (userViewModel.status == ViewStatus.Completed) {
-                    return userData(isInfo);
-                  }
-                  return Container();
-                }),
-                const SizedBox(
-                  height: 15,
-                ),
-              ],
+              ),
+              floatingActionButton: editBtn(),
             ),
-          ),
-        ),
-        floatingActionButton: editBtn(),
-      ),
+          );
+        } else if (snapshot.hasError) {
+          // An error occurred while fetching the data, display an error message
+          return Text("Error: ${snapshot.error}");
+        } else {
+          // Data is still being fetched, display a loading indicator
+          // ignore: prefer_const_constructors
+          return Center(
+            child: const CircularProgressIndicator(),
+          );
+        }
+      },
     );
   }
 
