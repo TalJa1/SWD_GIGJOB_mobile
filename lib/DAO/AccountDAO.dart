@@ -26,7 +26,7 @@ class AccountDAO extends BaseDAO {
         'idTokenString': idToken ?? "",
       };
 
-      final response = await ApiService.post(path, headers, null);
+      final response = await ApiService.post(path, null, headers, null);
 
       // final userDTO = AccountDTO.fromJson(response);
       Map<String, dynamic> decode = Jwt.parseJwt(response.data["accessToken"]);
@@ -65,7 +65,7 @@ class AccountDAO extends BaseDAO {
         'registrationTokens': [fcmToken]
       };
 
-      final response = await ApiService.post(path, headers, body);
+      final response = await ApiService.post(path, null,headers, body);
 
       // print(response);
       return true;

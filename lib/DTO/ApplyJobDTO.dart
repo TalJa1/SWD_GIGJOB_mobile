@@ -1,13 +1,15 @@
+import 'package:gigjob_mobile/DTO/JobDTO.dart';
+
 class ApplyJobDTO {
   String? workerId;
-  Job? job;
+  JobDTO? job;
   String? status;
 
   ApplyJobDTO({this.workerId, this.job, this.status});
 
   ApplyJobDTO.fromJson(Map<String, dynamic> json) {
     workerId = json['workerId'];
-    job = json['job'] != null ? new Job.fromJson(json['job']) : null;
+    job = json['job'] != null ? new JobDTO.fromJson(json['job']) : null;
     status = json['status'];
   }
 

@@ -12,9 +12,15 @@ class JobDAO extends BaseDAO {
 
   MetaDataDTO get metaDataDTO => _metaDataDTO;
 
-  Future<List<JobDTO>> getJob({Map<String, dynamic>? params}) async {
+  Future<List<JobDTO>> getJob({Map<String, dynamic>? params, Map<String, dynamic>? body}) async {
     try {
-      final res = await ApiService.get('/v1/job', null, params);
+      Map<String, dynamic>? body = {
+        "filterKey": "",
+        "value": "",
+        "operation": "",
+        "sortCriteria": {"sortKey": "createdDate", "direction": "asc"}
+      };
+      final res = await ApiService.post('/v1/job/search', params, null, body);
       List<dynamic> list = res.data;
       final jobs = JobDTO.fromList(list);
       return jobs;
@@ -26,7 +32,7 @@ class JobDAO extends BaseDAO {
 
   Future<bool> applyJob(String? id, int jobId) async {
     try {
-      final res = await ApiService.post('/v1/application', null,
+      final res = await ApiService.post('/v1/application', null, null,
           {"workerId": id, "status": "PENDING", "jobId": jobId});
       return true;
       // ignore: avoid_print

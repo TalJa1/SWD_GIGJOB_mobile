@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:gigjob_mobile/DTO/ApplyJobDTO.dart';
 import 'package:gigjob_mobile/DTO/JobDTO.dart';
 import 'package:gigjob_mobile/enum/view_status.dart';
 import 'package:gigjob_mobile/view/nav_screen.dart';
@@ -11,6 +12,7 @@ import 'package:gigjob_mobile/view/post_list_detail.dart';
 import 'package:gigjob_mobile/viewmodel/job_viewmodel.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:jiffy/jiffy.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 class PostList extends StatefulWidget {
   @override
@@ -30,16 +32,49 @@ class _PostListState extends State<PostList> {
 
   late JobViewModel jobViewModel;
 
+  final ScrollController _scrollController = ScrollController();
+  static const _pageSize = 5;
+  static int _page = 0;
+  bool _isLastPage = false;
+
+  Map<String, dynamic> params = {
+    "pageIndex": _page,
+    "pageSize": _pageSize,
+  };
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     jobViewModel = JobViewModel();
-    try {
-      jobViewModel.getJobs();
-    } catch (e) {
-      print(e);
+    _fetchPage(_page);
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent) {
+        // Trigger the loading event when the user reaches the end of the scroll view
+        if (!_isLastPage) {
+          _page++;
+          _fetchPage(_page);
+        }
+      }
+    });
+  }
+
+  Future<void> _fetchPage(int page) async {
+    setState(() {
+      params = {...params, "pageIndex": _page, "pageSize": _pageSize};
+    });
+    await jobViewModel.getJobs(params: params);
+    final newItems = jobViewModel.jobs;
+    if (newItems != null && newItems.length < _pageSize) {
+      _isLastPage = true;
     }
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -85,7 +120,9 @@ class _PostListState extends State<PostList> {
               ),
               Container(
                 padding: const EdgeInsets.fromLTRB(16, 32, 16, 32),
-                decoration: BoxDecoration(color: Colors.white, ),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                ),
                 child: TextField(
                   decoration: InputDecoration(
                     focusedBorder: OutlineInputBorder(
@@ -127,11 +164,18 @@ class _PostListState extends State<PostList> {
                           jobViewModel.getJobs();
                         },
                         child: SingleChildScrollView(
-                          child: Column(
-                            children: jobViewModel.jobs!
+                          controller: _scrollController,
+                          child: Column(children: [
+                            ...jobViewModel.jobs!
                                 .map((e) => _buildPostLists(e))
                                 .toList(),
-                          ),
+                            if (jobViewModel.status == ViewStatus.LoadMore) ...[
+                              const SizedBox(
+                                  width: 50,
+                                  height: 50,
+                                  child: CircularProgressIndicator())
+                            ]
+                          ]),
                         ),
                       ),
                     );
@@ -274,9 +318,22 @@ class _PostListState extends State<PostList> {
   }
 
   Widget _buildPostLists(JobDTO job) {
+
+    ApplyJobDTO? isApplied() {
+    List<ApplyJobDTO>? list = jobViewModel.appliedjob;
+
+    for (var i = 0; i < list!.length; i++) {
+      if (list[i].job?.id == job.id) {
+        return list[i];
+      }
+    }
+    print("nulls");
+    return null;
+  }
+
     return GestureDetector(
       onTap: () {
-        Get.to(PostListDetail(data: job));
+        Get.to(PostListDetail(data: job, appliedJob: jobViewModel.appliedjob,));
       },
       child: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -326,7 +383,7 @@ class _PostListState extends State<PostList> {
                       Jiffy("${job.createdDate}").fromNow(),
                       style: TextStyle(
                         fontSize: 14,
-                        color: Colors.grey[600],
+                        color: Colors.indigo,
                       ),
                     ),
                   ],

@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:gigjob_mobile/DAO/AccountDAO.dart';
 import 'package:gigjob_mobile/DAO/JobDAO.dart';
+import 'package:gigjob_mobile/DTO/ApplyJobDTO.dart';
 import 'package:gigjob_mobile/DTO/JobDTO.dart';
 import 'package:gigjob_mobile/DTO/WorkerDTO.dart';
 import 'package:gigjob_mobile/accesories/dialog.dart';
@@ -18,8 +19,9 @@ class PostListDetail extends StatefulWidget {
   _PostListDetailState createState() => _PostListDetailState();
 
   final JobDTO data;
+  final List<ApplyJobDTO>? appliedJob;
 
-  const PostListDetail({super.key, required this.data});
+  const PostListDetail({super.key, required this.data, this.appliedJob});
 }
 
 class _PostListDetailState extends State<PostListDetail> {
@@ -44,8 +46,28 @@ class _PostListDetailState extends State<PostListDetail> {
     return "";
   }
 
+  Future<String?> getWorkerId() async {
+    String? accountId = await getAccountID();
+    WorkerDTO? workDTO = await JobDAO().getWorkerId(accountId!);
+    return workDTO.id;
+  }
+
+  ApplyJobDTO? isApplied() {
+    List<ApplyJobDTO>? list = widget.appliedJob;
+
+    for (var i = 0; i < list!.length; i++) {
+      if (list[i].job?.id == widget.data.id) {
+        return list[i];
+      }
+    }
+    print("nulls");
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
+
+    print(isApplied());
     return Scaffold(
         body: Padding(
           padding: const EdgeInsets.fromLTRB(16, 48, 16, 0),
@@ -191,7 +213,6 @@ class _PostListDetailState extends State<PostListDetail> {
                   labelColor: Colors.black,
                   indicatorColor: Colors.black,
                   enableFeedback: true,
-
                   unselectedLabelColor: Colors.grey,
                   tabs: [
                     Tab(text: 'Job type'),
@@ -202,7 +223,7 @@ class _PostListDetailState extends State<PostListDetail> {
                 ),
               ),
               Container(
-                  height: 200,//height of TabBarView
+                  height: 200, //height of TabBarView
                   decoration: BoxDecoration(
                       border: Border(
                           top: BorderSide(color: Colors.grey, width: 0.5))),
@@ -228,7 +249,8 @@ class _PostListDetailState extends State<PostListDetail> {
                         Row(
                           children: [
                             Text("Shop Name:", style: TextStyle(fontSize: 16)),
-                            Text(" ${widget.data.shop?.name}",
+                            Text(
+                              " ${widget.data.shop?.name}",
                             )
                           ],
                         ),
@@ -260,24 +282,27 @@ class _PostListDetailState extends State<PostListDetail> {
   }
 
   Widget _buildButtonApply() {
+
     return InkWell(
-      onTap: () {
+
+      onTap: isApplied == null ? () {
         showDialog<String>(
             context: context,
             builder: (BuildContext context) => _buildDialog(context));
-      },
+      } : null,
+      
       child: Padding(
         padding: const EdgeInsets.fromLTRB(16, 48, 16, 16),
         child: Container(
             height: 50,
             width: double.infinity,
             decoration: BoxDecoration(
-              color: Colors.black,
+              color: isApplied() == null ? Colors.black : Colors.grey,
               borderRadius: BorderRadius.circular(25),
             ),
             child: Center(
               child: Text(
-                'Apply Now!!!',
+                isApplied() == null ? 'Apply Now!!!' : 'You are applying',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 20,
