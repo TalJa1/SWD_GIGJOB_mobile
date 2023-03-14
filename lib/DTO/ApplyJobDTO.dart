@@ -129,4 +129,9 @@ class JobType {
     data['name'] = this.name;
     return data;
   }
+
+  static fromList(data) {
+    var list = data as List;
+    return list.map((map) => JobType.fromJson(map)).toList();
+  }
 }

@@ -17,6 +17,7 @@ class JobViewModel extends BaseModel {
   JobDAO? jobDAO;
   List<JobDTO>? jobs;
   List<ApplyJobDTO>? appliedjob;
+  List<JobType>? jobType;
   JobViewModel() {
     jobDAO = JobDAO();
   }
@@ -28,12 +29,12 @@ class JobViewModel extends BaseModel {
         // List<ProductDTO>? tmp = await productDAO?.getProducts(params: params);
         jobs = [
           ...(jobs ?? []),
-          ...(await jobDAO?.getJob(params: params) ?? [])
+          ...(await jobDAO?.getJob(params: params, body: body) ?? [])
         ];
         setState(ViewStatus.Completed);
       } else {
         setState(ViewStatus.Loading);
-        jobs = await jobDAO?.getJob(params: params);
+        jobs = await jobDAO?.getJob(params: params, body: body);
         String? accountId = await getAccountID();
         WorkerDTO? workDTO = await jobDAO?.getWorkerId(accountId!);
         appliedjob = await jobDAO?.getJobApplied(workDTO?.id);
@@ -45,10 +46,6 @@ class JobViewModel extends BaseModel {
       // setState(ViewStatus.Completed);
       // print(products);
     } catch (e) {
-      // await FirebaseAuth.instance.signOut();
-      // await removeALL();
-      // await ApiService.setToken("");
-      // Get.offAll(LoginHome());
       throw Exception(e);
     }
   }

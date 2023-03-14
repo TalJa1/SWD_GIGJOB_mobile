@@ -42,6 +42,14 @@ class _PostListState extends State<PostList> {
     "pageSize": _pageSize,
   };
 
+  Map<String, dynamic> body = {
+    "searchKey": "",
+    "filterKey": "jobType",
+    "value": "1",
+    "operation": "eq",
+    "sortCriteria": {"sortKey": "createdDate", "direction": "acs"}
+  };
+
   @override
   void initState() {
     // TODO: implement initState
@@ -64,11 +72,36 @@ class _PostListState extends State<PostList> {
     setState(() {
       params = {...params, "pageIndex": _page, "pageSize": _pageSize};
     });
-    await jobViewModel.getJobs(params: params);
+    await jobViewModel.getJobs(params: params, body: body);
     final newItems = jobViewModel.jobs;
     if (newItems != null && newItems.length < _pageSize) {
       _isLastPage = true;
     }
+  }
+
+  void _onSummitSearch(String searchText) async {
+    setState(() {
+      _page = 0;
+      params = {...params, "pageIndex": 0};
+      body = {
+        ...body,
+        "searchKey": searchText,
+        "filterKey": "jobType",
+        "value": "1",
+        "operation": "eq",
+        "sortCriteria": {"sortKey": "createdDate", "direction": "acs"}
+      };
+    });
+    print(searchText);
+    await jobViewModel.getJobs(params: params, body: body);
+  }
+
+  void filterByCate(String? id) async {
+    setState(() {
+      _page = 1;
+      params = {...params, "page": "1", "category_id": id.toString()};
+    });
+    print(params);
   }
 
   @override
@@ -81,115 +114,127 @@ class _PostListState extends State<PostList> {
   Widget build(BuildContext context) {
     return ScopedModel<JobViewModel>(
       model: jobViewModel,
-      child: Scaffold(
-        body: SafeArea(
-          child: Column(
-            children: [
-              Container(
-                color: Colors.white,
-                padding: const EdgeInsets.fromLTRB(16, 48, 16, 0),
-                child: Stack(
-                  children: [
-                    const Align(
-                      alignment: Alignment.center,
-                      child: Text(
-                        "POST",
-                        style: TextStyle(
-                          fontWeight: FontWeight.w900,
-                          fontSize: 32.0,
+      child: SafeArea(
+        child: Scaffold(
+          appBar: AppBar(
+            backgroundColor: Color.fromARGB(255, 45, 45, 45),
+            title: InkWell(
+              onTap: () {
+                Get.to(RootScreen());
+              },
+              child: Row(
+                children: [
+                  CircleAvatar(
+                    backgroundColor: Colors.white,
+                    radius: 25,
+                    child: Container(
+                      width: 50,
+                      height: 50,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        image: DecorationImage(
+                          fit: BoxFit.fill,
+                          image: AssetImage('assets/images/GigJob.png'),
                         ),
                       ),
                     ),
-                    Align(
-                        alignment: Alignment.topRight,
-                        child: ElevatedButton.icon(
-                          style: ElevatedButton.styleFrom(
-                              foregroundColor: Colors.white,
-                              backgroundColor: Colors.black),
-                          onPressed: () {
-                            showDialog<String>(
-                                context: context,
-                                builder: (BuildContext context) =>
-                                    _buildDialog(context));
-                          },
-                          icon: const Icon(Icons.filter_list_alt),
-                          label: const Text('Filter'),
-                        )),
-                  ],
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.fromLTRB(16, 32, 16, 32),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                ),
-                child: TextField(
-                  decoration: InputDecoration(
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20.0),
-                      borderSide: const BorderSide(color: Colors.black),
-                    ),
-                    filled: true,
-                    fillColor: Colors.white,
-                    labelText: 'Search',
-                    labelStyle: const TextStyle(color: Colors.black),
-                    border: const OutlineInputBorder(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(32.0),
-                      ),
-                    ),
-                    suffixIcon: const Icon(
-                      Icons.search,
-                      color: Colors.black,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 0, 0, 0),
+                    child: const Text(
+                      'GIG JOB',
+                      style: TextStyle(fontSize: 32),
                     ),
                   ),
+                ],
+              ),
+            ),
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.filter_list_alt),
+                tooltip: 'Show Snackbar',
+                onPressed: () {
+                  showDialog<String>(
+                      context: context,
+                      builder: (BuildContext context) => _buildDialog(context));
+                },
+              ),
+            ],
+            bottom: PreferredSize(
+              preferredSize: Size.fromHeight(100.0),
+              child: Container(
+                padding: EdgeInsets.fromLTRB(16, 0, 16, 16),
+                child: TextField(
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: Colors.white,
+                    hintText: 'Search by title',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20.0),
+                      borderSide: BorderSide.none,
+                    ),
+                    suffixIcon: Icon(Icons.search),
+                  ),
                   textInputAction: TextInputAction.search,
-                  style: const TextStyle(fontSize: 16),
+                  style: TextStyle(fontSize: 16.0),
                   onSubmitted: (value) {
-                    // Perform the search action
+                    _onSummitSearch(value);
                   },
                 ),
               ),
-              ScopedModelDescendant<JobViewModel>(
-                builder: (context, child, model) {
-                  if (jobViewModel.status == ViewStatus.Loading) {
-                    return const SizedBox(
-                        width: 100,
-                        height: 100,
-                        child: CircularProgressIndicator());
-                  } else {
-                    return Expanded(
-                      child: RefreshIndicator(
-                        onRefresh: () async {
-                          jobViewModel.getJobs();
-                        },
-                        child: SingleChildScrollView(
-                          controller: _scrollController,
-                          child: Column(children: [
-                            ...jobViewModel.jobs!
-                                .map((e) => _buildPostLists(e))
-                                .toList(),
-                            if (jobViewModel.status == ViewStatus.LoadMore) ...[
-                              const SizedBox(
-                                  width: 50,
-                                  height: 50,
-                                  child: CircularProgressIndicator())
-                            ]
-                          ]),
-                        ),
-                      ),
-                    );
-                  }
-                },
-              )
-            ],
+            ),
           ),
+          body: SafeArea(
+            child: Column(
+              children: [
+                ScopedModelDescendant<JobViewModel>(
+                  builder: (context, child, model) {
+                    if (jobViewModel.status == ViewStatus.Loading) {
+                      return Center(
+                        child: Container(
+                            padding: EdgeInsets.fromLTRB(0, 16, 0, 0),
+                            width: 100,
+                            height: 100,
+                            child: CircularProgressIndicator()),
+                      );
+                    } else {
+                      return Expanded(
+                        child: RefreshIndicator(
+                          onRefresh: () async {
+                            setState(() {
+                              _page = 0;
+                            });
+                            _fetchPage(0);
+                          },
+                          child: SingleChildScrollView(
+                            controller: _scrollController,
+                            child: Column(children: [
+                              ...jobViewModel.jobs!
+                                  .map((e) => _buildPostLists(e))
+                                  .toList(),
+                              if (jobViewModel.status ==
+                                  ViewStatus.LoadMore) ...[
+                                const SizedBox(
+                                    width: 50,
+                                    height: 50,
+                                    child: CircularProgressIndicator())
+                              ]
+                            ]),
+                          ),
+                        ),
+                      );
+                    }
+                  },
+                )
+              ],
+            ),
+          ),
+          // bottomNavigationBar: StatefulBuilder(
+          //   builder: (BuildContext context, StateSetter setState) {
+          //     return AppFooter();
+          //   },
+          // ),
         ),
-        // bottomNavigationBar: StatefulBuilder(
-        //   builder: (BuildContext context, StateSetter setState) {
-        //     return AppFooter();
-        //   },
-        // ),
       ),
     );
   }
@@ -318,22 +363,24 @@ class _PostListState extends State<PostList> {
   }
 
   Widget _buildPostLists(JobDTO job) {
-
     ApplyJobDTO? isApplied() {
-    List<ApplyJobDTO>? list = jobViewModel.appliedjob;
+      List<ApplyJobDTO>? list = jobViewModel.appliedjob;
 
-    for (var i = 0; i < list!.length; i++) {
-      if (list[i].job?.id == job.id) {
-        return list[i];
+      for (var i = 0; i < list!.length; i++) {
+        if (list[i].job?.id == job.id) {
+          return list[i];
+        }
       }
+      print("nulls");
+      return null;
     }
-    print("nulls");
-    return null;
-  }
 
     return GestureDetector(
       onTap: () {
-        Get.to(PostListDetail(data: job, appliedJob: jobViewModel.appliedjob,));
+        Get.to(PostListDetail(
+          data: job,
+          appliedJob: jobViewModel.appliedjob,
+        ));
       },
       child: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -371,20 +418,39 @@ class _PostListState extends State<PostList> {
                       ),
                     ),
                     SizedBox(height: 8),
-                    Text(
-                      "Skill: ${job.skill}",
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.grey[600],
+                    Container(
+                      height: 64,
+                      constraints: new BoxConstraints(maxHeight: 64),
+                      child: Text(
+                        "Skill: ${job.skill}",
+                        maxLines: 3,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.grey[600],
+                        ),
                       ),
                     ),
                     SizedBox(height: 8),
-                    Text(
-                      Jiffy("${job.createdDate}").fromNow(),
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.indigo,
-                      ),
+                    Row(
+                      children: [
+                        Text(
+                          "Created: ",
+                          maxLines: 3,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey[600],
+                          ),
+                        ),
+                        Text(
+                          Jiffy("${job.createdDate}").fromNow(),
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.indigo,
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
