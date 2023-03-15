@@ -113,6 +113,7 @@ class _PostListState extends State<PostList> {
       child: SafeArea(
         child: Scaffold(
           appBar: AppBar(
+            toolbarHeight: 100,
             backgroundColor: const Color.fromARGB(255, 45, 45, 45),
             title: InkWell(
               onTap: () {
@@ -220,6 +221,7 @@ class _PostListState extends State<PostList> {
                           showModalBottomSheet(
                               context: context,
                               isScrollControlled: true,
+                              enableDrag: false,
                               builder: (context) {
                                 return _buidBottomSheet();
                               });
@@ -345,13 +347,15 @@ class _PostListState extends State<PostList> {
   }
 
   Widget _buildMultipSelectCheckBox() {
+    if(jobViewModel.jobTypes == null){
+      return Container();
+    }
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
       child: MultiSelectDialogField(
         decoration: const BoxDecoration(
           border: null,
         ),
-
         buttonIcon: const Icon(Icons.arrow_forward_ios),
         selectedColor: Colors.black,
 
