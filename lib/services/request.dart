@@ -44,14 +44,22 @@ class ApiService {
         await FirebaseAuth.instance.signOut();
         await removeALL();
         await ApiService.setToken("");
+        print(baseHeaders);
         Get.offAll(LoginHome());
         throw Exception(e.message);
       }
       if (e.response != null) {
+        
         throw Exception(e.response);
       } else {
+        await FirebaseAuth.instance.signOut();
+        await removeALL();
+        await ApiService.setToken("");
+        print(baseHeaders);
+        Get.offAll(LoginHome());
         throw Exception(e.message);
       }
+      
     }
   }
 
@@ -71,6 +79,13 @@ class ApiService {
       );
       return response;
     } on DioError catch (e) {
+      if (e.response?.statusCode == 401) {
+        await FirebaseAuth.instance.signOut();
+        await removeALL();
+        await ApiService.setToken("");
+        Get.offAll(LoginHome());
+        throw Exception(e.message);
+      }
       if (e.response != null) {
         throw Exception(e.response!.data);
       } else {

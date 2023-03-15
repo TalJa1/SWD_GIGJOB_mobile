@@ -69,7 +69,14 @@ class _PostListDetailState extends State<PostListDetail> {
   Widget build(BuildContext context) {
     print(isApplied());
     return Scaffold(
+      
         appBar: AppBar(
+          leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
           backgroundColor: Color.fromARGB(255, 45, 45, 45),
         ),
         body: Padding(
