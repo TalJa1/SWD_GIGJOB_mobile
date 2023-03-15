@@ -298,58 +298,62 @@ class _PostListState extends State<PostList> {
   }
 
   Widget _buidBottomSheet() {
-    return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios),
-          onPressed: () {
-            Navigator.pop(context);
-            print(selectedItems);
-            preSelectItems = [...selectedItems];
-          },
-        ),
-        foregroundColor: Colors.black,
-        title: const Text(
-          "Filter",
-        ),
-        centerTitle: true,
-        backgroundColor: Colors.white,
-        elevation: 0,
-        actions: [
-          Padding(
-            padding: EdgeInsets.only(right: 28),
-            child: Center(
-              child: InkWell(
-                onTap: () {},
-                child: Text(
-                  "Reset",
-                  style: TextStyle(fontSize: 16),
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          toolbarHeight: 100,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back_ios),
+            onPressed: () {
+              Navigator.pop(context);
+              print(selectedItems);
+              preSelectItems = [...selectedItems];
+            },
+          ),
+          foregroundColor: Colors.black,
+          title: const Text(
+            "Filter",
+          ),
+          centerTitle: true,
+          backgroundColor: Colors.white,
+          elevation: 0,
+          actions: [
+            Padding(
+              padding: EdgeInsets.only(right: 28),
+              child: Center(
+                child: InkWell(
+                  onTap: () {},
+                  child: Text(
+                    "Reset",
+                    style: TextStyle(fontSize: 16),
+                  ),
                 ),
               ),
-            ),
-          )
-        ],
-      ),
-      body: Container(
-        color: Colors.white,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            _buildMultipSelectCheckBox(),
-            const Divider(
-              thickness: 1,
             )
           ],
         ),
+        body: Container(
+          color: Colors.white,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              _buildMultipSelectCheckBox(),
+              const Divider(
+                thickness: 1,
+              )
+            ],
+          ),
+        ),
+        bottomNavigationBar: _buildFilterButton(),
       ),
-      bottomNavigationBar: _buildFilterButton(),
     );
   }
 
   Widget _buildMultipSelectCheckBox() {
-    if(jobViewModel.jobTypes == null){
-      return Container();
-    }
+    // if(jobViewModel.jobTypes == null){
+    //   return Container();
+    // }
+    List<JobType> emptyList = [];
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
       child: MultiSelectDialogField(
@@ -371,9 +375,11 @@ class _PostListState extends State<PostList> {
         ),
         initialValue: preSelectItems,
 
-        items: jobViewModel.jobTypes!
-            .map((e) => MultiSelectItem(e, e.name ?? ''))
-            .toList(),
+        items: jobViewModel.jobTypes == null
+            ? emptyList.map((e) => MultiSelectItem(e, e.name ?? '')).toList()
+            : jobViewModel.jobTypes!
+                .map((e) => MultiSelectItem(e, e.name ?? ''))
+                .toList(),
         listType: MultiSelectListType.CHIP,
 
         //
