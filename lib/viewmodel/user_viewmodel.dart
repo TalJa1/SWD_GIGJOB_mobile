@@ -1,7 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
+import 'package:gigjob_mobile/DAO/UserDAO.dart';
 import 'package:gigjob_mobile/DTO/ApplyJobDTO.dart';
 import 'package:gigjob_mobile/DTO/JobDTO.dart';
+import 'package:gigjob_mobile/DTO/UserDTO.dart';
 import 'package:gigjob_mobile/DTO/WorkerDTO.dart';
 import 'package:gigjob_mobile/enum/view_status.dart';
 import 'package:gigjob_mobile/utils/share_pref.dart';
@@ -12,16 +14,18 @@ import '../DAO/JobDAO.dart';
 
 class UserViewModel extends BaseModel {
   JobDAO? jobDAO;
+  UserDAO? userDAO;
   List<JobDTO>? jobs;
   List<ApplyJobDTO>? appliedjob;
+  UserDTO? userDTO;
   // ignore: non_constant_identifier_names
   UserViewModel() {
     jobDAO = JobDAO();
+    userDAO = UserDAO();
   }
 
   Future getAppliedJob() async {
     try {
-      
       setState(ViewStatus.Loading);
       String? accountId = await getAccountID();
       WorkerDTO? workDTO = await jobDAO?.getWorkerId(accountId!);
@@ -39,6 +43,17 @@ class UserViewModel extends BaseModel {
       Get.offAll(LoginHome());
     } catch (e) {
       print(e);
+    }
+  }
+
+  Future getUserProfile() async {
+    try {
+      String? accountId = await getAccountID();
+      setState(ViewStatus.Loading);
+      userDTO = await userDAO?.getProfile(accountId!);
+      setState(ViewStatus.Completed);
+    } catch (e) {
+      throw Exception(e);
     }
   }
 }

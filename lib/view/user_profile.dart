@@ -8,6 +8,7 @@ import 'package:gigjob_mobile/enum/view_status.dart';
 import 'package:gigjob_mobile/view/edit_profile.dart';
 import 'package:gigjob_mobile/viewmodel/job_viewmodel.dart';
 import 'package:gigjob_mobile/viewmodel/user_viewmodel.dart';
+import 'package:intl/intl.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 // ignore: depend_on_referenced_packages
@@ -26,6 +27,7 @@ class _UserProfileState extends State<UserProfile> {
     super.initState();
     userViewModel = UserViewModel();
     userViewModel.getAppliedJob();
+    userViewModel.getUserProfile();
   }
 
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
@@ -35,105 +37,121 @@ class _UserProfileState extends State<UserProfile> {
 
   late UserViewModel userViewModel;
 
-  final user = new UserDTO("Nguyen Thi Bong Van Hoa", "tt@gmail.com",
-      "Obispo Tajon", "0909999999", "Nivel B1", "20/01/2022", [
-    Experience("FPT", "Dev", "1 year"),
-    Experience("Google", "Manager", "6 months"),
-    Experience("HPT", "Master", "2 years"),
-    Experience("HPT", "Master", "2 years"),
-    Experience("HPT", "Master", "2 years"),
-    Experience("HPT", "Master", "2 years"),
-  ]);
-
   Future<void> reload() async {
     userViewModel.getAppliedJob();
+  }
+
+  Future<UserDTO?> fetchData() async {
+    try {
+      final UserDTO? user = userViewModel.userDTO;
+      return user;
+    } catch (e) {
+      print(e);
+      return null;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     // ignore: unused_local_variable
     // ignore: prefer_const_constructors
-    return ScopedModel<UserViewModel>(
-      model: userViewModel,
-      child: Scaffold(
-        resizeToAvoidBottomInset: false,
-        backgroundColor: Colors.white,
-        body: RefreshIndicator(
-          onRefresh: reload,
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                Stack(
-                  alignment: Alignment.topCenter,
-                  children: <Widget>[
-      
-                    const SizedBox(
-                      height: 370,
-                    ),
-                    backGround(),
-                    // ignore: prefer_const_constructors
-                    Positioned(
-                      right: 28,
-                      top: 40,
-                      child: InkWell(
-                        onTap: (){
-                          userViewModel.processLogout();
-                        },
-                        child: const Text("Logout",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16
-                        ),),
-                      )),
-                    Positioned(top: 120, child: profileImage()),
-                    // ignore: prefer_const_constructors
-                    Positioned(
-                        top: 270,
-                        child: SizedBox(
-                            // height: 80,
-                            child: Padding(
-                          padding: const EdgeInsets.only(top: 10),
-                          child: Column(
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  Text(
-                                    user.name.toString(),
-                                    style: const TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 25,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  // editBtn()
-                                ],
-                              ),
-                              stateButton()
-                            ],
+    return FutureBuilder<UserDTO?>(
+      future: fetchData(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          // Data has been successfully fetched, display it here
+          return ScopedModel<UserViewModel>(
+            model: userViewModel,
+            child: Scaffold(
+              resizeToAvoidBottomInset: false,
+              backgroundColor: Colors.white,
+              body: RefreshIndicator(
+                onRefresh: reload,
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Stack(
+                        alignment: Alignment.topCenter,
+                        children: <Widget>[
+                          const SizedBox(
+                            height: 370,
                           ),
-                        ))),
-                  ],
+                          backGround(),
+                          // ignore: prefer_const_constructors
+                          Positioned(
+                              right: 28,
+                              top: 40,
+                              child: InkWell(
+                                onTap: () {
+                                  userViewModel.processLogout();
+                                },
+                                child: const Text(
+                                  "Logout",
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 16),
+                                ),
+                              )),
+                          Positioned(top: 120, child: profileImage()),
+                          // ignore: prefer_const_constructors
+                          Positioned(
+                              top: 270,
+                              child: SizedBox(
+                                  // height: 80,
+                                  child: Padding(
+                                padding: const EdgeInsets.only(top: 10),
+                                child: Column(
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        Text(
+                                          "${userViewModel.userDTO!.firstName!.toUpperCase()} ${userViewModel.userDTO!.lastName!.toUpperCase()}",
+                                          style: const TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 25,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        // editBtn()
+                                      ],
+                                    ),
+                                    stateButton()
+                                  ],
+                                ),
+                              ))),
+                        ],
+                      ),
+                      ScopedModelDescendant<UserViewModel>(
+                          builder: (context, child, model) {
+                        if (userViewModel.status == ViewStatus.Loading) {
+                          return CircularProgressIndicator();
+                        } else if (userViewModel.status ==
+                            ViewStatus.Completed) {
+                          return userData(isInfo);
+                        }
+                        return Container();
+                      }),
+                      const SizedBox(
+                        height: 15,
+                      ),
+                    ],
+                  ),
                 ),
-                ScopedModelDescendant<UserViewModel>(
-                  builder: (context, child, model) {
-                    if(userViewModel.status == ViewStatus.Loading){
-                      return CircularProgressIndicator();
-                    } else if(userViewModel.status == ViewStatus.Completed){
-                      return userData(isInfo);
-                    } 
-                    return Container();
-                  }),
-              
-                
-                const SizedBox(
-                  height: 15,
-                ),
-              ],
+              ),
+              floatingActionButton: editBtn(),
             ),
-          ),
-        ),
-        floatingActionButton: editBtn(),
-      ),
+          );
+        } else if (snapshot.hasError) {
+          // An error occurred while fetching the data, display an error message
+          return Text("Error: ${snapshot.error}");
+        } else {
+          // Data is still being fetched, display a loading indicator
+          // ignore: prefer_const_constructors
+          return Center(
+            child: const CircularProgressIndicator(),
+          );
+        }
+      },
     );
   }
 
@@ -217,7 +235,10 @@ class _UserProfileState extends State<UserProfile> {
   }
 
   Widget userData(bool checkIsInfo) {
-    // final combinedList = _combineLists();
+    String? birth = userViewModel.userDTO!.birthday;
+    int firstSpaceIndex = birth!.indexOf("T");
+    String firstWord = birth.substring(0, firstSpaceIndex);
+    // String? getBirth = birth?.split(" ");
     return checkIsInfo
         ? Container(
             width: MediaQuery.of(context).size.width,
@@ -227,11 +248,11 @@ class _UserProfileState extends State<UserProfile> {
               child: Padding(
                 padding: const EdgeInsets.only(bottom: 10),
                 child: Column(children: [
-                  userInfo("Email", user.email.toString()),
-                  userInfo("Address", user.address.toString()),
-                  userInfo("Phone", user.phone.toString()),
-                  userInfo("Education", user.education.toString()),
-                  userInfo("Birth", user.birth.toString())
+                  userInfo("Email", "Email"),
+                  // userInfo("Address", user.address.toString()),
+                  // userInfo("Phone", user.phone.toString()),
+                  userInfo("Education", "${userViewModel.userDTO!.education}"),
+                  userInfo("Birth", firstWord)
                 ]),
               ),
             ))
@@ -281,10 +302,9 @@ class _UserProfileState extends State<UserProfile> {
                                 children: [
                                   const Text('Status:'),
                                   Text(
-                                      "${userViewModel.appliedjob![index].status}",
-                                      style: TextStyle(
-                                        color: Colors.green
-                                      ),)
+                                    "${userViewModel.appliedjob![index].status}",
+                                    style: TextStyle(color: Colors.green),
+                                  )
                                 ],
                               ),
                               const SizedBox(
@@ -304,33 +324,37 @@ class _UserProfileState extends State<UserProfile> {
 
   Widget userInfo(String tittle, String userdata) {
     // ignore: sort_child_properties_last
-    return SizedBox(
-      width: MediaQuery.of(context).size.width,
-      child: Card(
-        child: Column(
-          children: [
-            Title(
-                color: Colors.black,
-                // ignore: prefer_const_constructors
-                child: Text(
-                  tittle,
-                  style: const TextStyle(
-                      fontSize: 20, fontWeight: FontWeight.bold),
-                )),
-            const SizedBox(
-              height: 10,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 20, right: 20),
-              child: Text(userdata),
-            ),
-            const SizedBox(
-              height: 10,
-            )
-          ],
+    if (userdata != null) {
+      return SizedBox(
+        width: MediaQuery.of(context).size.width,
+        child: Card(
+          child: Column(
+            children: [
+              Title(
+                  color: Colors.black,
+                  // ignore: prefer_const_constructors
+                  child: Text(
+                    tittle,
+                    style: const TextStyle(
+                        fontSize: 20, fontWeight: FontWeight.bold),
+                  )),
+              const SizedBox(
+                height: 10,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 20, right: 20),
+                child: Text(userdata),
+              ),
+              const SizedBox(
+                height: 10,
+              )
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    } else {
+      return userInfo(tittle, "No infomation");
+    }
   }
 
   Widget editBtn() {
