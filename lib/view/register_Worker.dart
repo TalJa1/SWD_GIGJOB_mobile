@@ -24,7 +24,9 @@ class _RegisterWorkerPageState extends State<RegisterWorkerPage> {
   XFile? pickedFile;
 
   final _formKey = GlobalKey<FormState>();
-  final _textController = TextEditingController();
+  final _textnameController = TextEditingController();
+  final _textdiplomaController = TextEditingController();
+  final _textbirtdayController = TextEditingController();
 
   Future pickImg() async {
     // ignore: unused_local_variable
@@ -88,7 +90,6 @@ class _RegisterWorkerPageState extends State<RegisterWorkerPage> {
               child: formEdit(),
             )),
             // Expanded(child: )
-            uploadbtn(),
             const SizedBox(height: 10)
           ],
         ));
@@ -141,57 +142,107 @@ class _RegisterWorkerPageState extends State<RegisterWorkerPage> {
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
         child: SingleChildScrollView(
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const Text(
-                  'Welcome to GIGJOB',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold, // to make text bold
-                    fontSize: 24, // to set font size
-                  ),
-                  textAlign: TextAlign.center, // to center the text
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const Text(
+                'Welcome to GIGJOB',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold, // to make text bold
+                  fontSize: 24, // to set font size
                 ),
-                const SizedBox(
-                  height: 20,
-                ),
-                textForm("name"),
-                textForm("education"),
-                textForm("birth"),
-              ],
-            ),
+                textAlign: TextAlign.center, // to center the text
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              textForm(),
+            ],
           ),
         ));
   }
 
-  Widget textForm(String field) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-      child: TextFormField(
-        controller: _textController,
-        decoration: InputDecoration(
-          border: const OutlineInputBorder(),
-          labelText: 'Enter your $field',
-        ),
-        validator: (value) {
-          if (value!.isEmpty) {
-            return 'Please enter your $field';
-          }
-          return null;
-        },
-        onChanged: (value) {
-          if (_formKey.currentState!.validate()) {
-            // The form is valid, do something with the input
-            print('User entered: $value');
-          }
-        },
+  Widget textForm() {
+    return Form(
+      key: _formKey,
+      child: Column(
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+            child: TextFormField(
+              controller: _textnameController,
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: 'Enter your name',
+              ),
+              validator: (value1) {
+                if (value1!.isEmpty) {
+                  return 'Please enter your name';
+                }
+                return null;
+              },
+              onChanged: (value1) {
+                if (_formKey.currentState!.validate()) {
+                  // The form is valid, do something with the input
+                  print('User entered: $value1');
+                }
+              },
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+            child: TextFormField(
+              controller: _textdiplomaController,
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: 'Enter your diploma',
+              ),
+              validator: (value2) {
+                if (value2!.isEmpty) {
+                  return 'Please enter your diploma';
+                }
+                return null;
+              },
+              onChanged: (value2) {
+                if (_formKey.currentState!.validate()) {
+                  // The form is valid, do something with the input
+                  print('User entered: $value2');
+                }
+              },
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+            child: TextFormField(
+              controller: _textbirtdayController,
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: 'Enter your birthday',
+              ),
+              validator: (value3) {
+                if (value3!.isEmpty) {
+                  return 'Please enter your birthday';
+                }
+                return null;
+              },
+              onChanged: (value3) {
+                if (_formKey.currentState!.validate()) {
+                  // The form is valid, do something with the input
+                  print('User entered: $value3');
+                }
+              },
+            ),
+          ),
+          Container(
+            height: MediaQuery.of(context).size.height / 10,
+          ),
+          uploadbtn(_formKey.currentState),
+        ],
       ),
     );
   }
 
-  Widget uploadbtn() {
+  Widget uploadbtn(FormState? state) {
     return Column(
       children: [
         const Text(
@@ -207,7 +258,9 @@ class _RegisterWorkerPageState extends State<RegisterWorkerPage> {
           padding: const EdgeInsets.only(left: 16, right: 16),
           child: TextButton(
             onPressed: () {
-              UploadFileService().uploadImage(uploadfile!);
+              if (state!.validate()) {
+                UploadFileService().uploadImage(uploadfile!);
+              } else {}
             },
             style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all(Colors.black),
