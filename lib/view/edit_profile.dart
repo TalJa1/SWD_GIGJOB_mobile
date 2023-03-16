@@ -2,8 +2,11 @@
 
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:gigjob_mobile/services/UploadFile_service.dart';
+
+import '../DTO/WorkerDTO.dart';
 
 class EditProfilePage extends StatefulWidget {
   const EditProfilePage({Key? key}) : super(key: key);
@@ -23,8 +26,28 @@ class _EditProfilePageState extends State<EditProfilePage> {
   XFile? uploadfile;
   XFile? pickedFile;
 
+  String? _validatePhoneNumber(String? value) {
+    String pattern = r'(^(?:[+0]9)?[0-9]{10,12}$)';
+    RegExp regExp = RegExp(pattern);
+    if (value == null || value.isEmpty) {
+      return 'Phone number is required';
+    } else if (!regExp.hasMatch(value)) {
+      return 'Invalid phone number';
+    }
+    return null;
+  }
+
   final _formKey = GlobalKey<FormState>();
-  final _textController = TextEditingController();
+  final _textnameController = TextEditingController();
+  final _textdiplomaController = TextEditingController();
+  final _textbirtdayController = TextEditingController();
+  final _textfirstController = TextEditingController();
+  final _textmidleController = TextEditingController();
+  final _textlastController = TextEditingController();
+  final _textpassController = TextEditingController();
+  final _textphoneController = TextEditingController();
+
+  DateTime? selectedDate;
 
   Future pickImg() async {
     // ignore: unused_local_variable
@@ -114,7 +137,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
             ),
             Expanded(child: formEdit()),
             // Expanded(child: )
-            uploadbtn(),
             const SizedBox(height: 10)
           ],
         ));
@@ -173,42 +195,249 @@ class _EditProfilePageState extends State<EditProfilePage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // textForm("email"),
-                textForm("education"),
-                textForm("address"),
-                textForm("phone"),
-                textForm("birth"),
+                textForm(),
               ],
             ),
           ),
         ));
   }
 
-  Widget textForm(String field) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-      child: TextFormField(
-        controller: _textController,
-        decoration: InputDecoration(
-          border: const OutlineInputBorder(),
-          labelText: 'Enter your $field',
-        ),
-        validator: (value) {
-          if (value!.isEmpty) {
-            return 'Please enter your $field';
-          }
-          return null;
-        },
-        onChanged: (value) {
-          if (_formKey.currentState!.validate()) {
-            // The form is valid, do something with the input
-            print('User entered: $value');
-          }
-        },
+  Widget textForm() {
+    return Form(
+      key: _formKey,
+      child: Column(
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+            child: TextFormField(
+              controller: _textnameController,
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: 'Enter your username',
+              ),
+              validator: (value1) {
+                if (value1!.isEmpty) {
+                  return 'Please enter your username';
+                }
+                return null;
+              },
+              onChanged: (value1) {
+                if (_formKey.currentState!.validate()) {
+                  // The form is valid, do something with the input
+                  print('User entered: $value1');
+                }
+              },
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+            child: TextFormField(
+              controller: _textdiplomaController,
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: 'Enter your diploma',
+              ),
+              validator: (value2) {
+                if (value2!.isEmpty) {
+                  return 'Please enter your diploma';
+                }
+                return null;
+              },
+              onChanged: (value2) {
+                if (_formKey.currentState!.validate()) {
+                  // The form is valid, do something with the input
+                  print('User entered: $value2');
+                }
+              },
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+            child: TextFormField(
+              controller: _textfirstController,
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: 'Enter your firstname',
+              ),
+              validator: (value3) {
+                if (value3!.isEmpty) {
+                  return 'Please enter your firstname';
+                }
+                return null;
+              },
+              onChanged: (value3) {
+                if (_formKey.currentState!.validate()) {
+                  // The form is valid, do something with the input
+                  print('User entered: $value3');
+                }
+              },
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+            child: TextFormField(
+              controller: _textmidleController,
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: 'Enter your midlename',
+              ),
+              validator: (value4) {
+                if (value4!.isEmpty) {
+                  return 'Please enter your midlename';
+                }
+                return null;
+              },
+              onChanged: (value4) {
+                if (_formKey.currentState!.validate()) {
+                  // The form is valid, do something with the input
+                  print('User entered: $value4');
+                }
+              },
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+            child: TextFormField(
+              controller: _textlastController,
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: 'Enter your lastname',
+              ),
+              validator: (value5) {
+                if (value5!.isEmpty) {
+                  return 'Please enter your lastname';
+                }
+                return null;
+              },
+              onChanged: (value5) {
+                if (_formKey.currentState!.validate()) {
+                  // The form is valid, do something with the input
+                  print('User entered: $value5');
+                }
+              },
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+            child: TextFormField(
+              controller: _textphoneController,
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: 'Enter your phone',
+              ),
+              validator: _validatePhoneNumber,
+              onChanged: (value6) {
+                if (_formKey.currentState!.validate()) {
+                  // The form is valid, do something with the input
+                  print('User entered: $value6');
+                }
+              },
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+            child: TextFormField(
+              controller: _textpassController,
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: 'Enter your password',
+              ),
+              validator: (value7) {
+                if (value7!.isEmpty) {
+                  return 'Please enter your password';
+                }
+                return null;
+              },
+              onChanged: (value7) {
+                if (_formKey.currentState!.validate()) {
+                  // The form is valid, do something with the input
+                  print('User entered: $value7');
+                }
+              },
+            ),
+          ),
+          Padding(
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+              child: TextButton(
+                  onPressed: () {
+                    DatePicker.showDatePicker(context,
+                        showTitleActions: true,
+                        minTime: DateTime(1990, 3, 5),
+                        maxTime: DateTime(2019, 6, 7), onChanged: (date) {
+                      print('change $date');
+                    }, onConfirm: (date) {
+                      setState(() {
+                        selectedDate = date;
+                      });
+                      print('confirm $date');
+                    }, currentTime: DateTime.now(), locale: LocaleType.es);
+                  },
+                  child: Container(
+                    child: Column(
+                      children: [
+                        if (selectedDate != null) ...[
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              // ignore: prefer_const_constructors
+                              Text(
+                                'Your birthday: ',
+                                style: const TextStyle(color: Colors.black),
+                              ),
+                              Text(
+                                '$selectedDate',
+                                style: const TextStyle(color: Colors.black),
+                              )
+                            ],
+                          )
+                        ],
+                        Container(
+                          padding: const EdgeInsets.only(top: 10),
+                          child: const Text(
+                            'Choose your birthday',
+                            style: TextStyle(color: Colors.blue),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ))),
+          const SizedBox(
+            height: 10,
+          ),
+          uploadbtn(
+              _formKey.currentState,
+              _textfirstController.text,
+              _textlastController.text,
+              _textmidleController.text,
+              _textphoneController.text,
+              _textnameController.text,
+              _textpassController.text,
+              selectedDate.toString(),
+              _textdiplomaController.text),
+        ],
       ),
     );
   }
 
-  Widget uploadbtn() {
+  Widget uploadbtn(
+      FormState? state,
+      String first,
+      String last,
+      String middle,
+      String phone,
+      String username,
+      String pass,
+      String birth,
+      String diploma) {
+    WorkerDTO dto = new WorkerDTO();
+    dto.firstName = first;
+    dto.middleName = middle;
+    dto.lastName = last;
+    dto.phone = phone;
+    dto.username = username;
+    dto.password = pass;
+    dto.birthday = birth;
+    dto.education = diploma;
     return Container(
       width: MediaQuery.of(context).size.width,
       padding: const EdgeInsets.only(left: 16, right: 16),
