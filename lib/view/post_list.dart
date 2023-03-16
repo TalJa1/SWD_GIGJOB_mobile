@@ -1,5 +1,6 @@
 // ignore_for_file: sized_box_for_whitespace
 
+import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:gigjob_mobile/DTO/ApplyJobDTO.dart';
@@ -7,12 +8,13 @@ import 'package:gigjob_mobile/DTO/JobDTO.dart';
 import 'package:gigjob_mobile/enum/view_status.dart';
 import 'package:gigjob_mobile/view/nav_screen.dart';
 import 'package:filter_list/filter_list.dart';
-import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:gigjob_mobile/view/post_list_detail.dart';
+import 'package:gigjob_mobile/view/start_up.dart';
 import 'package:gigjob_mobile/viewmodel/job_viewmodel.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:multi_select_flutter/multi_select_flutter.dart';
 
 class PostList extends StatefulWidget {
   @override
@@ -20,15 +22,8 @@ class PostList extends StatefulWidget {
 }
 
 class _PostListState extends State<PostList> {
-  List<int> arr = [1, 2, 3, 5];
-
-  final List<String> items = [
-    'Item1',
-    'Item2',
-    'Item3',
-    'Item4',
-  ];
-  List<String> selectedItems = [];
+  List<JobType> selectedItems = [];
+  List<JobType> preSelectItems = [];
 
   late JobViewModel jobViewModel;
 
@@ -41,6 +36,29 @@ class _PostListState extends State<PostList> {
     "pageIndex": _page,
     "pageSize": _pageSize,
   };
+
+  Map<String, dynamic> body = {
+    "searchKey": "",
+    "filterKey": "jobType",
+    "value": "1",
+    "operation": "eq",
+    "sortCriteria": {"sortKey": "createdDate", "direction": "acs"}
+  };
+
+  late SortBy selectedSort;
+
+  final List<SortBy> itemsSort = [
+    SortBy(
+        id: 1,
+        label: 'Create date new to old',
+        value: 'createdDate',
+        isAcs: "asc"),
+    SortBy(
+        id: 2,
+        label: 'Create date old to new',
+        value: 'createdDate',
+        isAcs: "desc"),
+  ];
 
   @override
   void initState() {
@@ -58,17 +76,59 @@ class _PostListState extends State<PostList> {
         }
       }
     });
+
+    selectedSort = itemsSort.first;
   }
 
   Future<void> _fetchPage(int page) async {
     setState(() {
       params = {...params, "pageIndex": _page, "pageSize": _pageSize};
     });
-    await jobViewModel.getJobs(params: params);
+    await jobViewModel.getJobs(params: params, body: body);
     final newItems = jobViewModel.jobs;
     if (newItems != null && newItems.length < _pageSize) {
       _isLastPage = true;
     }
+  }
+
+  void _onSummitSearch(String searchText) async {
+    setState(() {
+      _page = 0;
+      params = {...params, "pageIndex": 0};
+      body = {
+        ...body,
+        "searchKey": searchText,
+      };
+    });
+    print(searchText);
+    await jobViewModel.getJobs(params: params, body: body);
+  }
+
+  void filterByCate(String? id) async {
+    setState(() {
+      _page = 0;
+      params = {...params, "page": 0};
+      body = {
+        ...body,
+        "searchKey": "",
+        "filterKey": "jobType",
+        "value": 1,
+      };
+    });
+    print(params);
+    await jobViewModel.getJobs(params: params, body: body);
+  }
+
+  void onChangeSort(SortBy sortBy) {
+    setState(() {
+      _page = 0;
+      params = {...params, "page": 0};
+      body = {
+        ...body,
+        "sortCriteria": {"sortKey": sortBy.value, "direction": sortBy.isAcs}
+      };
+    });
+    jobViewModel.getJobs(params: params, body: body);
   }
 
   @override
@@ -81,259 +141,435 @@ class _PostListState extends State<PostList> {
   Widget build(BuildContext context) {
     return ScopedModel<JobViewModel>(
       model: jobViewModel,
-      child: Scaffold(
-        body: SafeArea(
-          child: Column(
-            children: [
-              Container(
-                color: Colors.white,
-                padding: const EdgeInsets.fromLTRB(16, 48, 16, 0),
-                child: Stack(
-                  children: [
-                    const Align(
-                      alignment: Alignment.center,
-                      child: Text(
-                        "POST",
-                        style: TextStyle(
-                          fontWeight: FontWeight.w900,
-                          fontSize: 32.0,
+      child: SafeArea(
+        child: Scaffold(
+          appBar: AppBar(
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(
+                bottom: Radius.circular(16),
+              ),
+            ),
+            toolbarHeight: 100,
+            backgroundColor: const Color.fromARGB(255, 45, 45, 45),
+            title: GestureDetector(
+              onTap: () {
+                Get.to(StartUpView());
+              },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircleAvatar(
+                    backgroundColor: Colors.white,
+                    radius: 25,
+                    child: Container(
+                      width: 50,
+                      height: 50,
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        image: DecorationImage(
+                          fit: BoxFit.fill,
+                          image: AssetImage('assets/images/GigJob.png'),
                         ),
                       ),
                     ),
-                    Align(
-                        alignment: Alignment.topRight,
-                        child: ElevatedButton.icon(
-                          style: ElevatedButton.styleFrom(
-                              foregroundColor: Colors.white,
-                              backgroundColor: Colors.black),
-                          onPressed: () {
-                            showDialog<String>(
-                                context: context,
-                                builder: (BuildContext context) =>
-                                    _buildDialog(context));
-                          },
-                          icon: const Icon(Icons.filter_list_alt),
-                          label: const Text('Filter'),
-                        )),
-                  ],
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.fromLTRB(16, 32, 16, 32),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                ),
-                child: TextField(
-                  decoration: InputDecoration(
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20.0),
-                      borderSide: const BorderSide(color: Colors.black),
-                    ),
-                    filled: true,
-                    fillColor: Colors.white,
-                    labelText: 'Search',
-                    labelStyle: const TextStyle(color: Colors.black),
-                    border: const OutlineInputBorder(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(32.0),
-                      ),
-                    ),
-                    suffixIcon: const Icon(
-                      Icons.search,
-                      color: Colors.black,
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.fromLTRB(16, 0, 0, 0),
+                    child: Text(
+                      'GIG JOB',
+                      style: TextStyle(fontSize: 32),
                     ),
                   ),
+                ],
+              ),
+            ),
+            centerTitle: true,
+            // actions: [
+            //   IconButton(
+            //     icon: const Icon(Icons.filter_list_alt),
+            //     tooltip: 'Show Snackbar',
+            //     onPressed: () {
+            //       showDialog<String>(
+            //           context: context,
+            //           builder: (BuildContext context) => _buildDialog(context));
+            //     },
+            //   ),
+            // ],
+            bottom: PreferredSize(
+              preferredSize: const Size.fromHeight(80.0),
+              child: Container(
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                child: TextField(
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: Colors.white,
+                    hintText: 'Search by title',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20.0),
+                      borderSide: BorderSide.none,
+                    ),
+                    suffixIcon: const Icon(Icons.search),
+                  ),
                   textInputAction: TextInputAction.search,
-                  style: const TextStyle(fontSize: 16),
+                  style: const TextStyle(fontSize: 16.0),
                   onSubmitted: (value) {
-                    // Perform the search action
+                    _onSummitSearch(value);
                   },
                 ),
               ),
-              ScopedModelDescendant<JobViewModel>(
-                builder: (context, child, model) {
-                  if (jobViewModel.status == ViewStatus.Loading) {
-                    return const SizedBox(
-                        width: 100,
-                        height: 100,
-                        child: CircularProgressIndicator());
-                  } else {
-                    return Expanded(
-                      child: RefreshIndicator(
-                        onRefresh: () async {
-                          jobViewModel.getJobs();
-                        },
-                        child: SingleChildScrollView(
-                          controller: _scrollController,
-                          child: Column(children: [
-                            ...jobViewModel.jobs!
-                                .map((e) => _buildPostLists(e))
-                                .toList(),
-                            if (jobViewModel.status == ViewStatus.LoadMore) ...[
-                              const SizedBox(
-                                  width: 50,
-                                  height: 50,
-                                  child: CircularProgressIndicator())
-                            ]
-                          ]),
+            ),
+          ),
+          body: SafeArea(
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 16),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Padding(
+                        padding:
+                            const EdgeInsets.only(left: 8, right: 4, top: 16),
+                        child: InkWell(
+                          onTap: () {
+                            showModalBottomSheet(
+                                context: context,
+                                builder: (context) {
+                                  return _buiBottomSheetSort();
+                                });
+                          },
+                          child: Container(
+                            width: 190,
+                            height: 50,
+                            child: Card(
+                              child: Center(
+                                  child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: const [
+                                  Icon(Icons.sort),
+                                  Padding(
+                                    padding: EdgeInsets.all(8.0),
+                                    child: Text(
+                                      "Sort",
+                                      style: TextStyle(fontSize: 18),
+                                    ),
+                                  ),
+                                ],
+                              )),
+                            ),
+                          ),
                         ),
                       ),
-                    );
-                  }
-                },
-              )
-            ],
+                      Padding(
+                        padding:
+                            const EdgeInsets.only(left: 4, right: 8, top: 16),
+                        child: InkWell(
+                          onTap: () {
+                            showModalBottomSheet(
+                                context: context,
+                                isScrollControlled: true,
+                                enableDrag: false,
+                                builder: (context) {
+                                  return _buidBottomSheetFilter();
+                                });
+                          },
+                          child: Container(
+                            width: 190,
+                            height: 50,
+                            child: Card(
+                              child: Center(
+                                  child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: const [
+                                  Icon(Icons.filter_alt_sharp),
+                                  Padding(
+                                    padding: EdgeInsets.all(8.0),
+                                    child: Text(
+                                      "Filter",
+                                      style: TextStyle(fontSize: 18),
+                                    ),
+                                  ),
+                                ],
+                              )),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                ScopedModelDescendant<JobViewModel>(
+                  builder: (context, child, model) {
+                    if (jobViewModel.status == ViewStatus.Loading) {
+                      return Center(
+                        child: Container(
+                            padding: const EdgeInsets.fromLTRB(0, 16, 0, 0),
+                            width: 100,
+                            height: 100,
+                            child: const CircularProgressIndicator()),
+                      );
+                    } else {
+                      return Expanded(
+                        child: RefreshIndicator(
+                          onRefresh: () async {
+                            setState(() {
+                              _page = 0;
+                            });
+                            _fetchPage(0);
+                          },
+                          child: SingleChildScrollView(
+                            controller: _scrollController,
+                            child: Column(children: [
+                              ...jobViewModel.jobs!
+                                  .map((e) => _buildPostLists(e))
+                                  .toList(),
+                              if (jobViewModel.status ==
+                                  ViewStatus.LoadMore) ...[
+                                const SizedBox(
+                                    width: 50,
+                                    height: 50,
+                                    child: CircularProgressIndicator())
+                              ]
+                            ]),
+                          ),
+                        ),
+                      );
+                    }
+                  },
+                )
+              ],
+            ),
           ),
         ),
-        // bottomNavigationBar: StatefulBuilder(
-        //   builder: (BuildContext context, StateSetter setState) {
-        //     return AppFooter();
-        //   },
-        // ),
       ),
     );
   }
 
-  Widget _buildDialog(BuildContext context) {
-    return AlertDialog(
-      title: const Text('Filter'),
-      content: _buildListSelectCheckBox(),
-      actions: <Widget>[
-        TextButton(
-          onPressed: () => Navigator.pop(context, 'Cancel'),
-          child: const Text('Cancel'),
-        ),
-        TextButton(
-          onPressed: () => Navigator.pop(context, 'OK'),
-          child: const Text('Apply'),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildListSelectCheckBox() {
-    return SizedBox(
-      height: 200,
+  Widget _buiBottomSheetSort() {
+    return Container(
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          _buildMultipSelectCheckBox(),
-          _buildMultipSelectCheckBox(),
-          _buildMultipSelectCheckBox(),
+          Padding(
+            padding: const EdgeInsets.only(top: 12),
+            child: GestureDetector(
+              onTap: () {
+                Navigator.pop(context);
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    color: Colors.black),
+                width: 81,
+                height: 4,
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(24, 20, 24, 0),
+            child: Row(
+              children: [
+                const Text(
+                  "SORT BY",
+                  style: TextStyle(color: Colors.grey, fontSize: 16),
+                ),
+              ],
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
+            child: StatefulBuilder(
+              builder: (context, setState) {
+                return Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: itemsSort.map((item) {
+                  return RadioListTile<SortBy>(
+                    title: Text(item.label),
+                    value: item,
+                    activeColor: Colors.black,
+                    contentPadding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                    groupValue: selectedSort,
+                    onChanged: (value) {
+                      setState(() {
+                        selectedSort = value!;
+                      });
+                      onChangeSort(value!);
+                      Navigator.pop(context);
+                    },
+                  );
+                }).toList(),
+              );
+              },
+            ),
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildMultipSelectCheckBox() {
-    return DropdownButtonHideUnderline(
-      child: Container(
-        width: 250,
-        child: DropdownButton2(
-          buttonDecoration: BoxDecoration(
-            border: Border.all(),
-            borderRadius: BorderRadius.circular(32),
+  Widget _buidBottomSheetFilter() {
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          toolbarHeight: 100,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back_ios),
+            onPressed: () {
+              Navigator.pop(context);
+              print(selectedItems);
+              preSelectItems = [...selectedItems];
+            },
           ),
-          isExpanded: true,
-          hint: Align(
-            alignment: AlignmentDirectional.center,
-            child: Text(
-              'Select',
-              style: TextStyle(
-                fontSize: 14,
-                color: Theme.of(context).hintColor,
-              ),
-            ),
+          foregroundColor: Colors.black,
+          title: const Text(
+            "Filter",
           ),
-          items: items.map((item) {
-            return DropdownMenuItem<String>(
-              value: item,
-              //disable default onTap to avoid closing menu when selecting an item
-              enabled: false,
-              child: StatefulBuilder(
-                builder: (context, menuSetState) {
-                  final _isSelected = selectedItems.contains(item);
-                  return InkWell(
-                    onTap: () {
-                      _isSelected
-                          ? selectedItems.remove(item)
-                          : selectedItems.add(item);
-                      //This rebuilds the StatefulWidget to update the button's text
-                      setState(() {});
-                      //This rebuilds the dropdownMenu Widget to update the check mark
-                      menuSetState(() {});
-                    },
-                    child: Container(
-                      height: double.infinity,
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: Row(
-                        children: [
-                          _isSelected
-                              ? const Icon(Icons.check_box_outlined)
-                              : const Icon(Icons.check_box_outline_blank),
-                          const SizedBox(width: 16),
-                          Text(
-                            item,
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                              fontSize: 14,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                },
-              ),
-            );
-          }).toList(),
-          //Use last selected item as the current value so if we've limited menu height, it scroll to last item.
-          value: selectedItems.isEmpty ? null : selectedItems.last,
-          onChanged: (value) {},
-          buttonHeight: 40,
-          buttonWidth: 140,
-          itemHeight: 40,
-          itemPadding: EdgeInsets.zero,
-          selectedItemBuilder: (context) {
-            return items.map(
-              (item) {
-                return Container(
-                  alignment: AlignmentDirectional.center,
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Text(
-                    selectedItems.join(', '),
-                    style: const TextStyle(
-                      fontSize: 14,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    maxLines: 1,
+          centerTitle: true,
+          backgroundColor: Colors.white,
+          elevation: 0,
+          actions: [
+            Padding(
+              padding: const EdgeInsets.only(right: 28),
+              child: Center(
+                child: InkWell(
+                  onTap: () {},
+                  child: const Text(
+                    "Reset",
+                    style: TextStyle(fontSize: 16),
                   ),
-                );
-              },
-            ).toList();
+                ),
+              ),
+            )
+          ],
+        ),
+        body: Container(
+          color: Colors.white,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              _buildMultipSelectCheckBox(),
+              const Divider(
+                thickness: 1,
+              )
+            ],
+          ),
+        ),
+        bottomNavigationBar: _buildFilterButton(),
+      ),
+    );
+  }
+
+  Widget _buildMultipSelectCheckBox() {
+    List<JobType> emptyList = [];
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+      child: MultiSelectDialogField(
+        decoration: const BoxDecoration(
+          border: null,
+        ),
+        buttonIcon: const Icon(Icons.arrow_forward_ios),
+        selectedColor: Colors.black,
+
+        selectedItemsTextStyle: const TextStyle(color: Colors.white),
+        searchTextStyle: const TextStyle(color: Colors.white),
+
+        // dialogHeight: MediaQuery.of(context).size.height,
+        searchable: true,
+        title: const Text("Job type"),
+        buttonText: const Text(
+          "Job type",
+          style: TextStyle(fontSize: 18),
+        ),
+        initialValue: preSelectItems,
+
+        items: jobViewModel.jobTypes == null
+            ? emptyList.map((e) => MultiSelectItem(e, e.name ?? '')).toList()
+            : jobViewModel.jobTypes!
+                .map((e) => MultiSelectItem(e, e.name ?? ''))
+                .toList(),
+        listType: MultiSelectListType.CHIP,
+
+        chipDisplay: MultiSelectChipDisplay(
+          icon: const Icon(
+            Icons.cancel,
+            color: Colors.white,
+          ),
+          chipColor: Colors.black,
+          textStyle: const TextStyle(color: Colors.white),
+          scroll: true,
+          items: preSelectItems
+              .map((e) => MultiSelectItem(e, e.name ?? ''))
+              .toList(),
+          onTap: (value) {
+            setState(() {
+              preSelectItems.remove(value);
+            });
+            return preSelectItems;
           },
+        ),
+
+        onConfirm: (values) {
+          setState(() {
+            preSelectItems = values;
+          });
+        },
+      ),
+    );
+  }
+
+  Widget _buildFilterButton() {
+    return Container(
+      color: Colors.white,
+      child: InkWell(
+        onTap: () {
+          filterByCate;
+          selectedItems = [
+            ...preSelectItems,
+          ];
+          Navigator.pop(context);
+        },
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 48, 16, 16),
+          child: Container(
+              height: 50,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: Colors.black,
+                borderRadius: BorderRadius.circular(25),
+              ),
+              child: const Center(
+                child: Text(
+                  'Show',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              )),
         ),
       ),
     );
   }
 
   Widget _buildPostLists(JobDTO job) {
-
     ApplyJobDTO? isApplied() {
-    List<ApplyJobDTO>? list = jobViewModel.appliedjob;
+      List<ApplyJobDTO>? list = jobViewModel.appliedjob;
 
-    for (var i = 0; i < list!.length; i++) {
-      if (list[i].job?.id == job.id) {
-        return list[i];
+      for (var i = 0; i < list!.length; i++) {
+        if (list[i].job?.id == job.id) {
+          return list[i];
+        }
       }
+      print("nulls");
+      return null;
     }
-    print("nulls");
-    return null;
-  }
 
     return GestureDetector(
       onTap: () {
-        Get.to(PostListDetail(data: job, appliedJob: jobViewModel.appliedjob,));
+        Get.to(PostListDetail(
+          data: job,
+          appliedJob: jobViewModel.appliedjob,
+        ));
       },
       child: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -346,7 +582,7 @@ class _PostListState extends State<PostList> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ClipRRect(
-                borderRadius: BorderRadius.only(
+                borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(16),
                   bottomLeft: Radius.circular(16),
                 ),
@@ -357,34 +593,53 @@ class _PostListState extends State<PostList> {
                   fit: BoxFit.cover,
                 ),
               ),
-              SizedBox(width: 16),
+              const SizedBox(width: 16),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                     Text(
                       "${job.title}",
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 18,
                         color: Colors.indigo,
                       ),
                     ),
-                    SizedBox(height: 8),
-                    Text(
-                      "Skill: ${job.skill}",
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.grey[600],
+                    const SizedBox(height: 8),
+                    Container(
+                      height: 64,
+                      constraints: new BoxConstraints(maxHeight: 64),
+                      child: Text(
+                        "Skill: ${job.skill}",
+                        maxLines: 3,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.grey[600],
+                        ),
                       ),
                     ),
-                    SizedBox(height: 8),
-                    Text(
-                      Jiffy("${job.createdDate}").fromNow(),
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.indigo,
-                      ),
+                    const SizedBox(height: 8),
+                    Row(
+                      children: [
+                        Text(
+                          "Created: ",
+                          maxLines: 3,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey[600],
+                          ),
+                        ),
+                        Text(
+                          Jiffy("${job.createdDate}").fromNow(),
+                          style: const TextStyle(
+                            fontSize: 14,
+                            color: Colors.indigo,
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -419,10 +674,10 @@ class _PostListState extends State<PostList> {
                       Row(
                         children: [
                           Padding(
-                            padding: EdgeInsets.fromLTRB(0, 8, 0, 8),
+                            padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
                             child: Text(
                               "${job.title}",
-                              style: TextStyle(fontSize: 16),
+                              style: const TextStyle(fontSize: 16),
                             ),
                           ),
                         ],
@@ -437,14 +692,14 @@ class _PostListState extends State<PostList> {
                                 "${job.description}",
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
-                                style: TextStyle(fontSize: 14),
+                                style: const TextStyle(fontSize: 14),
                               ),
                             ),
                           ),
                           Container(
                             width: 64,
                             height: 64,
-                            child: CircleAvatar(),
+                            child: const CircleAvatar(),
                           )
                         ],
                       ),
@@ -452,7 +707,7 @@ class _PostListState extends State<PostList> {
                         children: [
                           Text(
                             Jiffy("${job.createdDate}").fromNow(),
-                            style: TextStyle(fontSize: 14),
+                            style: const TextStyle(fontSize: 14),
                           ),
                         ],
                       ),
@@ -471,4 +726,17 @@ class _PostListState extends State<PostList> {
   // Widget _buildPost(int e) {
 
   // }
+}
+
+class SortBy {
+  final int id;
+  final String label;
+  final String value;
+  final String isAcs;
+
+  SortBy(
+      {required this.id,
+      required this.label,
+      required this.value,
+      required this.isAcs});
 }

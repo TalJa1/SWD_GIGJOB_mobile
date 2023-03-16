@@ -12,6 +12,7 @@ import 'package:gigjob_mobile/DTO/JobDTO.dart';
 import 'package:gigjob_mobile/DTO/WorkerDTO.dart';
 import 'package:gigjob_mobile/accesories/dialog.dart';
 import 'package:gigjob_mobile/utils/share_pref.dart';
+import 'package:jiffy/jiffy.dart';
 import 'package:jwt_decode/jwt_decode.dart';
 
 class PostListDetail extends StatefulWidget {
@@ -66,35 +67,42 @@ class _PostListDetailState extends State<PostListDetail> {
 
   @override
   Widget build(BuildContext context) {
-
     print(isApplied());
     return Scaffold(
+      
+        appBar: AppBar(
+          leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+          backgroundColor: Color.fromARGB(255, 45, 45, 45),
+        ),
         body: Padding(
           padding: const EdgeInsets.fromLTRB(16, 48, 16, 0),
           child: SingleChildScrollView(
             child: Column(
               children: [
-                Stack(
-                  // ignore: prefer_const_literals_to_create_immutables
-                  children: [
-                    Align(
-                        alignment: Alignment.topLeft,
-                        child: GestureDetector(
-                          onTap: () {
-                            Get.back();
-                          },
-                          child: Text(
-                            "Back",
-                            style: TextStyle(
-                              fontSize: 16.0,
-                            ),
-                          ),
-                        ))
-                  ],
-                ),
-                const SizedBox(
-                  height: 16,
-                ),
+                // Stack(
+                //   // ignore: prefer_const_literals_to_create_immutables
+                //   children: [
+                //     Align(
+                //         alignment: Alignment.topLeft,
+                //         child: GestureDetector(
+                //           onTap: () {
+                //             Get.back();
+                //           },
+                //           child: Text(
+                //             "Back",
+                //             style: TextStyle(
+                //               fontSize: 16.0,
+                //             ),
+                //           ),
+                //         ))
+                //   ],
+                // ),
+
                 Card(
                   elevation: 4,
                   shape: RoundedRectangleBorder(
@@ -140,7 +148,7 @@ class _PostListDetailState extends State<PostListDetail> {
                       Padding(
                         padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
                               "${widget.data.title}",
@@ -149,6 +157,26 @@ class _PostListDetailState extends State<PostListDetail> {
                                   color: Colors.black,
                                   fontWeight: FontWeight.bold),
                             ),
+                            Row(
+                              children: [
+                                Text(
+                                  "Expire: ",
+                                  maxLines: 3,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.grey[600],
+                                  ),
+                                ),
+                                Text(
+                                  Jiffy("${widget.data.expiredDate}").fromNow(),
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.indigo,
+                                  ),
+                                ),
+                              ],
+                            )
                           ],
                         ),
                       )
@@ -282,15 +310,14 @@ class _PostListDetailState extends State<PostListDetail> {
   }
 
   Widget _buildButtonApply() {
-
     return InkWell(
-
-      onTap: isApplied == null ? () {
-        showDialog<String>(
-            context: context,
-            builder: (BuildContext context) => _buildDialog(context));
-      } : null,
-      
+      onTap: isApplied == null
+          ? () {
+              showDialog<String>(
+                  context: context,
+                  builder: (BuildContext context) => _buildDialog(context));
+            }
+          : null,
       child: Padding(
         padding: const EdgeInsets.fromLTRB(16, 48, 16, 16),
         child: Container(

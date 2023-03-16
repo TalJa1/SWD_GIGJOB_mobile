@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:gigjob_mobile/DAO/JobDAO.dart';
+import 'package:gigjob_mobile/DAO/JobTypeDAO.dart';
 import 'package:gigjob_mobile/DTO/ApplyJobDTO.dart';
 import 'package:gigjob_mobile/DTO/JobDTO.dart';
 import 'package:gigjob_mobile/DTO/WorkerDTO.dart';
@@ -15,10 +16,13 @@ import 'package:gigjob_mobile/viewmodel/base_model.dart';
 
 class JobViewModel extends BaseModel {
   JobDAO? jobDAO;
+  JobTypeDAO? jobTypeDAO;
   List<JobDTO>? jobs;
   List<ApplyJobDTO>? appliedjob;
+  List<JobType>? jobTypes;
   JobViewModel() {
     jobDAO = JobDAO();
+    jobTypeDAO = JobTypeDAO();
   }
 
   Future getJobs({Map<String, dynamic>? params, Map<String, dynamic>? body}) async {
@@ -28,14 +32,15 @@ class JobViewModel extends BaseModel {
         // List<ProductDTO>? tmp = await productDAO?.getProducts(params: params);
         jobs = [
           ...(jobs ?? []),
-          ...(await jobDAO?.getJob(params: params) ?? [])
+          ...(await jobDAO?.getJob(params: params, body: body) ?? [])
         ];
         setState(ViewStatus.Completed);
       } else {
         setState(ViewStatus.Loading);
-        jobs = await jobDAO?.getJob(params: params);
+        jobs = await jobDAO?.getJob(params: params, body: body);
         String? accountId = await getAccountID();
         WorkerDTO? workDTO = await jobDAO?.getWorkerId(accountId!);
+        jobTypes = await jobTypeDAO?.getJobType();
         appliedjob = await jobDAO?.getJobApplied(workDTO?.id);
         setState(ViewStatus.Completed);
       }
@@ -45,10 +50,6 @@ class JobViewModel extends BaseModel {
       // setState(ViewStatus.Completed);
       // print(products);
     } catch (e) {
-      // await FirebaseAuth.instance.signOut();
-      // await removeALL();
-      // await ApiService.setToken("");
-      // Get.offAll(LoginHome());
       throw Exception(e);
     }
   }
