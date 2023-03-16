@@ -45,7 +45,7 @@ class JobDAO extends BaseDAO {
   }
 
   Future<WorkerDTO> getWorkerId(String accId) async {
-    final res = await ApiService.get('/workers/account/$accId', null, null);
+    final res = await ApiService.get('/v1/worker/account/$accId', null, null);
     WorkerDTO workerDTO = WorkerDTO.fromJson(res.data);
     return workerDTO;
   }

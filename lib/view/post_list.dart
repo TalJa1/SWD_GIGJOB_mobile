@@ -1,5 +1,6 @@
 // ignore_for_file: sized_box_for_whitespace
 
+import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:gigjob_mobile/DTO/ApplyJobDTO.dart';
@@ -8,6 +9,7 @@ import 'package:gigjob_mobile/enum/view_status.dart';
 import 'package:gigjob_mobile/view/nav_screen.dart';
 import 'package:filter_list/filter_list.dart';
 import 'package:gigjob_mobile/view/post_list_detail.dart';
+import 'package:gigjob_mobile/view/start_up.dart';
 import 'package:gigjob_mobile/viewmodel/job_viewmodel.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:jiffy/jiffy.dart';
@@ -43,6 +45,21 @@ class _PostListState extends State<PostList> {
     "sortCriteria": {"sortKey": "createdDate", "direction": "acs"}
   };
 
+  late SortBy selectedSort;
+
+  final List<SortBy> itemsSort = [
+    SortBy(
+        id: 1,
+        label: 'Create date new to old',
+        value: 'createdDate',
+        isAcs: "asc"),
+    SortBy(
+        id: 2,
+        label: 'Create date old to new',
+        value: 'createdDate',
+        isAcs: "desc"),
+  ];
+
   @override
   void initState() {
     // TODO: implement initState
@@ -59,6 +76,8 @@ class _PostListState extends State<PostList> {
         }
       }
     });
+
+    selectedSort = itemsSort.first;
   }
 
   Future<void> _fetchPage(int page) async {
@@ -100,6 +119,18 @@ class _PostListState extends State<PostList> {
     await jobViewModel.getJobs(params: params, body: body);
   }
 
+  void onChangeSort(SortBy sortBy) {
+    setState(() {
+      _page = 0;
+      params = {...params, "page": 0};
+      body = {
+        ...body,
+        "sortCriteria": {"sortKey": sortBy.value, "direction": sortBy.isAcs}
+      };
+    });
+    jobViewModel.getJobs(params: params, body: body);
+  }
+
   @override
   void dispose() {
     _scrollController.dispose();
@@ -113,11 +144,16 @@ class _PostListState extends State<PostList> {
       child: SafeArea(
         child: Scaffold(
           appBar: AppBar(
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(
+                bottom: Radius.circular(16),
+              ),
+            ),
             toolbarHeight: 100,
             backgroundColor: const Color.fromARGB(255, 45, 45, 45),
-            title: InkWell(
+            title: GestureDetector(
               onTap: () {
-                Get.to(RootScreen());
+                Get.to(StartUpView());
               },
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -160,7 +196,7 @@ class _PostListState extends State<PostList> {
             //   ),
             // ],
             bottom: PreferredSize(
-              preferredSize: const Size.fromHeight(100.0),
+              preferredSize: const Size.fromHeight(80.0),
               child: Container(
                 padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
                 child: TextField(
@@ -186,69 +222,81 @@ class _PostListState extends State<PostList> {
           body: SafeArea(
             child: Column(
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Padding(
-                      padding:
-                          const EdgeInsets.only(left: 8, right: 4, top: 16),
-                      child: Container(
-                        width: 190,
-                        height: 50,
-                        child: Card(
-                          child: Center(
-                              child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: const [
-                              Icon(Icons.sort),
-                              Padding(
-                                padding: EdgeInsets.all(8.0),
-                                child: Text(
-                                  "Sort",
-                                  style: TextStyle(fontSize: 18),
-                                ),
-                              ),
-                            ],
-                          )),
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding:
-                          const EdgeInsets.only(left: 4, right: 8, top: 16),
-                      child: InkWell(
-                        onTap: () {
-                          showModalBottomSheet(
-                              context: context,
-                              isScrollControlled: true,
-                              enableDrag: false,
-                              builder: (context) {
-                                return _buidBottomSheet();
-                              });
-                        },
-                        child: Container(
-                          width: 190,
-                          height: 50,
-                          child: Card(
-                            child: Center(
-                                child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: const [
-                                Icon(Icons.filter_alt_sharp),
-                                Padding(
-                                  padding: EdgeInsets.all(8.0),
-                                  child: Text(
-                                    "Filter",
-                                    style: TextStyle(fontSize: 18),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 16),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Padding(
+                        padding:
+                            const EdgeInsets.only(left: 8, right: 4, top: 16),
+                        child: InkWell(
+                          onTap: () {
+                            showModalBottomSheet(
+                                context: context,
+                                builder: (context) {
+                                  return _buiBottomSheetSort();
+                                });
+                          },
+                          child: Container(
+                            width: 190,
+                            height: 50,
+                            child: Card(
+                              child: Center(
+                                  child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: const [
+                                  Icon(Icons.sort),
+                                  Padding(
+                                    padding: EdgeInsets.all(8.0),
+                                    child: Text(
+                                      "Sort",
+                                      style: TextStyle(fontSize: 18),
+                                    ),
                                   ),
-                                ),
-                              ],
-                            )),
+                                ],
+                              )),
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
+                      Padding(
+                        padding:
+                            const EdgeInsets.only(left: 4, right: 8, top: 16),
+                        child: InkWell(
+                          onTap: () {
+                            showModalBottomSheet(
+                                context: context,
+                                isScrollControlled: true,
+                                enableDrag: false,
+                                builder: (context) {
+                                  return _buidBottomSheetFilter();
+                                });
+                          },
+                          child: Container(
+                            width: 190,
+                            height: 50,
+                            child: Card(
+                              child: Center(
+                                  child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: const [
+                                  Icon(Icons.filter_alt_sharp),
+                                  Padding(
+                                    padding: EdgeInsets.all(8.0),
+                                    child: Text(
+                                      "Filter",
+                                      style: TextStyle(fontSize: 18),
+                                    ),
+                                  ),
+                                ],
+                              )),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
                 ScopedModelDescendant<JobViewModel>(
                   builder: (context, child, model) {
@@ -297,7 +345,68 @@ class _PostListState extends State<PostList> {
     );
   }
 
-  Widget _buidBottomSheet() {
+  Widget _buiBottomSheetSort() {
+    return Container(
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(top: 12),
+            child: GestureDetector(
+              onTap: () {
+                Navigator.pop(context);
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    color: Colors.black),
+                width: 81,
+                height: 4,
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(24, 20, 24, 0),
+            child: Row(
+              children: [
+                const Text(
+                  "SORT BY",
+                  style: TextStyle(color: Colors.grey, fontSize: 16),
+                ),
+              ],
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
+            child: StatefulBuilder(
+              builder: (context, setState) {
+                return Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: itemsSort.map((item) {
+                  return RadioListTile<SortBy>(
+                    title: Text(item.label),
+                    value: item,
+                    activeColor: Colors.black,
+                    contentPadding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                    groupValue: selectedSort,
+                    onChanged: (value) {
+                      setState(() {
+                        selectedSort = value!;
+                      });
+                      onChangeSort(value!);
+                      Navigator.pop(context);
+                    },
+                  );
+                }).toList(),
+              );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buidBottomSheetFilter() {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -319,11 +428,11 @@ class _PostListState extends State<PostList> {
           elevation: 0,
           actions: [
             Padding(
-              padding: EdgeInsets.only(right: 28),
+              padding: const EdgeInsets.only(right: 28),
               child: Center(
                 child: InkWell(
                   onTap: () {},
-                  child: Text(
+                  child: const Text(
                     "Reset",
                     style: TextStyle(fontSize: 16),
                   ),
@@ -350,9 +459,6 @@ class _PostListState extends State<PostList> {
   }
 
   Widget _buildMultipSelectCheckBox() {
-    // if(jobViewModel.jobTypes == null){
-    //   return Container();
-    // }
     List<JobType> emptyList = [];
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
@@ -382,16 +488,25 @@ class _PostListState extends State<PostList> {
                 .toList(),
         listType: MultiSelectListType.CHIP,
 
-        //
-        // chipDisplay: MultiSelectChipDisplay(
-        //   items: preSelectItems.map((e) => MultiSelectItem(e, e.name ?? '')).toList(),
-        //   onTap: (value) {
-        //     setState(() {
-        //       preSelectItems.remove(value);
-        //     });
-        //   },
-        // ),
-        //
+        chipDisplay: MultiSelectChipDisplay(
+          icon: const Icon(
+            Icons.cancel,
+            color: Colors.white,
+          ),
+          chipColor: Colors.black,
+          textStyle: const TextStyle(color: Colors.white),
+          scroll: true,
+          items: preSelectItems
+              .map((e) => MultiSelectItem(e, e.name ?? ''))
+              .toList(),
+          onTap: (value) {
+            setState(() {
+              preSelectItems.remove(value);
+            });
+            return preSelectItems;
+          },
+        ),
+
         onConfirm: (values) {
           setState(() {
             preSelectItems = values;
@@ -611,4 +726,17 @@ class _PostListState extends State<PostList> {
   // Widget _buildPost(int e) {
 
   // }
+}
+
+class SortBy {
+  final int id;
+  final String label;
+  final String value;
+  final String isAcs;
+
+  SortBy(
+      {required this.id,
+      required this.label,
+      required this.value,
+      required this.isAcs});
 }

@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/route_manager.dart';
 import 'package:gigjob_mobile/utils/share_pref.dart';
 import 'package:gigjob_mobile/view/login_home.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 class ApiService {
   static const String baseUrl = 'http://54.179.205.85:8080/api';
@@ -44,6 +45,7 @@ class ApiService {
         await FirebaseAuth.instance.signOut();
         await removeALL();
         await ApiService.setToken("");
+        await DefaultCacheManager().emptyCache();
         print(baseHeaders);
         Get.offAll(LoginHome());
         throw Exception(e.message);
@@ -55,6 +57,7 @@ class ApiService {
         await FirebaseAuth.instance.signOut();
         await removeALL();
         await ApiService.setToken("");
+        await DefaultCacheManager().emptyCache();
         print(baseHeaders);
         Get.offAll(LoginHome());
         throw Exception(e.message);
@@ -83,6 +86,7 @@ class ApiService {
         await FirebaseAuth.instance.signOut();
         await removeALL();
         await ApiService.setToken("");
+        await DefaultCacheManager().emptyCache();
         Get.offAll(LoginHome());
         throw Exception(e.message);
       }
