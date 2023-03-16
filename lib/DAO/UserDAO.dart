@@ -1,6 +1,8 @@
 import 'package:gigjob_mobile/DAO/BaseDAO.dart';
 import 'package:gigjob_mobile/DTO/UserDTO.dart';
+import 'package:gigjob_mobile/DTO/WorkerDTO.dart';
 import 'package:gigjob_mobile/services/request.dart';
+import 'package:gigjob_mobile/utils/share_pref.dart';
 
 import '../DTO/MetaDataDTO.dart';
 
@@ -15,5 +17,25 @@ class UserDAO extends BaseDAO {
     final res = await ApiService.get("/workers/account/${id}", null, null);
     UserDTO userDTO = UserDTO.fromJson(res.data);
     return userDTO;
+  }
+
+  Future registerWorker(WorkerDTO dto) async {
+    try {
+      final res = await ApiService.post("path", null, null, {
+        "accountId": getAccountID(),
+        "firstName": dto.firstName,
+        "lastName": dto.lastName,
+        "middleName": dto.middleName,
+        "birthday": dto.birthday,
+        "phone": dto.phone,
+        "education": dto.education,
+        "username": dto.username,
+        "password": dto.password
+      });
+      // ignore: avoid_print
+      print(res.data);
+    } catch (e) {
+      throw Exception(e);
+    }
   }
 }

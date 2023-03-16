@@ -7,6 +7,7 @@ import 'package:gigjob_mobile/DAO/AccountDAO.dart';
 import 'package:gigjob_mobile/enum/view_status.dart';
 import 'package:gigjob_mobile/view/login_home.dart';
 import 'package:gigjob_mobile/view/nav_screen.dart';
+import 'package:gigjob_mobile/view/register_Worker.dart';
 import 'package:gigjob_mobile/viewmodel/base_model.dart';
 
 class StartUpViewModel extends BaseModel {
@@ -30,7 +31,7 @@ class StartUpViewModel extends BaseModel {
     if (hasLoggedInUser) {
       Get.offAll(RootScreen());
     } else {
-      Get.offAll(LoginHome());
+      Get.offAll(RegisterWorkerPage());
     }
   }
 
