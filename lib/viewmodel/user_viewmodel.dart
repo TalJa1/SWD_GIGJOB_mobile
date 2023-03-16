@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:get/get.dart';
 import 'package:gigjob_mobile/DAO/UserDAO.dart';
 import 'package:gigjob_mobile/DTO/ApplyJobDTO.dart';
@@ -38,8 +39,11 @@ class UserViewModel extends BaseModel {
 
   Future processLogout() async {
     try {
+      await DefaultCacheManager().emptyCache();
+      await clearCacheAndStorage();
       await FirebaseAuth.instance.signOut();
       await removeALL();
+      
       Get.offAll(LoginHome());
     } catch (e) {
       print(e);

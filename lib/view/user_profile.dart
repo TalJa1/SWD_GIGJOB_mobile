@@ -55,14 +55,15 @@ class _UserProfileState extends State<UserProfile> {
   Widget build(BuildContext context) {
     // ignore: unused_local_variable
     // ignore: prefer_const_constructors
-    return FutureBuilder<UserDTO?>(
-      future: fetchData(),
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          // Data has been successfully fetched, display it here
-          return ScopedModel<UserViewModel>(
-            model: userViewModel,
-            child: Scaffold(
+    return ScopedModel<UserViewModel>(
+      model: userViewModel,
+      child: ScopedModelDescendant<UserViewModel>(
+        builder: (context, child, model) {
+          if (userViewModel.status == ViewStatus.Loading) {
+            return Container(
+                width: 100, height: 100, child: CircularProgressIndicator());
+          } else if (userViewModel.status == ViewStatus.Completed) {
+            return Scaffold(
               resizeToAvoidBottomInset: false,
               backgroundColor: Colors.white,
               body: RefreshIndicator(
@@ -121,16 +122,7 @@ class _UserProfileState extends State<UserProfile> {
                               ))),
                         ],
                       ),
-                      ScopedModelDescendant<UserViewModel>(
-                          builder: (context, child, model) {
-                        if (userViewModel.status == ViewStatus.Loading) {
-                          return CircularProgressIndicator();
-                        } else if (userViewModel.status ==
-                            ViewStatus.Completed) {
-                          return userData(isInfo);
-                        }
-                        return Container();
-                      }),
+                      userData(isInfo),
                       const SizedBox(
                         height: 15,
                       ),
@@ -139,20 +131,30 @@ class _UserProfileState extends State<UserProfile> {
                 ),
               ),
               floatingActionButton: editBtn(),
-            ),
-          );
-        } else if (snapshot.hasError) {
-          // An error occurred while fetching the data, display an error message
-          return Text("Error: ${snapshot.error}");
-        } else {
-          // Data is still being fetched, display a loading indicator
-          // ignore: prefer_const_constructors
-          return Center(
-            child: const CircularProgressIndicator(),
-          );
-        }
-      },
+            );
+          }
+          return Container();
+        },
+      ),
     );
+    // return FutureBuilder<UserDTO?>(
+    //   future: fetchData(),
+    //   builder: (context, snapshot) {
+    //     if (snapshot.hasData) {
+    //       // Data has been successfully fetched, display it here
+
+    //     } else if (snapshot.hasError) {
+    //       // An error occurred while fetching the data, display an error message
+    //       return Text("Error: ${snapshot.error}");
+    //     } else {
+    //       // Data is still being fetched, display a loading indicator
+    //       // ignore: prefer_const_constructors
+    //       return Center(
+    //         child: const CircularProgressIndicator(),
+    //       );
+    //     }
+    //   },
+    // );
   }
 
   Widget backGround() {
@@ -187,8 +189,8 @@ class _UserProfileState extends State<UserProfile> {
       height: 150.0,
       decoration: BoxDecoration(
         color: const Color(0xff7c94b6),
-        image: const DecorationImage(
-          image: AssetImage('assets/images/GigJob.png'),
+        image: DecorationImage(
+          image: NetworkImage('${userViewModel.userDTO}'),
           fit: BoxFit.cover,
         ),
         borderRadius: const BorderRadius.all(Radius.circular(80.0)),

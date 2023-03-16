@@ -1,5 +1,9 @@
+import 'dart:io';
+
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
+import 'package:path_provider/path_provider.dart';
+
 
 Future<bool> setToken(String value) async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -41,4 +45,14 @@ Future<String?> getAccountID() async {
 Future<void> removeALL() async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   await prefs.clear();
+}
+
+Future<void> clearCacheAndStorage() async {
+  final cacheDir = await getTemporaryDirectory();
+  final appDir = await getApplicationSupportDirectory();
+  
+  await Future.wait([
+    Directory(cacheDir.path).delete(recursive: true),
+    Directory(appDir.path).delete(recursive: true),
+  ]);
 }
