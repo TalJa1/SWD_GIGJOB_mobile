@@ -4,6 +4,7 @@ import 'package:animated_button_bar/animated_button_bar.dart';
 import 'package:get/get.dart';
 import 'package:gigjob_mobile/DAO/JobDAO.dart';
 import 'package:gigjob_mobile/DTO/UserDTO.dart';
+import 'package:gigjob_mobile/DTO/WorkerDTO.dart';
 import 'package:gigjob_mobile/enum/view_status.dart';
 import 'package:gigjob_mobile/view/edit_profile.dart';
 import 'package:gigjob_mobile/viewmodel/job_viewmodel.dart';
@@ -41,9 +42,9 @@ class _UserProfileState extends State<UserProfile> {
     userViewModel.getAppliedJob();
   }
 
-  Future<UserDTO?> fetchData() async {
+  Future<WorkerDTO?> fetchData() async {
     try {
-      final UserDTO? user = userViewModel.userDTO;
+      final WorkerDTO? user = userViewModel.userDTO;
       return user;
     } catch (e) {
       print(e);
@@ -61,7 +62,9 @@ class _UserProfileState extends State<UserProfile> {
         builder: (context, child, model) {
           if (userViewModel.status == ViewStatus.Loading) {
             return Container(
-                width: 100, height: 100, child: CircularProgressIndicator());
+                width: 100, height: 100, child: const CircularProgressIndicator(
+                  
+                ));
           } else if (userViewModel.status == ViewStatus.Completed) {
             return Scaffold(
               resizeToAvoidBottomInset: false,
@@ -189,8 +192,11 @@ class _UserProfileState extends State<UserProfile> {
       height: 150.0,
       decoration: BoxDecoration(
         color: const Color(0xff7c94b6),
-        image: DecorationImage(
-          image: NetworkImage('${userViewModel.userDTO}'),
+        image: userViewModel.userDTO!.imageUrl == null || userViewModel.userDTO!.imageUrl!.isEmpty ? const DecorationImage(
+          image: AssetImage('assets/images/GigJob.png'),
+          fit: BoxFit.cover,
+        ) : DecorationImage(
+          image: NetworkImage('${userViewModel.userDTO!.imageUrl}'),
           fit: BoxFit.cover,
         ),
         borderRadius: const BorderRadius.all(Radius.circular(80.0)),
@@ -305,7 +311,7 @@ class _UserProfileState extends State<UserProfile> {
                                   const Text('Status:'),
                                   Text(
                                     "${userViewModel.appliedjob![index].status}",
-                                    style: TextStyle(color: Colors.green),
+                                    style: const TextStyle(color: Colors.green),
                                   )
                                 ],
                               ),
@@ -363,7 +369,7 @@ class _UserProfileState extends State<UserProfile> {
     return FloatingActionButton(
       child: const Icon(Icons.edit),
       onPressed: () {
-        Get.to(EditProfilePage());
+        Get.to(const EditProfilePage());
       },
     );
   }

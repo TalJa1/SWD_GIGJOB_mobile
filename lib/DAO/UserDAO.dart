@@ -12,10 +12,10 @@ class UserDAO extends BaseDAO {
   @override
   MetaDataDTO get metaDataDTO => _metaDataDTO;
 
-  Future<UserDTO> getProfile(String id) async {
+  Future<WorkerDTO> getProfile(String id) async {
     // ignore: unnecessary_brace_in_string_interps
     final res = await ApiService.get("/v1/worker/account/${id}", null, null);
-    UserDTO userDTO = UserDTO.fromJson(res.data);
+    WorkerDTO userDTO = WorkerDTO.fromJson(res.data);
     return userDTO;
   }
 

@@ -82,6 +82,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   //   }
   // }
 
+
   @override
   Widget build(BuildContext context) {
     // ignore: prefer_const_constructors
@@ -185,19 +186,17 @@ class _EditProfilePageState extends State<EditProfilePage> {
   }
 
   Widget formEdit() {
+    
     return Container(
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
         child: SingleChildScrollView(
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // textForm("email"),
-                textForm(),
-              ],
-            ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // textForm("email"),
+              textForm(),
+            ],
           ),
         ));
   }

@@ -5,6 +5,7 @@ import 'package:get/route_manager.dart';
 import 'package:gigjob_mobile/utils/share_pref.dart';
 import 'package:gigjob_mobile/view/login_home.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class ApiService {
   static const String baseUrl = 'http://54.179.205.85:8080/api';
@@ -44,6 +45,7 @@ class ApiService {
       if (e.response?.statusCode == 401) {
         await DefaultCacheManager().emptyCache();
         await clearCacheAndStorage();
+        await GoogleSignIn().signOut();
         await FirebaseAuth.instance.signOut();
         await removeALL();
         await ApiService.setToken("");
@@ -56,6 +58,7 @@ class ApiService {
       } else {
         await DefaultCacheManager().emptyCache();
         await clearCacheAndStorage();
+        await GoogleSignIn().signOut();
         await FirebaseAuth.instance.signOut();
         await removeALL();
         await ApiService.setToken("");
@@ -85,6 +88,7 @@ class ApiService {
       if (e.response?.statusCode == 401) {
         await DefaultCacheManager().emptyCache();
         await clearCacheAndStorage();
+        await GoogleSignIn().signOut();
         await FirebaseAuth.instance.signOut();
         await removeALL();
         await ApiService.setToken("");
@@ -93,8 +97,10 @@ class ApiService {
         throw Exception(e.message);
       }
       if (e.response != null) {
+
         throw Exception(e.response!.data);
       } else {
+        
         throw Exception(e.message);
       }
     }

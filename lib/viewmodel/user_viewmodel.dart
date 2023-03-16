@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:get/get.dart';
 import 'package:gigjob_mobile/DAO/UserDAO.dart';
@@ -18,7 +19,7 @@ class UserViewModel extends BaseModel {
   UserDAO? userDAO;
   List<JobDTO>? jobs;
   List<ApplyJobDTO>? appliedjob;
-  UserDTO? userDTO;
+  WorkerDTO? userDTO;
   // ignore: non_constant_identifier_names
   UserViewModel() {
     jobDAO = JobDAO();
@@ -41,6 +42,7 @@ class UserViewModel extends BaseModel {
     try {
       await DefaultCacheManager().emptyCache();
       await clearCacheAndStorage();
+      await GoogleSignIn().signOut();
       await FirebaseAuth.instance.signOut();
       await removeALL();
       
