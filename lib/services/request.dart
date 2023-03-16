@@ -10,7 +10,6 @@ class ApiService {
   static const String baseUrl = 'http://54.179.205.85:8080/api';
   // static const String baseUrl = 'http://localhost/api';
 
-
   static Map<String, String> baseHeaders = {
     'Content-Type': 'application/json',
     'Authorization': '',
@@ -42,27 +41,27 @@ class ApiService {
       return response;
     } on DioError catch (e) {
       if (e.response?.statusCode == 401) {
+        await DefaultCacheManager().emptyCache();
+        await clearCacheAndStorage();
         await FirebaseAuth.instance.signOut();
         await removeALL();
         await ApiService.setToken("");
-        await DefaultCacheManager().emptyCache();
         print(baseHeaders);
         Get.offAll(LoginHome());
         throw Exception(e.message);
       }
       if (e.response != null) {
-        
         throw Exception(e.response);
       } else {
+        await DefaultCacheManager().emptyCache();
+        await clearCacheAndStorage();
         await FirebaseAuth.instance.signOut();
         await removeALL();
         await ApiService.setToken("");
-        await DefaultCacheManager().emptyCache();
         print(baseHeaders);
         Get.offAll(LoginHome());
         throw Exception(e.message);
       }
-      
     }
   }
 
@@ -83,10 +82,12 @@ class ApiService {
       return response;
     } on DioError catch (e) {
       if (e.response?.statusCode == 401) {
+        await DefaultCacheManager().emptyCache();
+        await clearCacheAndStorage();
         await FirebaseAuth.instance.signOut();
         await removeALL();
         await ApiService.setToken("");
-        await DefaultCacheManager().emptyCache();
+
         Get.offAll(LoginHome());
         throw Exception(e.message);
       }
