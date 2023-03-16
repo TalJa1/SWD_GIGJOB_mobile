@@ -32,6 +32,7 @@ class ApiService {
     queryParams ??= {};
 
     try {
+      print(baseHeaders);
       final response = await dio.post(
         path,
         queryParameters: queryParams,

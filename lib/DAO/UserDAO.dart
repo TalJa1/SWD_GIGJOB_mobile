@@ -21,8 +21,9 @@ class UserDAO extends BaseDAO {
 
   Future registerWorker(WorkerDTO dto) async {
     try {
-      final res = await ApiService.post("path", null, null, {
-        "accountId": getAccountID(),
+      String? accID = await getAccountID();
+      final res = await ApiService.post("/v1/worker", null, null, {
+        "accountId": accID,
         "firstName": dto.firstName,
         "lastName": dto.lastName,
         "middleName": dto.middleName,
