@@ -378,9 +378,12 @@ class _RegisterWorkerPageState extends State<RegisterWorkerPage> {
                             ],
                           )
                         ],
-                        const Text(
-                          'Choose your birthday',
-                          style: TextStyle(color: Colors.blue),
+                        Container(
+                          padding: const EdgeInsets.only(top: 10),
+                          child: const Text(
+                            'Choose your birthday',
+                            style: TextStyle(color: Colors.blue),
+                          ),
                         ),
                       ],
                     ),

@@ -45,7 +45,7 @@ class LoginViewModel extends BaseModel {
       await dao.postToken(token);
       // await dao.postFcmToken(fcmToken);
 
-      Get.to(RegisterWorkerPage());
+      Get.to(RootScreen());
     } catch (e) {
       print(e);
       await showMyDialog(context, "Error", "Login fail");
