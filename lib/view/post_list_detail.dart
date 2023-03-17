@@ -11,23 +11,36 @@ import 'package:gigjob_mobile/DTO/ApplyJobDTO.dart';
 import 'package:gigjob_mobile/DTO/JobDTO.dart';
 import 'package:gigjob_mobile/DTO/WorkerDTO.dart';
 import 'package:gigjob_mobile/accesories/dialog.dart';
+import 'package:gigjob_mobile/enum/view_status.dart';
 import 'package:gigjob_mobile/utils/share_pref.dart';
+import 'package:gigjob_mobile/view/nav_screen.dart';
+import 'package:gigjob_mobile/view/start_up.dart';
+import 'package:gigjob_mobile/viewmodel/jobDetail_viewmodel.dart';
+import 'package:gigjob_mobile/viewmodel/job_viewmodel.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:jwt_decode/jwt_decode.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 class PostListDetail extends StatefulWidget {
   @override
   _PostListDetailState createState() => _PostListDetailState();
 
   final JobDTO data;
-  final List<ApplyJobDTO>? appliedJob;
-
-  const PostListDetail({super.key, required this.data, this.appliedJob});
+  const PostListDetail({super.key, required this.data});
 }
 
 class _PostListDetailState extends State<PostListDetail> {
   late AccountDAO accountDAO;
   bool _showConfirm = false;
+  late JobDetailViewModel jobDetailViewModel;
+
+  @override
+  void initState() {
+    super.initState();
+    jobDetailViewModel = JobDetailViewModel();
+    jobDetailViewModel.getJobApplied(widget.data.id);
+    print(jobDetailViewModel.isApplied);
+  }
 
   void _ontapShowConfirm() {
     setState(() {
@@ -53,180 +66,180 @@ class _PostListDetailState extends State<PostListDetail> {
     return workDTO.id;
   }
 
-  ApplyJobDTO? isApplied() {
-    List<ApplyJobDTO>? list = widget.appliedJob;
+  // ApplyJobDTO? isApplied() {
+  //   List<ApplyJobDTO>? list = jobDetailViewModel.appliedjob;
 
-    for (var i = 0; i < list!.length; i++) {
-      if (list[i].job?.id == widget.data.id) {
-        return list[i];
-      }
-    }
-    print("nulls");
-    return null;
-  }
+  //   for (var i = 0; i < list!.length; i++) {
+  //     if (list[i].job?.id == widget.data.id) {
+  //       return list[i];
+  //     }
+  //   }
+  //   print("nulls");
+  //   return null;
+  // }
 
   @override
   Widget build(BuildContext context) {
-    print(isApplied());
-    return Scaffold(
-      
-        appBar: AppBar(
-          leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-          backgroundColor: Color.fromARGB(255, 45, 45, 45),
-        ),
-        body: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 48, 16, 0),
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                // Stack(
-                //   // ignore: prefer_const_literals_to_create_immutables
-                //   children: [
-                //     Align(
-                //         alignment: Alignment.topLeft,
-                //         child: GestureDetector(
-                //           onTap: () {
-                //             Get.back();
-                //           },
-                //           child: Text(
-                //             "Back",
-                //             style: TextStyle(
-                //               fontSize: 16.0,
-                //             ),
-                //           ),
-                //         ))
-                //   ],
-                // ),
-
-                Card(
-                  elevation: 4,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: Column(
-                    children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(16),
-                          topRight: Radius.circular(16),
-                        ),
-                        child: Image.network(
-                          'https://cdn.searchenginejournal.com/wp-content/uploads/2017/06/shutterstock_268688447.jpg',
-                          width: 500,
-                          height: 240,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            CircleAvatar(
-                              radius: 32, // Image radius
-                              backgroundImage: NetworkImage(
-                                  'https://cdn.searchenginejournal.com/wp-content/uploads/2017/06/shutterstock_268688447.jpg'),
-                            ),
-                            Text(
-                              "${widget.data.shop?.name}",
-                              style: TextStyle(
-                                  fontSize: 18,
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Divider(
-                        thickness: 2,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "${widget.data.title}",
-                              style: TextStyle(
-                                  fontSize: 24,
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            Row(
-                              children: [
-                                Text(
-                                  "Expire: ",
-                                  maxLines: 3,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.grey[600],
-                                  ),
-                                ),
-                                Text(
-                                  Jiffy("${widget.data.expiredDate}").fromNow(),
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.indigo,
-                                  ),
-                                ),
-                              ],
-                            )
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-                const SizedBox(
-                  height: 16,
-                ),
-                Column(
-                  children: [],
-                ),
-                Row(
-                  // ignore: prefer_const_literals_to_create_immutables
-                  children: [
-                    Expanded(
-                        child: Text(
-                      "Description",
-                      style: TextStyle(fontSize: 24.0),
-                    ))
-                  ],
-                ),
-                const SizedBox(
-                  height: 12,
-                ),
-                Row(
-                  // ignore: prefer_const_literals_to_create_immutables
-                  children: [
-                    Expanded(
-                        child: Text(
-                      widget.data.description.toString(),
-                      style: TextStyle(fontSize: 16),
-                    ))
-                  ],
-                ),
-                _buildTabView(),
-                // const SizedBox(
-                //   height: 12,
-                // ),
-                // Text("Job type"),
-                // Row(
-                //   children: [
-                //     Expanded(child: Text(widget.data.description.toString()))
-                //   ],
-                // )
-              ],
+    return ScopedModel<JobDetailViewModel>(
+      model: jobDetailViewModel,
+      child: Scaffold(
+          appBar: AppBar(
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back_ios),
+              onPressed: () {
+                Navigator.pop(context);
+              },
             ),
+            backgroundColor: Color.fromARGB(255, 45, 45, 45),
           ),
-        ),
-        bottomNavigationBar: _buildButtonApply());
+          body: ScopedModelDescendant<JobDetailViewModel>(
+            builder: (context, child, model) {
+              if (jobDetailViewModel.status == ViewStatus.Completed) {
+                return Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 48, 16, 0),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        Card(
+                          elevation: 4,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          child: Column(
+                            children: [
+                              ClipRRect(
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(16),
+                                  topRight: Radius.circular(16),
+                                ),
+                                child: Image.network(
+                                  'https://cdn.searchenginejournal.com/wp-content/uploads/2017/06/shutterstock_268688447.jpg',
+                                  width: 500,
+                                  height: 240,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.fromLTRB(12, 12, 12, 12),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    CircleAvatar(
+                                      radius: 32, // Image radius
+                                      backgroundImage: NetworkImage(
+                                          'https://cdn.searchenginejournal.com/wp-content/uploads/2017/06/shutterstock_268688447.jpg'),
+                                    ),
+                                    Text(
+                                      "${jobDetailViewModel.jobDTO?.shop?.name}",
+                                      style: TextStyle(
+                                          fontSize: 18,
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Divider(
+                                thickness: 2,
+                              ),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.fromLTRB(12, 12, 12, 12),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      "${widget.data.title}",
+                                      style: TextStyle(
+                                          fontSize: 24,
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    Row(
+                                      children: [
+                                        Text(
+                                          "Expire: ",
+                                          maxLines: 3,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            color: Colors.grey[600],
+                                          ),
+                                        ),
+                                        Text(
+                                          Jiffy("${widget.data.expiredDate}")
+                                              .fromNow(),
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            color: Colors.indigo,
+                                          ),
+                                        ),
+                                      ],
+                                    )
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 16,
+                        ),
+                        Column(
+                          children: [],
+                        ),
+                        Row(
+                          // ignore: prefer_const_literals_to_create_immutables
+                          children: [
+                            Expanded(
+                                child: Text(
+                              "Description",
+                              style: TextStyle(fontSize: 24.0),
+                            ))
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 12,
+                        ),
+                        Row(
+                          // ignore: prefer_const_literals_to_create_immutables
+                          children: [
+                            Expanded(
+                                child: Text(
+                              widget.data.description.toString(),
+                              style: TextStyle(fontSize: 16),
+                            ))
+                          ],
+                        ),
+                        _buildTabView(),
+                        // const SizedBox(
+                        //   height: 12,
+                        // ),
+                        // Text("Job type"),
+                        // Row(
+                        //   children: [
+                        //     Expanded(child: Text(widget.data.description.toString()))
+                        //   ],
+                        // )
+                      ],
+                    ),
+                  ),
+                );
+              } else if (jobDetailViewModel.status == ViewStatus.Loading) {
+                return Center(
+                    child: Container(
+                        width: 100,
+                        height: 100,
+                        child: const CircularProgressIndicator()));
+              }
+              return Container();
+            },
+          ),
+          bottomNavigationBar: _buildButtonApply()),
+    );
   }
 
   Widget _buildTabView() {
@@ -310,35 +323,50 @@ class _PostListDetailState extends State<PostListDetail> {
   }
 
   Widget _buildButtonApply() {
-    return InkWell(
-      onTap: isApplied == null
-          ? () {
-              showDialog<String>(
-                  context: context,
-                  builder: (BuildContext context) => _buildDialog(context));
-            }
-          : null,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 48, 16, 16),
-        child: Container(
-            height: 50,
-            width: double.infinity,
-            decoration: BoxDecoration(
-              color: isApplied() == null ? Colors.black : Colors.grey,
-              borderRadius: BorderRadius.circular(25),
-            ),
-            child: Center(
-              child: Text(
-                isApplied() == null ? 'Apply Now!!!' : 'You are applying',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
+    return
+    ScopedModelDescendant<JobDetailViewModel>(builder: (context, child, model) {
+      if (jobDetailViewModel.status == ViewStatus.Loading) {
+      return Container();
+    } else if (jobDetailViewModel.status == ViewStatus.Completed) {
+      return InkWell(
+        onTap: jobDetailViewModel.isApplied == null
+            ? () {
+                showDialog<String>(
+                    context: context,
+                    builder: (BuildContext context) => _buildDialog(context));
+              }
+            : null,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 48, 16, 16),
+          child: Container(
+              height: 50,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: jobDetailViewModel.isApplied == null
+                    ? Colors.black
+                    : Colors.grey,
+                borderRadius: BorderRadius.circular(25),
               ),
-            )),
-      ),
-    );
+              child: Center(
+                child: Text(
+                  jobDetailViewModel.isApplied == null
+                      ? 'Apply Now!!!'
+                      : 'You are applying',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              )),
+        ),
+      );
+    }
+    else {
+      return Container();
+    }
+    },);
+    
   }
 
   Widget _buildDialog(BuildContext context) {
@@ -363,6 +391,7 @@ class _PostListDetailState extends State<PostListDetail> {
             Navigator.pop(context, 'OK');
             if (isApply) {
               showMyDialog(context, "SUCESS", "Apply success");
+              await Get.off(PostListDetail(data: widget.data,));
             } else {
               showMyDialog(context, "FAIL", "Apply fail");
             }

@@ -42,7 +42,7 @@ class _PostListState extends State<PostList> {
     "filterKey": "jobType",
     "value": "1",
     "operation": "eq",
-    "sortCriteria": {"sortKey": "createdDate", "direction": "acs"}
+    "sortCriteria": {"sortKey": "id", "direction": "desc"}
   };
 
   late SortBy selectedSort;
@@ -51,13 +51,13 @@ class _PostListState extends State<PostList> {
     SortBy(
         id: 1,
         label: 'Create date new to old',
-        value: 'createdDate',
-        isAcs: "asc"),
+        value: 'id',
+        isAcs: "desc"),
     SortBy(
         id: 2,
         label: 'Create date old to new',
-        value: 'createdDate',
-        isAcs: "desc"),
+        value: 'id',
+        isAcs: "asc"),
   ];
 
   @override
@@ -568,7 +568,6 @@ class _PostListState extends State<PostList> {
       onTap: () {
         Get.to(PostListDetail(
           data: job,
-          appliedJob: jobViewModel.appliedjob,
         ));
       },
       child: Padding(
@@ -661,7 +660,7 @@ class _PostListState extends State<PostList> {
                 padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
                 child: GestureDetector(
                   onTap: () {
-                    Get.to(PostListDetail(data: job));
+                    Get.to(PostListDetail(data: job,));
                   },
                   child: Column(
                     children: [

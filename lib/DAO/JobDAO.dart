@@ -57,6 +57,16 @@ class JobDAO extends BaseDAO {
     return applyJobDTO;
   }
 
+  Future<JobDTO> getJobById(int? jobID) async {
+    try {
+      final res = await ApiService.get("/v1/job/${jobID}", null, null);
+      JobDTO job = JobDTO.fromJson(res.data);
+      return job;
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
   set metaDataDTO(MetaDataDTO value) {
     _metaDataDTO = value;
   }

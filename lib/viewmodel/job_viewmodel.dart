@@ -25,14 +25,15 @@ class JobViewModel extends BaseModel {
     jobTypeDAO = JobTypeDAO();
   }
 
-  Future getJobs({Map<String, dynamic>? params, Map<String, dynamic>? body}) async {
+  Future getJobs(
+      {Map<String, dynamic>? params, Map<String, dynamic>? body}) async {
     try {
       if (params!["pageIndex"] != 0) {
         setState(ViewStatus.LoadingMore);
-        // List<ProductDTO>? tmp = await productDAO?.getProducts(params: params);
+        List<JobDTO>? tmp = await jobDAO?.getJob(params: params, body: body);
         jobs = [
           ...(jobs ?? []),
-          ...(await jobDAO?.getJob(params: params, body: body) ?? [])
+          ...(tmp ?? [])
         ];
         setState(ViewStatus.Completed);
       } else {
@@ -51,6 +52,16 @@ class JobViewModel extends BaseModel {
       // print(products);
     } catch (e) {
       throw Exception(e);
+    }
+  }
+
+  Future getJobApplied() async {
+    try {
+      String? accountId = await getAccountID();
+      WorkerDTO? workDTO = await jobDAO?.getWorkerId(accountId!);
+      appliedjob = await jobDAO?.getJobApplied(workDTO?.id);
+    } catch (e) {
+      print(e);
     }
   }
 }
