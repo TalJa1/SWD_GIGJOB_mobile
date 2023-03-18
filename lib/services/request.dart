@@ -7,7 +7,8 @@ import 'package:gigjob_mobile/view/login_home.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 class ApiService {
-  static const String baseUrl = 'http://54.179.205.85:8080/api';
+  static const String baseUrl = 'http://13.228.218.62:8080/api';
+  // static const String baseUrl = 'http://54.179.205.85:8080/api';
   // static const String baseUrl = 'http://localhost/api';
 
 
