@@ -51,7 +51,7 @@ class JobViewModel extends BaseModel {
       // setState(ViewStatus.Completed);
       // print(products);
     } catch (e) {
-      throw Exception(e);
+      print(e);
     }
   }
 

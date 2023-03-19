@@ -323,50 +323,50 @@ class _PostListDetailState extends State<PostListDetail> {
   }
 
   Widget _buildButtonApply() {
-    return
-    ScopedModelDescendant<JobDetailViewModel>(builder: (context, child, model) {
-      if (jobDetailViewModel.status == ViewStatus.Loading) {
-      return Container();
-    } else if (jobDetailViewModel.status == ViewStatus.Completed) {
-      return InkWell(
-        onTap: jobDetailViewModel.isApplied == null
-            ? () {
-                showDialog<String>(
-                    context: context,
-                    builder: (BuildContext context) => _buildDialog(context));
-              }
-            : null,
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 48, 16, 16),
-          child: Container(
-              height: 50,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: jobDetailViewModel.isApplied == null
-                    ? Colors.black
-                    : Colors.grey,
-                borderRadius: BorderRadius.circular(25),
-              ),
-              child: Center(
-                child: Text(
-                  jobDetailViewModel.isApplied == null
-                      ? 'Apply Now!!!'
-                      : 'You are applying',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
+    return ScopedModelDescendant<JobDetailViewModel>(
+      builder: (context, child, model) {
+        if (jobDetailViewModel.status == ViewStatus.Loading) {
+          return Container();
+        } else if (jobDetailViewModel.status == ViewStatus.Completed) {
+          return InkWell(
+            onTap: jobDetailViewModel.isApplied == null
+                ? () {
+                    showDialog<String>(
+                        context: context,
+                        builder: (BuildContext context) =>
+                            _buildDialog(context));
+                  }
+                : null,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 48, 16, 16),
+              child: Container(
+                  height: 50,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: jobDetailViewModel.isApplied == null
+                        ? Colors.black
+                        : Colors.grey,
+                    borderRadius: BorderRadius.circular(25),
                   ),
-                ),
-              )),
-        ),
-      );
-    }
-    else {
-      return Container();
-    }
-    },);
-    
+                  child: Center(
+                    child: Text(
+                      jobDetailViewModel.isApplied == null
+                          ? 'Apply Now!!!'
+                          : 'You are applying',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  )),
+            ),
+          );
+        } else {
+          return Container();
+        }
+      },
+    );
   }
 
   Widget _buildDialog(BuildContext context) {
@@ -382,19 +382,18 @@ class _PostListDetailState extends State<PostListDetail> {
         ),
         TextButton(
           onPressed: () async {
-            String accountID = await getAccountId();
-            WorkerDTO workerDTO = await JobDAO().getWorkerId(accountID);
+            bool isApply = await jobDetailViewModel
+                .applyJob(jobDetailViewModel.jobDTO!.id);
 
-            print("Worker id ${workerDTO.id}");
-            bool isApply =
-                await JobDAO().applyJob(workerDTO.id, widget.data.id!);
             Navigator.pop(context, 'OK');
             if (isApply) {
               showMyDialog(context, "SUCESS", "Apply success");
-              await Get.off(PostListDetail(data: widget.data,));
             } else {
               showMyDialog(context, "FAIL", "Apply fail");
             }
+            setState(() {
+              jobDetailViewModel.getJobApplied(jobDetailViewModel.jobDTO?.id);
+            });
           },
           child: const Text('Apply'),
         ),

@@ -15,12 +15,6 @@ class JobDAO extends BaseDAO {
   Future<List<JobDTO>> getJob(
       {Map<String, dynamic>? params, Map<String, dynamic>? body}) async {
     try {
-      // Map<String, dynamic>? body = {
-      //   "filterKey": "",
-      //   "value": "",
-      //   "operation": "",
-      //   "sortCriteria": {"sortKey": "createdDate", "direction": "asc"}
-      // };
       final res = await ApiService.post('/v1/job/search', params, null, body);
       List<dynamic> list = res.data;
       final jobs = JobDTO.fromList(list);
@@ -31,7 +25,7 @@ class JobDAO extends BaseDAO {
     }
   }
 
-  Future<bool> applyJob(String? id, int jobId) async {
+  Future<bool> applyJob(String? id, int? jobId) async {
     try {
       final res = await ApiService.post('/v1/application', null, null,
           {"workerId": id, "status": "PENDING", "jobId": jobId});

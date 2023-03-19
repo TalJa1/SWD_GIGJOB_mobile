@@ -4,6 +4,7 @@ import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:gigjob_mobile/DTO/ApplyJobDTO.dart';
+import 'package:gigjob_mobile/DTO/FilterDTO.dart';
 import 'package:gigjob_mobile/DTO/JobDTO.dart';
 import 'package:gigjob_mobile/enum/view_status.dart';
 import 'package:gigjob_mobile/view/nav_screen.dart';
@@ -37,33 +38,73 @@ class _PostListState extends State<PostList> {
     "pageSize": _pageSize,
   };
 
-  Map<String, dynamic> body = {
-    "searchKey": "",
-    "filterKey": "jobType",
-    "value": "1",
-    "operation": "eq",
-    "sortCriteria": {"sortKey": "id", "direction": "desc"}
-  };
+  void onChangeSort(SortBy sortBy) {
+    SearchCriteriaList? searchCriteriaWithSort = searchCriteriaList.firstWhere(
+        (element) => element.filterKey == "sortCriteria",
+        orElse: () => SearchCriteriaList());
+    if (searchCriteriaWithSort.filterKey == "sortCriteria") {
+      searchCriteriaWithSort.sortCriteria = SortCriteria.fromJson({
+        "sortKey": sortBy.value,
+          "direction": sortBy.isAcs,
+      });
+    }
+    setState(() {
+      _page = 0;
+      params = {...params, "page": 0};
+      body = FilterDTO(searchCriteriaList: searchCriteriaList, dataOption: "");
+    });
+    jobViewModel.getJobs(params: params, body: body.toJson());
+  }
+
+  void _onSummitSearch(String searchText) async {
+    SearchCriteriaList? searchCriteriaWithTitle = searchCriteriaList.firstWhere(
+        (element) => element.filterKey == "title",
+        orElse: () => SearchCriteriaList());
+    if (searchCriteriaWithTitle.filterKey == "title") {
+      searchCriteriaWithTitle.value = searchText;
+    } else if (searchCriteriaWithTitle.filterKey != "title") {
+      searchCriteriaWithTitle = SearchCriteriaList.fromJson({
+        "filterKey": "title",
+        "value": searchText,
+        "dataOption": "",
+        "operation": "eq",
+        "sortCriteria": {
+          "sortKey": "id",
+          "direction": "asc",
+        }
+      });
+      searchCriteriaList.add(searchCriteriaWithTitle);
+    }
+    setState(() {
+      _page = 0;
+      params = {...params, "pageIndex": 0};
+      body = FilterDTO(searchCriteriaList: searchCriteriaList, dataOption: "");
+    });
+    await jobViewModel.getJobs(params: params, body: body.toJson());
+  }
 
   late SortBy selectedSort;
 
   final List<SortBy> itemsSort = [
-    SortBy(
-        id: 1,
-        label: 'Create date new to old',
-        value: 'id',
-        isAcs: "desc"),
-    SortBy(
-        id: 2,
-        label: 'Create date old to new',
-        value: 'id',
-        isAcs: "asc"),
+    SortBy(id: 1, label: 'Create date new to old', value: 'id', isAcs: "desc"),
+    SortBy(id: 2, label: 'Create date old to new', value: 'id', isAcs: "asc"),
   ];
+
+  late FilterDTO body;
+  late List<SearchCriteriaList> searchCriteriaList;
+  late SortCriteria sortCriteria;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    sortCriteria = SortCriteria(
+      sortKey: "id",
+      direction: "asc",
+    );
+    searchCriteriaList = [];
+    body = FilterDTO(searchCriteriaList: searchCriteriaList, dataOption: "");
+
     jobViewModel = JobViewModel();
     _fetchPage(_page);
     _scrollController.addListener(() {
@@ -84,51 +125,15 @@ class _PostListState extends State<PostList> {
     setState(() {
       params = {...params, "pageIndex": _page, "pageSize": _pageSize};
     });
-    await jobViewModel.getJobs(params: params, body: body);
+    await jobViewModel.getJobs(params: params, body: body.toJson());
     final newItems = jobViewModel.jobs;
     if (newItems != null && newItems.length < _pageSize) {
       _isLastPage = true;
     }
   }
 
-  void _onSummitSearch(String searchText) async {
-    setState(() {
-      _page = 0;
-      params = {...params, "pageIndex": 0};
-      body = {
-        ...body,
-        "searchKey": searchText,
-      };
-    });
-    print(searchText);
-    await jobViewModel.getJobs(params: params, body: body);
-  }
-
   void filterByCate(String? id) async {
-    setState(() {
-      _page = 0;
-      params = {...params, "page": 0};
-      body = {
-        ...body,
-        "searchKey": "",
-        "filterKey": "jobType",
-        "value": 1,
-      };
-    });
-    print(params);
-    await jobViewModel.getJobs(params: params, body: body);
-  }
-
-  void onChangeSort(SortBy sortBy) {
-    setState(() {
-      _page = 0;
-      params = {...params, "page": 0};
-      body = {
-        ...body,
-        "sortCriteria": {"sortKey": sortBy.value, "direction": sortBy.isAcs}
-      };
-    });
-    jobViewModel.getJobs(params: params, body: body);
+    await jobViewModel.getJobs(params: params, body: {});
   }
 
   @override
@@ -380,24 +385,24 @@ class _PostListState extends State<PostList> {
             child: StatefulBuilder(
               builder: (context, setState) {
                 return Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: itemsSort.map((item) {
-                  return RadioListTile<SortBy>(
-                    title: Text(item.label),
-                    value: item,
-                    activeColor: Colors.black,
-                    contentPadding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                    groupValue: selectedSort,
-                    onChanged: (value) {
-                      setState(() {
-                        selectedSort = value!;
-                      });
-                      onChangeSort(value!);
-                      Navigator.pop(context);
-                    },
-                  );
-                }).toList(),
-              );
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: itemsSort.map((item) {
+                    return RadioListTile<SortBy>(
+                      title: Text(item.label),
+                      value: item,
+                      activeColor: Colors.black,
+                      contentPadding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                      groupValue: selectedSort,
+                      onChanged: (value) {
+                        setState(() {
+                          selectedSort = value!;
+                        });
+                        onChangeSort(value!);
+                        Navigator.pop(context);
+                      },
+                    );
+                  }).toList(),
+                );
               },
             ),
           ),
@@ -660,7 +665,9 @@ class _PostListState extends State<PostList> {
                 padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
                 child: GestureDetector(
                   onTap: () {
-                    Get.to(PostListDetail(data: job,));
+                    Get.to(PostListDetail(
+                      data: job,
+                    ));
                   },
                   child: Column(
                     children: [

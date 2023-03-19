@@ -8,6 +8,7 @@ import 'package:gigjob_mobile/DTO/AccountDTO.dart';
 import 'package:gigjob_mobile/services/request.dart';
 import 'package:gigjob_mobile/utils/share_pref.dart';
 import 'package:gigjob_mobile/view/login_home.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:jwt_decode/jwt_decode.dart';
 
 class AccountDAO extends BaseDAO {

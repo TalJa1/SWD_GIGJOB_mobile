@@ -52,7 +52,7 @@ class ApiService {
         await ApiService.setToken("");
         print(baseHeaders);
         Get.offAll(LoginHome());
-        throw Exception(e.message);
+        throw Exception(e.response?.statusCode.toString());
       }
       if (e.response != null) {
         throw Exception(e.response);
@@ -65,7 +65,7 @@ class ApiService {
         await ApiService.setToken("");
         print(baseHeaders);
         Get.offAll(LoginHome());
-        throw Exception(e.message);
+        throw Exception(e.response?.statusCode);
       }
     }
   }
@@ -98,11 +98,9 @@ class ApiService {
         throw Exception(e.message);
       }
       if (e.response != null) {
-
         throw Exception(e.response!.data);
       } else {
-        
-        throw Exception(e.message);
+        throw Exception(e.response?.statusCode);
       }
     }
   }

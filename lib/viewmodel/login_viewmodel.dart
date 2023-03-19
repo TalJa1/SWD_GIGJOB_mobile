@@ -41,8 +41,9 @@ class LoginViewModel extends BaseModel {
           await FirebaseAuth.instance.signInWithCredential(credential);
 
       String? token = await googleAuth?.idToken;
-      String? fcmToken =
-          await PushNotificationService.getInstance()?.getFcmToken();
+
+      // String? fcmToken =
+      //     await PushNotificationService.getInstance()?.getFcmToken();
 
       // AccountDTO? accountDTO = await dao.postToken(token);
       await dao.postToken(token);
@@ -56,7 +57,14 @@ class LoginViewModel extends BaseModel {
       }
     } catch (e) {
       print(e);
+      if (e == 401) {
+
+        Get.offAll(RegisterWorkerPage());
+      }
+      else {
       await showMyDialog(context, "Error", "Login fail");
+
+      }
     } finally {
       _isSigningIn = false;
     }
