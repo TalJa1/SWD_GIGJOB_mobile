@@ -4,6 +4,7 @@ import 'package:animated_button_bar/animated_button_bar.dart';
 import 'package:get/get.dart';
 import 'package:gigjob_mobile/DAO/JobDAO.dart';
 import 'package:gigjob_mobile/DTO/UserDTO.dart';
+import 'package:gigjob_mobile/DTO/WorkerDTO.dart';
 import 'package:gigjob_mobile/enum/view_status.dart';
 import 'package:gigjob_mobile/view/edit_profile.dart';
 import 'package:gigjob_mobile/viewmodel/job_viewmodel.dart';
@@ -41,9 +42,9 @@ class _UserProfileState extends State<UserProfile> {
     userViewModel.getAppliedJob();
   }
 
-  Future<UserDTO?> fetchData() async {
+  Future<WorkerDTO?> fetchData() async {
     try {
-      final UserDTO? user = userViewModel.userDTO;
+      final WorkerDTO? user = userViewModel.userDTO;
       return user;
     } catch (e) {
       print(e);
@@ -55,14 +56,19 @@ class _UserProfileState extends State<UserProfile> {
   Widget build(BuildContext context) {
     // ignore: unused_local_variable
     // ignore: prefer_const_constructors
-    return FutureBuilder<UserDTO?>(
-      future: fetchData(),
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          // Data has been successfully fetched, display it here
-          return ScopedModel<UserViewModel>(
-            model: userViewModel,
-            child: Scaffold(
+    return ScopedModel<UserViewModel>(
+      model: userViewModel,
+      child: ScopedModelDescendant<UserViewModel>(
+        builder: (context, child, model) {
+          if (userViewModel.status == ViewStatus.Loading) {
+            return Center(
+              child: Container(
+                  width: 100,
+                  height: 100,
+                  child: const CircularProgressIndicator()),
+            );
+          } else if (userViewModel.status == ViewStatus.Completed) {
+            return Scaffold(
               resizeToAvoidBottomInset: false,
               backgroundColor: Colors.white,
               body: RefreshIndicator(
@@ -121,16 +127,7 @@ class _UserProfileState extends State<UserProfile> {
                               ))),
                         ],
                       ),
-                      ScopedModelDescendant<UserViewModel>(
-                          builder: (context, child, model) {
-                        if (userViewModel.status == ViewStatus.Loading) {
-                          return CircularProgressIndicator();
-                        } else if (userViewModel.status ==
-                            ViewStatus.Completed) {
-                          return userData(isInfo);
-                        }
-                        return Container();
-                      }),
+                      userData(isInfo),
                       const SizedBox(
                         height: 15,
                       ),
@@ -139,20 +136,30 @@ class _UserProfileState extends State<UserProfile> {
                 ),
               ),
               floatingActionButton: editBtn(),
-            ),
-          );
-        } else if (snapshot.hasError) {
-          // An error occurred while fetching the data, display an error message
-          return Text("Error: ${snapshot.error}");
-        } else {
-          // Data is still being fetched, display a loading indicator
-          // ignore: prefer_const_constructors
-          return Center(
-            child: const CircularProgressIndicator(),
-          );
-        }
-      },
+            );
+          }
+          return Container();
+        },
+      ),
     );
+    // return FutureBuilder<UserDTO?>(
+    //   future: fetchData(),
+    //   builder: (context, snapshot) {
+    //     if (snapshot.hasData) {
+    //       // Data has been successfully fetched, display it here
+
+    //     } else if (snapshot.hasError) {
+    //       // An error occurred while fetching the data, display an error message
+    //       return Text("Error: ${snapshot.error}");
+    //     } else {
+    //       // Data is still being fetched, display a loading indicator
+    //       // ignore: prefer_const_constructors
+    //       return Center(
+    //         child: const CircularProgressIndicator(),
+    //       );
+    //     }
+    //   },
+    // );
   }
 
   Widget backGround() {
@@ -187,10 +194,16 @@ class _UserProfileState extends State<UserProfile> {
       height: 150.0,
       decoration: BoxDecoration(
         color: const Color(0xff7c94b6),
-        image: const DecorationImage(
-          image: AssetImage('assets/images/GigJob.png'),
-          fit: BoxFit.cover,
-        ),
+        image: userViewModel.userDTO!.imageUrl == null ||
+                userViewModel.userDTO!.imageUrl!.isEmpty
+            ? const DecorationImage(
+                image: AssetImage('assets/images/GigJob.png'),
+                fit: BoxFit.cover,
+              )
+            : DecorationImage(
+                image: NetworkImage('${userViewModel.userDTO!.imageUrl}'),
+                fit: BoxFit.cover,
+              ),
         borderRadius: const BorderRadius.all(Radius.circular(80.0)),
         border: Border.all(
           color: const Color.fromARGB(179, 124, 123, 123),
@@ -303,7 +316,7 @@ class _UserProfileState extends State<UserProfile> {
                                   const Text('Status:'),
                                   Text(
                                     "${userViewModel.appliedjob![index].status}",
-                                    style: TextStyle(color: Colors.green),
+                                    style: const TextStyle(color: Colors.green),
                                   )
                                 ],
                               ),
@@ -361,7 +374,7 @@ class _UserProfileState extends State<UserProfile> {
     return FloatingActionButton(
       child: const Icon(Icons.edit),
       onPressed: () {
-        Get.to(EditProfilePage());
+        Get.to(const EditProfilePage());
       },
     );
   }

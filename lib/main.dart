@@ -12,6 +12,7 @@ import 'package:gigjob_mobile/view/confirmation_code.dart';
 import 'package:gigjob_mobile/view/nav_screen.dart';
 import 'package:gigjob_mobile/view/post_list.dart';
 import 'package:gigjob_mobile/view/post_list_detail.dart';
+import 'package:gigjob_mobile/view/register_Worker.dart';
 import 'package:gigjob_mobile/view/sign_up.dart';
 import 'package:gigjob_mobile/view/start_up.dart';
 import 'package:gigjob_mobile/view/wallet.dart';

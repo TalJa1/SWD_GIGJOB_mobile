@@ -5,12 +5,12 @@ import 'package:get/route_manager.dart';
 import 'package:gigjob_mobile/utils/share_pref.dart';
 import 'package:gigjob_mobile/view/login_home.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class ApiService {
   static const String baseUrl = 'http://13.228.218.62:8080/api';
   // static const String baseUrl = 'http://54.179.205.85:8080/api';
   // static const String baseUrl = 'http://localhost/api';
-
 
   static Map<String, String> baseHeaders = {
     'Content-Type': 'application/json',
@@ -44,27 +44,29 @@ class ApiService {
       return response;
     } on DioError catch (e) {
       if (e.response?.statusCode == 401) {
+        await DefaultCacheManager().emptyCache();
+        await clearCacheAndStorage();
+        await GoogleSignIn().signOut();
         await FirebaseAuth.instance.signOut();
         await removeALL();
         await ApiService.setToken("");
-        await DefaultCacheManager().emptyCache();
         print(baseHeaders);
         Get.offAll(LoginHome());
-        throw Exception(e.message);
+        throw Exception(e.response?.statusCode.toString());
       }
       if (e.response != null) {
-        
         throw Exception(e.response);
       } else {
+        await DefaultCacheManager().emptyCache();
+        await clearCacheAndStorage();
+        await GoogleSignIn().signOut();
         await FirebaseAuth.instance.signOut();
         await removeALL();
         await ApiService.setToken("");
-        await DefaultCacheManager().emptyCache();
         print(baseHeaders);
         Get.offAll(LoginHome());
-        throw Exception(e.message);
+        throw Exception(e.response?.statusCode);
       }
-      
     }
   }
 
@@ -85,17 +87,20 @@ class ApiService {
       return response;
     } on DioError catch (e) {
       if (e.response?.statusCode == 401) {
+        await DefaultCacheManager().emptyCache();
+        await clearCacheAndStorage();
+        await GoogleSignIn().signOut();
         await FirebaseAuth.instance.signOut();
         await removeALL();
         await ApiService.setToken("");
-        await DefaultCacheManager().emptyCache();
+
         Get.offAll(LoginHome());
         throw Exception(e.message);
       }
       if (e.response != null) {
         throw Exception(e.response!.data);
       } else {
-        throw Exception(e.message);
+        throw Exception(e.response?.statusCode);
       }
     }
   }
