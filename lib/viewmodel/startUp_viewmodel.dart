@@ -30,7 +30,7 @@ class StartUpViewModel extends BaseModel {
     if (hasLoggedInUser) {
       Get.offAll(RegisterWorkerPage());
     } else {
-      Get.offAll(LoginHome());
+      Get.offAll(RootScreen());
     }
   }
 
