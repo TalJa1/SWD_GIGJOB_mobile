@@ -33,8 +33,20 @@ class _WalletPageState extends State<WalletPage> {
     WalletDTO("Microsofr", "Payment"),
   ];
 
+  // void showAlert(BuildContext context) {
+  //   showDialog(
+  //       context: context,
+  //       builder: (context) => const AlertDialog(
+  //             content: Text(
+  //               "This function is not available now",
+  //               textAlign: TextAlign.center,
+  //             ),
+  //           ));
+  // }
+
   @override
   Widget build(BuildContext context) {
+    // Future.delayed(Duration.zero, () => showAlert(context));
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(

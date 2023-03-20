@@ -249,8 +249,8 @@ class _UserProfileState extends State<UserProfile> {
 
   Widget userData(bool checkIsInfo) {
     String? birth = userViewModel.userDTO!.birthday;
-    int firstSpaceIndex = birth!.indexOf("T");
-    String firstWord = birth.substring(0, firstSpaceIndex);
+    // int firstSpaceIndex = birth!.indexOf("T");
+    // String firstWord = birth.substring(0, firstSpaceIndex);
     // String? getBirth = birth?.split(" ");
     return checkIsInfo
         ? Container(
@@ -265,7 +265,7 @@ class _UserProfileState extends State<UserProfile> {
                   // userInfo("Address", user.address.toString()),
                   // userInfo("Phone", user.phone.toString()),
                   userInfo("Education", "${userViewModel.userDTO!.education}"),
-                  userInfo("Birth", firstWord)
+                  userInfo("Birth", birth!)
                 ]),
               ),
             ))

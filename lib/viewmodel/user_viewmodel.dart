@@ -45,7 +45,7 @@ class UserViewModel extends BaseModel {
       await GoogleSignIn().signOut();
       await FirebaseAuth.instance.signOut();
       await removeALL();
-      
+
       Get.offAll(LoginHome());
     } catch (e) {
       print(e);
@@ -58,6 +58,14 @@ class UserViewModel extends BaseModel {
       setState(ViewStatus.Loading);
       userDTO = await userDAO?.getProfile(accountId!);
       setState(ViewStatus.Completed);
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  Future updateUser(WorkerDTO dto, String workerID) async {
+    try {
+      await userDAO?.updateUserprofile(dto, workerID);
     } catch (e) {
       throw Exception(e);
     }

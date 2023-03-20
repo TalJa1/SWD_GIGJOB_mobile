@@ -106,12 +106,19 @@ class ApiService {
   }
 
   static Future<dynamic> put(
-      String path, dynamic data, Map<String, String>? headers) async {
+    String path,
+    Map<String, dynamic>? queryParams,
+    Map<String, String>? headers,
+    Map<String, dynamic>? body,
+  ) async {
     headers ??= {};
+    body ??= {};
+    queryParams ??= {};
     try {
       final response = await dio.put(
         path,
-        data: data,
+        queryParameters: queryParams,
+        data: body,
         options: Options(headers: {...baseHeaders, ...headers}),
       );
       return response.data;

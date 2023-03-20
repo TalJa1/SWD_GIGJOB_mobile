@@ -21,13 +21,12 @@ class StartUpViewModel extends BaseModel {
   Future handleStartUpLogic() async {
     AccountDAO _accountDAO = AccountDAO();
 
-    
     bool hasLoggedInUser = await _accountDAO.isUserLoggedIn();
 
     await Future.delayed(Duration(seconds: 1), () {
       loadingWelcome = false;
     });
-    
+
     if (hasLoggedInUser) {
       Get.offAll(RootScreen());
     } else {
