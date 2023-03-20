@@ -23,8 +23,8 @@ class PostList extends StatefulWidget {
 }
 
 class _PostListState extends State<PostList> {
-  List<JobType> selectedItems = [];
-  List<JobType> preSelectItems = [];
+  late List<JobType> selectedItems;
+  late List<JobType> preSelectItems;
 
   late JobViewModel jobViewModel;
 
@@ -38,22 +38,23 @@ class _PostListState extends State<PostList> {
     "pageSize": _pageSize,
   };
 
-  void onChangeSort(SortBy sortBy) {
+  void onChangeSort(SortBy sortBy) async {
     SearchCriteriaList? searchCriteriaWithSort = searchCriteriaList.firstWhere(
         (element) => element.filterKey == "sortCriteria",
         orElse: () => SearchCriteriaList());
     if (searchCriteriaWithSort.filterKey == "sortCriteria") {
-      searchCriteriaWithSort.sortCriteria = SortCriteria.fromJson({
-        "sortKey": sortBy.value,
-          "direction": sortBy.isAcs,
-      });
+      SortCriteria tmpSort = SortCriteria(
+        sortKey: sortBy.value,
+        direction: sortBy.isAcs
+      );
+      searchCriteriaWithSort.sortCriteria = tmpSort;
     }
     setState(() {
       _page = 0;
       params = {...params, "page": 0};
       body = FilterDTO(searchCriteriaList: searchCriteriaList, dataOption: "");
     });
-    jobViewModel.getJobs(params: params, body: body.toJson());
+    await jobViewModel.getJobs(params: params, body: body.toJson());
   }
 
   void _onSummitSearch(String searchText) async {
@@ -68,14 +69,34 @@ class _PostListState extends State<PostList> {
         "value": searchText,
         "dataOption": "",
         "operation": "eq",
-        "sortCriteria": {
-          "sortKey": "id",
-          "direction": "asc",
-        }
+        "sortCriteria": sortCriteria.toJson()
       });
       searchCriteriaList.add(searchCriteriaWithTitle);
     }
     setState(() {
+      _page = 0;
+      params = {...params, "pageIndex": 0};
+      body = FilterDTO(searchCriteriaList: searchCriteriaList, dataOption: "");
+    });
+    await jobViewModel.getJobs(params: params, body: body.toJson());
+  }
+
+  void filterByCate() async {
+    searchCriteriaList = [];
+    for (var element in preSelectItems) {
+      SearchCriteriaList item = SearchCriteriaList.fromJson({
+        "filterKey": "jobType",
+        "value": element.id.toString(),
+        "dataOption": "",
+        "operation": "eq",
+        "sortCriteria": sortCriteria.toJson()
+      });
+      searchCriteriaList.add(item);
+    }
+    setState(() {
+      selectedItems = [
+        ...preSelectItems,
+      ];
       _page = 0;
       params = {...params, "pageIndex": 0};
       body = FilterDTO(searchCriteriaList: searchCriteriaList, dataOption: "");
@@ -103,7 +124,11 @@ class _PostListState extends State<PostList> {
       direction: "asc",
     );
     searchCriteriaList = [];
+
     body = FilterDTO(searchCriteriaList: searchCriteriaList, dataOption: "");
+
+    selectedItems = [];
+    preSelectItems = [];
 
     jobViewModel = JobViewModel();
     _fetchPage(_page);
@@ -130,10 +155,6 @@ class _PostListState extends State<PostList> {
     if (newItems != null && newItems.length < _pageSize) {
       _isLastPage = true;
     }
-  }
-
-  void filterByCate(String? id) async {
-    await jobViewModel.getJobs(params: params, body: {});
   }
 
   @override
@@ -189,17 +210,6 @@ class _PostListState extends State<PostList> {
               ),
             ),
             centerTitle: true,
-            // actions: [
-            //   IconButton(
-            //     icon: const Icon(Icons.filter_list_alt),
-            //     tooltip: 'Show Snackbar',
-            //     onPressed: () {
-            //       showDialog<String>(
-            //           context: context,
-            //           builder: (BuildContext context) => _buildDialog(context));
-            //     },
-            //   ),
-            // ],
             bottom: PreferredSize(
               preferredSize: const Size.fromHeight(80.0),
               child: Container(
@@ -465,6 +475,7 @@ class _PostListState extends State<PostList> {
 
   Widget _buildMultipSelectCheckBox() {
     List<JobType> emptyList = [];
+
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
       child: MultiSelectDialogField(
@@ -526,10 +537,7 @@ class _PostListState extends State<PostList> {
       color: Colors.white,
       child: InkWell(
         onTap: () {
-          filterByCate;
-          selectedItems = [
-            ...preSelectItems,
-          ];
+          filterByCate();
           Navigator.pop(context);
         },
         child: Padding(
