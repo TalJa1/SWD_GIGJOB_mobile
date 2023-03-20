@@ -9,8 +9,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:flutter/services.dart';
 
 class UploadFileService extends BaseDAO {
-  String urlAPI =
-      "http://ec2-18-141-203-185.ap-southeast-1.compute.amazonaws.com/api/v1/resource/upload";
+  String urlAPI = "http://13.228.218.62:8080/api/v1/resource/upload";
   String urlAPIlocal = "";
 
   Future<String> uploadImage(XFile? file) async {
@@ -24,7 +23,7 @@ class UploadFileService extends BaseDAO {
           filename: fileName, contentType: new MediaType('image', 'jpeg')),
     });
     try {
-      Response response = await dio.post(urlAPIlocal, data: formData);
+      Response response = await dio.post(urlAPI, data: formData);
       return "Upload Status for $fileName ${response.statusCode}";
     } catch (e) {
       return e.toString();
