@@ -28,9 +28,9 @@ class StartUpViewModel extends BaseModel {
     });
 
     if (hasLoggedInUser) {
-      Get.offAll(RegisterWorkerPage());
-    } else {
       Get.offAll(RootScreen());
+    } else {
+      Get.offAll(LoginHome());
     }
   }
 

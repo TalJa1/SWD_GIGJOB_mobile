@@ -1,12 +1,15 @@
-// ignore_for_file: avoid_print, sized_box_for_whitespace, unnecessary_new
+// ignore_for_file: avoid_print, sized_box_for_whitespace, unnecessary_new, unused_local_variable
 
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:gigjob_mobile/viewmodel/user_viewmodel.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:gigjob_mobile/services/UploadFile_service.dart';
 
+import '../DAO/JobDAO.dart';
 import '../DTO/WorkerDTO.dart';
+import '../utils/share_pref.dart';
 
 class EditProfilePage extends StatefulWidget {
   const EditProfilePage({Key? key}) : super(key: key);
@@ -20,7 +23,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
   @override
   void initState() {
     super.initState();
+    userViewModel = UserViewModel();
   }
+
+  UserViewModel userViewModel = UserViewModel();
 
   final ImagePicker picker = ImagePicker();
   XFile? uploadfile;
@@ -81,7 +87,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
   //     return e.toString();
   //   }
   // }
-
 
   @override
   Widget build(BuildContext context) {
@@ -186,7 +191,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
   }
 
   Widget formEdit() {
-    
     return Container(
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
@@ -428,6 +432,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
       String pass,
       String birth,
       String diploma) {
+    // Future<String?> workerid = getWorkerId();
     WorkerDTO dto = new WorkerDTO();
     dto.firstName = first;
     dto.middleName = middle;
@@ -441,8 +446,17 @@ class _EditProfilePageState extends State<EditProfilePage> {
       width: MediaQuery.of(context).size.width,
       padding: const EdgeInsets.only(left: 16, right: 16),
       child: TextButton(
-        onPressed: () {
-          UploadFileService().uploadImage(uploadfile!);
+        onPressed: () async {
+          // Future<String?> getWorkerId() async {
+          //   String? accountId = await getAccountID();
+          //   WorkerDTO? workDTO = await JobDAO().getWorkerId(accountId!);
+          //   return workDTO.id;
+          // }
+          String? accountId = await getAccountID();
+          WorkerDTO? workDTO = await JobDAO().getWorkerId(accountId!);
+          String? workerID = workDTO.id;
+          // UploadFileService().uploadImage(uploadfile!);
+          userViewModel.updateUser(dto, workerID!);
         },
         style: ButtonStyle(
             backgroundColor: MaterialStateProperty.all(Colors.black),
