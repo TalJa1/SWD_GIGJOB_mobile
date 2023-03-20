@@ -26,6 +26,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
     userViewModel = UserViewModel();
   }
 
+  WorkerDTO workerDTO = WorkerDTO();
+
   UserViewModel userViewModel = UserViewModel();
 
   final ImagePicker picker = ImagePicker();
@@ -206,220 +208,454 @@ class _EditProfilePageState extends State<EditProfilePage> {
   }
 
   Widget textForm() {
+    String? username = workerDTO.username;
+    String? diploma = workerDTO.education;
+    String? firstname = workerDTO.firstName;
+    String? midlename = workerDTO.middleName;
+    String? lastname = workerDTO.lastName;
+    String? phone = workerDTO.phone;
+    String? pass = workerDTO.password;
     return Form(
-      key: _formKey,
-      child: Column(
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-            child: TextFormField(
-              controller: _textnameController,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Enter your username',
-              ),
-              validator: (value1) {
-                if (value1!.isEmpty) {
-                  return 'Please enter your username';
-                }
-                return null;
-              },
-              onChanged: (value1) {
-                if (_formKey.currentState!.validate()) {
-                  // The form is valid, do something with the input
-                  print('User entered: $value1');
-                }
-              },
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-            child: TextFormField(
-              controller: _textdiplomaController,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Enter your diploma',
-              ),
-              validator: (value2) {
-                if (value2!.isEmpty) {
-                  return 'Please enter your diploma';
-                }
-                return null;
-              },
-              onChanged: (value2) {
-                if (_formKey.currentState!.validate()) {
-                  // The form is valid, do something with the input
-                  print('User entered: $value2');
-                }
-              },
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-            child: TextFormField(
-              controller: _textfirstController,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Enter your firstname',
-              ),
-              validator: (value3) {
-                if (value3!.isEmpty) {
-                  return 'Please enter your firstname';
-                }
-                return null;
-              },
-              onChanged: (value3) {
-                if (_formKey.currentState!.validate()) {
-                  // The form is valid, do something with the input
-                  print('User entered: $value3');
-                }
-              },
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-            child: TextFormField(
-              controller: _textmidleController,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Enter your midlename',
-              ),
-              validator: (value4) {
-                if (value4!.isEmpty) {
-                  return 'Please enter your midlename';
-                }
-                return null;
-              },
-              onChanged: (value4) {
-                if (_formKey.currentState!.validate()) {
-                  // The form is valid, do something with the input
-                  print('User entered: $value4');
-                }
-              },
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-            child: TextFormField(
-              controller: _textlastController,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Enter your lastname',
-              ),
-              validator: (value5) {
-                if (value5!.isEmpty) {
-                  return 'Please enter your lastname';
-                }
-                return null;
-              },
-              onChanged: (value5) {
-                if (_formKey.currentState!.validate()) {
-                  // The form is valid, do something with the input
-                  print('User entered: $value5');
-                }
-              },
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-            child: TextFormField(
-              controller: _textphoneController,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Enter your phone',
-              ),
-              validator: _validatePhoneNumber,
-              onChanged: (value6) {
-                if (_formKey.currentState!.validate()) {
-                  // The form is valid, do something with the input
-                  print('User entered: $value6');
-                }
-              },
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-            child: TextFormField(
-              controller: _textpassController,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Enter your password',
-              ),
-              validator: (value7) {
-                if (value7!.isEmpty) {
-                  return 'Please enter your password';
-                }
-                return null;
-              },
-              onChanged: (value7) {
-                if (_formKey.currentState!.validate()) {
-                  // The form is valid, do something with the input
-                  print('User entered: $value7');
-                }
-              },
-            ),
-          ),
-          Padding(
-              padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-              child: TextButton(
-                  onPressed: () {
-                    DatePicker.showDatePicker(context,
-                        showTitleActions: true,
-                        minTime: DateTime(1990, 3, 5),
-                        maxTime: DateTime(2019, 6, 7), onChanged: (date) {
-                      print('change $date');
-                    }, onConfirm: (date) {
-                      setState(() {
-                        selectedDate = date;
-                      });
-                      print('confirm $date');
-                    }, currentTime: DateTime.now(), locale: LocaleType.es);
-                  },
-                  child: Container(
-                    child: Column(
-                      children: [
-                        if (selectedDate != null) ...[
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              // ignore: prefer_const_constructors
-                              Text(
-                                'Your birthday: ',
-                                style: const TextStyle(color: Colors.black),
-                              ),
-                              Text(
-                                '$selectedDate',
-                                style: const TextStyle(color: Colors.black),
-                              )
-                            ],
-                          )
-                        ],
-                        Container(
-                          padding: const EdgeInsets.only(top: 10),
-                          child: const Text(
-                            'Choose your birthday',
-                            style: TextStyle(color: Colors.blue),
-                          ),
+        key: _formKey,
+        child: (workerDTO.phone == null)
+            ? Container(
+                child: Column(
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                      child: TextFormField(
+                        controller: _textnameController,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Enter your username',
                         ),
-                      ],
+                        validator: (value1) {
+                          if (value1!.isEmpty) {
+                            return 'Please enter your username';
+                          }
+                          return null;
+                        },
+                        onChanged: (value1) {
+                          if (_formKey.currentState!.validate()) {
+                            // The form is valid, do something with the input
+                            print('User entered: $value1');
+                          }
+                        },
+                      ),
                     ),
-                  ))),
-          const SizedBox(
-            height: 10,
-          ),
-          uploadbtn(
-              _formKey.currentState,
-              _textfirstController.text,
-              _textlastController.text,
-              _textmidleController.text,
-              _textphoneController.text,
-              _textnameController.text,
-              _textpassController.text,
-              selectedDate.toString(),
-              _textdiplomaController.text),
-        ],
-      ),
-    );
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                      child: TextFormField(
+                        controller: _textdiplomaController,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Enter your diploma',
+                        ),
+                        validator: (value2) {
+                          if (value2!.isEmpty) {
+                            return 'Please enter your diploma';
+                          }
+                          return null;
+                        },
+                        onChanged: (value2) {
+                          if (_formKey.currentState!.validate()) {
+                            // The form is valid, do something with the input
+                            print('User entered: $value2');
+                          }
+                        },
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                      child: TextFormField(
+                        controller: _textfirstController,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Enter your firstname',
+                        ),
+                        validator: (value3) {
+                          if (value3!.isEmpty) {
+                            return 'Please enter your firstname';
+                          }
+                          return null;
+                        },
+                        onChanged: (value3) {
+                          if (_formKey.currentState!.validate()) {
+                            // The form is valid, do something with the input
+                            print('User entered: $value3');
+                          }
+                        },
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                      child: TextFormField(
+                        controller: _textmidleController,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Enter your midlename',
+                        ),
+                        validator: (value4) {
+                          if (value4!.isEmpty) {
+                            return 'Please enter your midlename';
+                          }
+                          return null;
+                        },
+                        onChanged: (value4) {
+                          if (_formKey.currentState!.validate()) {
+                            // The form is valid, do something with the input
+                            print('User entered: $value4');
+                          }
+                        },
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                      child: TextFormField(
+                        controller: _textlastController,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Enter your lastname',
+                        ),
+                        validator: (value5) {
+                          if (value5!.isEmpty) {
+                            return 'Please enter your lastname';
+                          }
+                          return null;
+                        },
+                        onChanged: (value5) {
+                          if (_formKey.currentState!.validate()) {
+                            // The form is valid, do something with the input
+                            print('User entered: $value5');
+                          }
+                        },
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                      child: TextFormField(
+                        controller: _textphoneController,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Enter your phone',
+                        ),
+                        validator: _validatePhoneNumber,
+                        onChanged: (value6) {
+                          if (_formKey.currentState!.validate()) {
+                            // The form is valid, do something with the input
+                            print('User entered: $value6');
+                          }
+                        },
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                      child: TextFormField(
+                        controller: _textpassController,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Enter your password',
+                        ),
+                        validator: (value7) {
+                          if (value7!.isEmpty) {
+                            return 'Please enter your password';
+                          }
+                          return null;
+                        },
+                        onChanged: (value7) {
+                          if (_formKey.currentState!.validate()) {
+                            // The form is valid, do something with the input
+                            print('User entered: $value7');
+                          }
+                        },
+                      ),
+                    ),
+                    Padding(
+                        padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                        child: TextButton(
+                            onPressed: () {
+                              DatePicker.showDatePicker(context,
+                                  showTitleActions: true,
+                                  minTime: DateTime(1990, 3, 5),
+                                  maxTime: DateTime(2019, 6, 7),
+                                  onChanged: (date) {
+                                print('change $date');
+                              }, onConfirm: (date) {
+                                setState(() {
+                                  selectedDate = date;
+                                });
+                                print('confirm $date');
+                              },
+                                  currentTime: DateTime.now(),
+                                  locale: LocaleType.es);
+                            },
+                            child: Container(
+                              child: Column(
+                                children: [
+                                  if (selectedDate != null) ...[
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        // ignore: prefer_const_constructors
+                                        Text(
+                                          'Your birthday: ',
+                                          style: const TextStyle(
+                                              color: Colors.black),
+                                        ),
+                                        Text(
+                                          '$selectedDate',
+                                          style: const TextStyle(
+                                              color: Colors.black),
+                                        )
+                                      ],
+                                    )
+                                  ],
+                                  Container(
+                                    padding: const EdgeInsets.only(top: 10),
+                                    child: const Text(
+                                      'Choose your birthday',
+                                      style: TextStyle(color: Colors.blue),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ))),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    uploadbtn(
+                        _formKey.currentState,
+                        _textfirstController.text,
+                        _textlastController.text,
+                        _textmidleController.text,
+                        _textphoneController.text,
+                        _textnameController.text,
+                        _textpassController.text,
+                        selectedDate.toString(),
+                        _textdiplomaController.text),
+                  ],
+                ),
+              )
+            : Container(
+                child: Column(
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                      child: TextFormField(
+                        controller: _textnameController,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Enter your username',
+                        ),
+                        validator: (value1) {
+                          if (value1!.isEmpty) {
+                            return 'Please enter your username';
+                          }
+                          return null;
+                        },
+                        onChanged: (value1) {
+                          if (_formKey.currentState!.validate()) {
+                            // The form is valid, do something with the input
+                            print('User entered: $value1');
+                          }
+                        },
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                      child: TextFormField(
+                        controller: _textdiplomaController,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Enter your diploma',
+                        ),
+                        validator: (value2) {
+                          if (value2!.isEmpty) {
+                            return 'Please enter your diploma';
+                          }
+                          return null;
+                        },
+                        onChanged: (value2) {
+                          if (_formKey.currentState!.validate()) {
+                            // The form is valid, do something with the input
+                            print('User entered: $value2');
+                          }
+                        },
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                      child: TextFormField(
+                        controller: _textfirstController,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Enter your firstname',
+                        ),
+                        validator: (value3) {
+                          if (value3!.isEmpty) {
+                            return 'Please enter your firstname';
+                          }
+                          return null;
+                        },
+                        onChanged: (value3) {
+                          if (_formKey.currentState!.validate()) {
+                            // The form is valid, do something with the input
+                            print('User entered: $value3');
+                          }
+                        },
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                      child: TextFormField(
+                        controller: _textmidleController,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Enter your midlename',
+                        ),
+                        validator: (value4) {
+                          if (value4!.isEmpty) {
+                            return 'Please enter your midlename';
+                          }
+                          return null;
+                        },
+                        onChanged: (value4) {
+                          if (_formKey.currentState!.validate()) {
+                            // The form is valid, do something with the input
+                            print('User entered: $value4');
+                          }
+                        },
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                      child: TextFormField(
+                        controller: _textlastController,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Enter your lastname',
+                        ),
+                        validator: (value5) {
+                          if (value5!.isEmpty) {
+                            return 'Please enter your lastname';
+                          }
+                          return null;
+                        },
+                        onChanged: (value5) {
+                          if (_formKey.currentState!.validate()) {
+                            // The form is valid, do something with the input
+                            print('User entered: $value5');
+                          }
+                        },
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                      child: TextFormField(
+                        controller: _textphoneController,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Enter your phone',
+                        ),
+                        validator: _validatePhoneNumber,
+                        onChanged: (value6) {
+                          if (_formKey.currentState!.validate()) {
+                            // The form is valid, do something with the input
+                            print('User entered: $value6');
+                          }
+                        },
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                      child: TextFormField(
+                        controller: _textpassController,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Enter your password',
+                        ),
+                        validator: (value7) {
+                          if (value7!.isEmpty) {
+                            return 'Please enter your password';
+                          }
+                          return null;
+                        },
+                        onChanged: (value7) {
+                          if (_formKey.currentState!.validate()) {
+                            // The form is valid, do something with the input
+                            print('User entered: $value7');
+                          }
+                        },
+                      ),
+                    ),
+                    Padding(
+                        padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                        child: TextButton(
+                            onPressed: () {
+                              DatePicker.showDatePicker(context,
+                                  showTitleActions: true,
+                                  minTime: DateTime(1990, 3, 5),
+                                  maxTime: DateTime(2019, 6, 7),
+                                  onChanged: (date) {
+                                print('change $date');
+                              }, onConfirm: (date) {
+                                setState(() {
+                                  selectedDate = date;
+                                });
+                                print('confirm $date');
+                              },
+                                  currentTime: DateTime.now(),
+                                  locale: LocaleType.es);
+                            },
+                            child: Container(
+                              child: Column(
+                                children: [
+                                  if (selectedDate != null) ...[
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        // ignore: prefer_const_constructors
+                                        Text(
+                                          'Your birthday: ',
+                                          style: const TextStyle(
+                                              color: Colors.black),
+                                        ),
+                                        Text(
+                                          '$selectedDate',
+                                          style: const TextStyle(
+                                              color: Colors.black),
+                                        )
+                                      ],
+                                    )
+                                  ],
+                                  Container(
+                                    padding: const EdgeInsets.only(top: 10),
+                                    child: const Text(
+                                      'Choose your birthday',
+                                      style: TextStyle(color: Colors.blue),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ))),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    uploadbtn(
+                        _formKey.currentState,
+                        _textfirstController.text,
+                        _textlastController.text,
+                        _textmidleController.text,
+                        _textphoneController.text,
+                        _textnameController.text,
+                        _textpassController.text,
+                        selectedDate.toString(),
+                        _textdiplomaController.text),
+                  ],
+                ),
+              ));
   }
 
   Widget uploadbtn(
@@ -455,8 +691,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
           String? accountId = await getAccountID();
           WorkerDTO? workDTO = await JobDAO().getWorkerId(accountId!);
           String? workerID = workDTO.id;
-          // UploadFileService().uploadImage(uploadfile!);
-          userViewModel.updateUser(dto, workerID!);
+          UploadFileService().uploadImage(uploadfile!);
+          // userViewModel.updateUser(dto, workerID!);
         },
         style: ButtonStyle(
             backgroundColor: MaterialStateProperty.all(Colors.black),
