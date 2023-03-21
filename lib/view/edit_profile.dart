@@ -248,8 +248,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
               child: TextFormField(
-                controller: _textnameController,
-                // initialValue: username,
+                // controller: _textnameController,
+                initialValue: username,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'Enter your username',
@@ -272,8 +272,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
               child: TextFormField(
-                controller: _textdiplomaController,
-                // initialValue: diploma,
+                // controller: _textdiplomaController,
+                initialValue: diploma,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'Enter your diploma',
@@ -297,8 +297,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
               child: TextFormField(
-                controller: _textfirstController,
-                // initialValue: firstname,
+                // controller: _textfirstController,
+                initialValue: firstname,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'Enter your firstname',
@@ -322,8 +322,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
               child: TextFormField(
-                controller: _textmidleController,
-                // initialValue: midlename,
+                // controller: _textmidleController,
+                initialValue: midlename,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'Enter your midlename',
@@ -348,8 +348,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
               child: TextFormField(
-                controller: _textlastController,
-                // initialValue: lastname,
+                // controller: _textlastController,
+                initialValue: lastname,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'Enter your lastname',
@@ -372,8 +372,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
               child: TextFormField(
-                controller: _textphoneController,
-                // initialValue: phone,
+                // controller: _textphoneController,
+                initialValue: phone,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'Enter your phone',
@@ -391,8 +391,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
               child: TextFormField(
-                controller: _textpassController,
-                // initialValue: pass,
+                // controller: _textpassController,
+                initialValue: pass,
                 obscureText: true,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
