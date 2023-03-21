@@ -50,67 +50,72 @@ class _PostListState extends State<PostList> {
   Map<String, dynamic> params = {
     "pageIndex": _page,
     "pageSize": _pageSize,
+    "searchValue": "",
   };
 
   void onChangeSort(SortBy sortBy) async {
-    SearchCriteriaList? searchCriteriaWithSort = searchCriteriaList.firstWhere(
-        (element) => element.filterKey == "sortCriteria",
-        orElse: () => SearchCriteriaList());
-    if (searchCriteriaWithSort.filterKey == "sortCriteria") {
-      SortCriteria tmpSort =
-          SortCriteria(sortKey: sortBy.value, direction: sortBy.isAcs);
-      searchCriteriaWithSort.sortCriteria = tmpSort;
-    }
+    // SearchCriteriaList? searchCriteriaWithSort = searchCriteriaList.firstWhere(
+    //     (element) => element.filterKey == "sortCriteria",
+    //     orElse: () => SearchCriteriaList());
+    // if (searchCriteriaWithSort.filterKey == "sortCriteria") {
+    //   SortCriteria tmpSort =
+    //       SortCriteria(sortKey: sortBy.value, direction: sortBy.isAcs);
+    //   searchCriteriaWithSort.sortCriteria = tmpSort;
+    // }
+    sortCriteria.sortKey = sortBy.value;
+    sortCriteria.direction = sortBy.isAcs;
     setState(() {
       _page = 0;
       params = {...params, "page": 0};
-      body = FilterDTO(searchCriteriaList: searchCriteriaList, dataOption: "");
+      body = FilterDTO(searchCriteriaList: searchCriteriaList, sortCriteria: sortCriteria,dataOption: "");
     });
     await jobViewModel.getJobs(params: params, body: body.toJson());
   }
 
   void _onSummitSearch(String searchText) async {
-    SearchCriteriaList? searchCriteriaWithTitle = searchCriteriaList.firstWhere(
-        (element) => element.filterKey == "title",
-        orElse: () => SearchCriteriaList());
-    if (searchCriteriaWithTitle.filterKey == "title") {
-      searchCriteriaWithTitle.value = searchText;
-    } else if (searchCriteriaWithTitle.filterKey != "title") {
-      searchCriteriaWithTitle = SearchCriteriaList.fromJson({
-        "filterKey": "title",
-        "value": searchText,
-        "dataOption": "",
-        "operation": "eq",
-        "sortCriteria": sortCriteria.toJson()
-      });
-      searchCriteriaList.add(searchCriteriaWithTitle);
-    }
+    // SearchCriteriaList? searchCriteriaWithTitle = searchCriteriaList.firstWhere(
+    //     (element) => element.filterKey == "title",
+    //     orElse: () => SearchCriteriaList());
+    // if (searchCriteriaWithTitle.filterKey == "title") {
+    //   searchCriteriaWithTitle.value = searchText;
+    // } else if (searchCriteriaWithTitle.filterKey != "title") {
+    //   searchCriteriaWithTitle = SearchCriteriaList.fromJson({
+    //     "filterKey": "title",
+    //     "value": searchText,
+    //     "dataOption": "",
+    //     "operation": "eq",
+    //     "sortCriteria": sortCriteria.toJson()
+    //   });
+    //   searchCriteriaList.add(searchCriteriaWithTitle);
+    // }
     setState(() {
       _page = 0;
-      params = {...params, "pageIndex": 0};
-      body = FilterDTO(searchCriteriaList: searchCriteriaList, dataOption: "");
+      params = {...params, "pageIndex": 0, "searchValue": searchText};
+      // body = FilterDTO(searchCriteriaList: searchCriteriaList, dataOption: "");
     });
     await jobViewModel.getJobs(params: params, body: body.toJson());
   }
 
   Future<void> filterByCate() async {
     searchCriteriaList = [];
+    String dataOperation = "";
     for (var element in preSelectItems!) {
       SearchCriteriaList item = SearchCriteriaList.fromJson({
         "filterKey": "jobType",
         "value": element.id.toString(),
-        "dataOption": "",
         "operation": "eq",
-        "sortCriteria": sortCriteria.toJson()
       });
       searchCriteriaList.add(item);
     }
     // jobViewModel.setSelectFilter(preSelectItems);
+    if(searchCriteriaList.length > 1){
+      dataOperation = "ANY";
+    }
 
     setState(() {
       _page = 0;
-      params = {...params, "pageIndex": 0};
-      body = FilterDTO(searchCriteriaList: searchCriteriaList, dataOption: "");
+      params = {...params, "pageIndex": 0,};
+      body = FilterDTO(searchCriteriaList: searchCriteriaList, sortCriteria: sortCriteria,dataOption: dataOperation);
       // init = jobViewModel.selectedFilterJobType;
     });
     await jobViewModel.getJobs(params: params, body: body.toJson());
@@ -130,13 +135,15 @@ class _PostListState extends State<PostList> {
   @override
   void initState() {
     // TODO: implement initState
+    selectedSort = itemsSort.first;
+
     sortCriteria = SortCriteria(
-      sortKey: "id",
-      direction: "asc",
+      sortKey: selectedSort.value,
+      direction: selectedSort.isAcs,
     );
     searchCriteriaList = [];
 
-    body = FilterDTO(searchCriteriaList: searchCriteriaList, dataOption: "");
+    body = FilterDTO(searchCriteriaList: searchCriteriaList, sortCriteria: sortCriteria, dataOption: "");
 
     selectedItems = [];
     preSelectItems = [];
@@ -155,7 +162,6 @@ class _PostListState extends State<PostList> {
       }
     });
 
-    selectedSort = itemsSort.first;
 
     print(job1 == job2);
     super.initState();
