@@ -7,6 +7,7 @@ import 'package:gigjob_mobile/DTO/UserDTO.dart';
 import 'package:gigjob_mobile/viewmodel/user_viewmodel.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:gigjob_mobile/services/UploadFile_service.dart';
+import 'package:intl/intl.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 import '../DAO/JobDAO.dart';
@@ -435,6 +436,23 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     },
                     child: Column(
                       children: [
+                        if (userViewModel.userDTO?.birthday != null &&
+                            selectedDate == null) ...[
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              // ignore: prefer_const_constructors
+                              Text(
+                                'Your birthday: ',
+                                style: const TextStyle(color: Colors.black),
+                              ),
+                              Text(
+                                "${userViewModel.userDTO?.birthday}",
+                                style: const TextStyle(color: Colors.black),
+                              )
+                            ],
+                          )
+                        ],
                         if (selectedDate != null) ...[
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -445,7 +463,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                 style: const TextStyle(color: Colors.black),
                               ),
                               Text(
-                                '$selectedDate',
+                                DateFormat("yyyy-MM-dd").format(selectedDate!),
                                 style: const TextStyle(color: Colors.black),
                               )
                             ],
