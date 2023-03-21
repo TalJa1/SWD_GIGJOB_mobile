@@ -1,6 +1,7 @@
 import 'package:gigjob_mobile/DAO/BaseDAO.dart';
 import 'package:gigjob_mobile/DAO/JobDAO.dart';
 import 'package:gigjob_mobile/DTO/UserDTO.dart';
+import 'package:gigjob_mobile/DTO/WalletDTO.dart';
 import 'package:gigjob_mobile/DTO/WorkerDTO.dart';
 import 'package:gigjob_mobile/services/request.dart';
 import 'package:gigjob_mobile/utils/share_pref.dart';
@@ -71,5 +72,12 @@ class UserDAO extends BaseDAO {
     } catch (e) {
       throw Exception(e);
     }
+  }
+
+  Future<WalletDTO?> getWallet() async {
+    String? accid = await getAccountID();
+    final res = await ApiService.get('/v1/wallet/account/$accid', null, null);
+    WalletDTO walletDTO = WalletDTO.fromJson(res.data);
+    return walletDTO;
   }
 }

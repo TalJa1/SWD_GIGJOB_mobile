@@ -13,10 +13,12 @@ import 'package:gigjob_mobile/view/login_home.dart';
 import 'package:gigjob_mobile/viewmodel/base_model.dart';
 
 import '../DAO/JobDAO.dart';
+import '../DTO/WalletDTO.dart';
 
 class UserViewModel extends BaseModel {
   JobDAO? jobDAO;
   UserDAO? userDAO;
+  WalletDTO? walletdto;
   List<JobDTO>? jobs;
   List<ApplyJobDTO>? appliedjob;
   WorkerDTO? userDTO;
@@ -66,6 +68,16 @@ class UserViewModel extends BaseModel {
   Future updateUser(WorkerDTO dto, String workerID) async {
     try {
       await userDAO?.updateUserprofile(dto, workerID);
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  Future getWallet() async {
+    try {
+      setState(ViewStatus.Loading);
+      walletdto = await userDAO?.getWallet();
+      setState(ViewStatus.Completed);
     } catch (e) {
       throw Exception(e);
     }

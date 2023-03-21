@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:gigjob_mobile/DTO/WalletDTO.dart';
+import 'package:gigjob_mobile/viewmodel/user_viewmodel.dart';
+import 'package:scoped_model/scoped_model.dart';
+
+import '../enum/view_status.dart';
 
 class WalletPage extends StatefulWidget {
   const WalletPage({Key? key}) : super(key: key);
@@ -13,24 +17,28 @@ class _WalletPageState extends State<WalletPage> {
   @override
   void initState() {
     super.initState();
+    userViewModel = UserViewModel();
+    userViewModel.getWallet();
   }
 
-  double accBalance = 500;
-  String userName = "Chau Tan Tai";
+  UserViewModel userViewModel = UserViewModel();
+
+  // double accBalance = 500;
+  // String userName = "Chau Tan Tai";
 
   Color cashColor = Colors.green;
 
   List<WalletDTO> history = [
-    WalletDTO("FPT", "Payment"),
-    WalletDTO("HPT", "Payment"),
-    WalletDTO("NET", "Payment"),
-    WalletDTO("Google", "Payment"),
-    WalletDTO("Microsofr", "Payment"),
-    WalletDTO("FPT", "Payment"),
-    WalletDTO("HPT", "Payment"),
-    WalletDTO("NET", "Payment"),
-    WalletDTO("Google", "Payment"),
-    WalletDTO("Microsofr", "Payment"),
+    WalletDTO("FPT", "Payment", null, null, null),
+    WalletDTO("HPT", "Payment", null, null, null),
+    WalletDTO("NET", "Payment", null, null, null),
+    WalletDTO("Google", "Payment", null, null, null),
+    WalletDTO("Microsofr", "Payment", null, null, null),
+    WalletDTO("FPT", "Payment", null, null, null),
+    WalletDTO("HPT", "Payment", null, null, null),
+    WalletDTO("NET", "Payment", null, null, null),
+    WalletDTO("Google", "Payment", null, null, null),
+    WalletDTO("Microsofr", "Payment", null, null, null),
   ];
 
   // void showAlert(BuildContext context) {
@@ -47,83 +55,92 @@ class _WalletPageState extends State<WalletPage> {
   @override
   Widget build(BuildContext context) {
     // Future.delayed(Duration.zero, () => showAlert(context));
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        bottomOpacity: 0.0,
-        elevation: 0.0,
-        toolbarHeight: 80,
-        title: const Text(
-          'Wallet',
-          style: TextStyle(color: Colors.black, fontSize: 30),
-        ),
-        centerTitle: true,
-      ),
-      backgroundColor: Colors.white,
-      body: SizedBox(
-        width: MediaQuery.of(context).size.width,
-        child: Column(
-          children: [
-            cashRender(accBalance),
-            Center(
-              child: Padding(
-                  padding: const EdgeInsets.only(top: 10, bottom: 10),
-                  child: Text(
-                    userName,
-                    style: const TextStyle(
-                        fontSize: 25, fontWeight: FontWeight.bold),
-                  )),
-            ),
-            Container(
-              width: MediaQuery.of(context).size.width,
-              padding: const EdgeInsets.only(left: 20),
-              // ignore: prefer_const_literals_to_create_immutables
-              child: const Text(
-                'History',
-                style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-              ),
-            ),
-            Expanded(
-                child: Container(
-              height: MediaQuery.of(context).size.height,
-              width: MediaQuery.of(context).size.width,
-              padding: const EdgeInsets.only(left: 20, right: 20),
-              child: ListView.builder(
-                scrollDirection: Axis.vertical,
-                shrinkWrap: true,
-                itemCount: history.length,
-                itemBuilder: (context, index) {
-                  final his = history[index];
-                  // ignore: prefer_const_literals_to_create_immutables
-                  return SingleChildScrollView(
-                    child: Card(
-                      child: ListTile(
-                        leading: const Icon(
-                          Icons.circle,
-                          color: Colors.green,
+    return ScopedModel<UserViewModel>(
+        model: userViewModel,
+        child: ScopedModelDescendant<UserViewModel>(
+          builder: (context, child, model) {
+            if (userViewModel.status == ViewStatus.Loading) {
+              return const Center(
+                child: SizedBox(
+                    width: 100,
+                    height: 100,
+                    child: CircularProgressIndicator()),
+              );
+            } else if (userViewModel.status == ViewStatus.Completed) {
+              return Scaffold(
+                resizeToAvoidBottomInset: false,
+                appBar: AppBar(
+                  backgroundColor: Colors.white,
+                  bottomOpacity: 0.0,
+                  elevation: 0.0,
+                  toolbarHeight: 80,
+                  title: const Text(
+                    'Wallet',
+                    style: TextStyle(color: Colors.black, fontSize: 30),
+                  ),
+                  centerTitle: true,
+                ),
+                backgroundColor: Colors.white,
+                body: SizedBox(
+                  width: MediaQuery.of(context).size.width,
+                  child: Column(
+                    children: [
+                      cashRender(userViewModel.walletdto?.balance),
+                      Container(
+                        width: MediaQuery.of(context).size.width,
+                        padding: const EdgeInsets.only(left: 20),
+                        // ignore: prefer_const_literals_to_create_immutables
+                        child: const Text(
+                          'History',
+                          style: TextStyle(
+                              fontSize: 30, fontWeight: FontWeight.bold),
                         ),
-                        title: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(his.name.toString()),
-                            Text(his.purpose.toString())
-                          ],
-                        ),
-                        // subtitle: Text(his.purpose.toString()),
                       ),
-                    ),
-                  );
-                },
-              ),
-            ))
-          ],
-        ),
-      ),
-    );
+                      Expanded(
+                          child: Container(
+                        height: MediaQuery.of(context).size.height,
+                        width: MediaQuery.of(context).size.width,
+                        padding: const EdgeInsets.only(left: 20, right: 20),
+                        child: ListView.builder(
+                          scrollDirection: Axis.vertical,
+                          shrinkWrap: true,
+                          itemCount: history.length,
+                          itemBuilder: (context, index) {
+                            final his = history[index];
+                            // ignore: prefer_const_literals_to_create_immutables
+                            return SingleChildScrollView(
+                              child: Card(
+                                child: ListTile(
+                                  leading: const Icon(
+                                    Icons.circle,
+                                    color: Colors.green,
+                                  ),
+                                  title: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(his.name.toString()),
+                                      Text(his.purpose.toString())
+                                    ],
+                                  ),
+                                  // subtitle: Text(his.purpose.toString()),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ))
+                    ],
+                  ),
+                ),
+              );
+            }
+            return Container();
+          },
+        ));
   }
 
-  Widget cashRender(double cash) {
+  Widget cashRender(double? cash) {
     if (cash == 0) {
       cashColor = Colors.grey;
     }
@@ -141,7 +158,7 @@ class _WalletPageState extends State<WalletPage> {
         // ignore: prefer_const_literals_to_create_immutables
         children: [
           Text(
-            "\$ $accBalance",
+            "\$ $cash",
             style: TextStyle(color: cashColor, fontSize: 25),
           ),
         ],
