@@ -71,6 +71,14 @@ class _EditProfilePageState extends State<EditProfilePage> {
     print(uploadfile);
   }
 
+  var username1 = "";
+  var diploma1 = "";
+  var firstname1 = "";
+  var midlename1 = "";
+  var lastname1 = "";
+  var phone1 = "";
+  var pass1 = "";
+
   @override
   Widget build(BuildContext context) {
     // ignore: prefer_const_constructors
@@ -256,7 +264,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   if (_formKey.currentState!.validate()) {
                     // The form is valid, do something with the input
                     setState(() {
-                      username = value1;
+                      username1 = value1;
                     });
                     print('User entered: $value1');
                   }
@@ -281,7 +289,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 onChanged: (value2) {
                   if (_formKey.currentState!.validate()) {
                     setState(() {
-                      diploma = value2;
+                      diploma1 = value2;
                     });
                     // The form is valid, do something with the input
                     print('User entered: $value2');
@@ -307,7 +315,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 onChanged: (value3) {
                   if (_formKey.currentState!.validate()) {
                     setState(() {
-                      firstname = value3;
+                      firstname1 = value3;
                     });
                     // The form is valid, do something with the input
                     print('User entered: $value3');
@@ -333,7 +341,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 onChanged: (value4) {
                   if (_formKey.currentState!.validate()) {
                     setState(() {
-                      midlename = value4;
+                      midlename1 = value4;
                     });
                     // The form is valid, do something with the input
                     print('User entered: $value4');
@@ -359,7 +367,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 onChanged: (value5) {
                   if (_formKey.currentState!.validate()) {
                     setState(() {
-                      lastname = value5;
+                      lastname1 = value5;
                     });
                     // The form is valid, do something with the input
                     print('User entered: $value5');
@@ -380,7 +388,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 onChanged: (value6) {
                   if (_formKey.currentState!.validate()) {
                     setState(() {
-                      phone = value6;
+                      phone1 = value6;
                     });
                     // The form is valid, do something with the input
                     print('User entered: $value6');
@@ -407,7 +415,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 onChanged: (value7) {
                   if (_formKey.currentState!.validate()) {
                     setState(() {
-                      pass = value7;
+                      pass1 = value7;
                     });
                     // The form is valid, do something with the input
                     print('User entered: $value7');
@@ -478,8 +486,18 @@ class _EditProfilePageState extends State<EditProfilePage> {
             const SizedBox(
               height: 10,
             ),
-            uploadbtn(_formKey.currentState, firstname, lastname, midlename,
-                phone, username, pass, selectedDate.toString(), diploma),
+            uploadbtn(
+                _formKey.currentState,
+                firstname1 == "" ? firstname : firstname1,
+                lastname1 == "" ? lastname : lastname1,
+                midlename1 == "" ? midlename : midlename1,
+                phone1 == "" ? phone : phone1,
+                username1 == "" ? username : username1,
+                pass1 == "" ? pass : pass1,
+                selectedDate == null
+                    ? "${userViewModel.userDTO?.birthday}"
+                    : selectedDate.toString(),
+                diploma1 == "" ? diploma : diploma1),
           ],
         ));
   }
@@ -512,7 +530,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
           String? accountId = await getAccountID();
           WorkerDTO? workDTO = await JobDAO().getWorkerId(accountId!);
           String? workerID = workDTO.id;
-          // UploadFileService().uploadImage(uploadfile!);
+          if (uploadfile != null) {
+            UploadFileService().uploadImage(uploadfile!);
+          }
           userViewModel.updateUser(dto, workerID!);
         },
         style: ButtonStyle(

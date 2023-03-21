@@ -40,6 +40,7 @@ class _UserProfileState extends State<UserProfile> {
 
   Future<void> reload() async {
     userViewModel.getAppliedJob();
+    userViewModel.getUserProfile();
   }
 
   Future<WorkerDTO?> fetchData() async {
@@ -280,7 +281,18 @@ class _UserProfileState extends State<UserProfile> {
                   // userInfo("Address", user.address.toString()),
                   // userInfo("Phone", user.phone.toString()),
                   userInfo("Education", "${userViewModel.userDTO!.education}"),
-                  userInfo("Birth", birth!)
+                  userInfo("Birth", birth!),
+                  userInfo("Phone", "${userViewModel.userDTO!.phone}"),
+                  TextButton(
+                    style: ButtonStyle(
+                      foregroundColor:
+                          MaterialStateProperty.all<Color>(Colors.blue),
+                    ),
+                    onPressed: () {
+                      reload();
+                    },
+                    child: const Text('Reload'),
+                  )
                 ]),
               ),
             ))
