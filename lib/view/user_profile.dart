@@ -388,9 +388,9 @@ class _UserProfileState extends State<UserProfile> {
     return FloatingActionButton(
       child: const Icon(Icons.edit),
       onPressed: () {
-        // Get.to(const EditProfilePage());
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => const EditProfilePage()));
+        Get.to(const EditProfilePage());
+        // Navigator.push(context,
+        //     MaterialPageRoute(builder: (context) => const EditProfilePage()));
       },
     );
   }

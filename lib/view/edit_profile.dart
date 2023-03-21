@@ -75,81 +75,79 @@ class _EditProfilePageState extends State<EditProfilePage> {
   Widget build(BuildContext context) {
     // ignore: prefer_const_constructors
     return ScopedModel<UserViewModel>(
-        model: userViewModel,
-        child: ScopedModel<UserViewModel>(
-          model: userViewModel,
-          child: ScopedModelDescendant<UserViewModel>(
-            builder: (context, child, model) {
-              if (userViewModel.status == ViewStatus.Loading) {
-                return Center(
-                  child: Container(
-                      width: 100,
-                      height: 100,
-                      child: const CircularProgressIndicator()),
-                );
-              } else if (userViewModel.status == ViewStatus.Completed) {
-                return Scaffold(
-                  resizeToAvoidBottomInset: false,
-                  backgroundColor: Colors.white,
-                  body: Column(
-                    children: [
-                      Stack(
+      model: userViewModel,
+      child: ScopedModelDescendant<UserViewModel>(
+        builder: (context, child, model) {
+          if (userViewModel.status == ViewStatus.Loading) {
+            return Center(
+              child: Container(
+                  width: 100,
+                  height: 100,
+                  child: const CircularProgressIndicator()),
+            );
+          } else if (userViewModel.status == ViewStatus.Completed) {
+            return Scaffold(
+              resizeToAvoidBottomInset: false,
+              backgroundColor: Colors.white,
+              body: Column(
+                children: [
+                  Stack(
+                    // ignore: prefer_const_literals_to_create_immutables
+                    children: <Widget>[
+                      Positioned(
+                          child: SizedBox(
+                        height: 240,
+                        width: MediaQuery.of(context).size.width,
+                      )),
+                      // ignore: prefer_const_constructors
+                      CustomScrollView(
+                        scrollDirection: Axis.vertical,
+                        shrinkWrap: true,
                         // ignore: prefer_const_literals_to_create_immutables
-                        children: <Widget>[
-                          Positioned(
-                              child: SizedBox(
-                            height: 240,
-                            width: MediaQuery.of(context).size.width,
-                          )),
+                        slivers: <Widget>[
                           // ignore: prefer_const_constructors
-                          CustomScrollView(
-                            scrollDirection: Axis.vertical,
-                            shrinkWrap: true,
-                            // ignore: prefer_const_literals_to_create_immutables
-                            slivers: <Widget>[
-                              // ignore: prefer_const_constructors
-                              SliverAppBar(
-                                  backgroundColor:
-                                      const Color.fromARGB(255, 234, 234, 234),
-                                  floating: true,
-                                  leading: TextButton(
-                                    child: const Text(
-                                      'Back',
-                                      style: TextStyle(color: Colors.black),
-                                    ),
-                                    onPressed: () {
-                                      Navigator.maybePop(context);
-                                    },
-                                  )),
-                              // ignore: prefer_const_constructors
-                              SliverAppBar(
-                                backgroundColor:
-                                    const Color.fromARGB(255, 234, 234, 234),
-                                floating: true,
-                                flexibleSpace: const FlexibleSpaceBar(
-                                  title: Text(
-                                    'Edit Profile',
-                                    style: TextStyle(color: Colors.black),
-                                  ),
+                          SliverAppBar(
+                              backgroundColor:
+                                  const Color.fromARGB(255, 234, 234, 234),
+                              floating: true,
+                              leading: TextButton(
+                                child: const Text(
+                                  'Back',
+                                  style: TextStyle(color: Colors.black),
                                 ),
-                                leading: const Text(''),
-                              )
-                            ],
-                          ),
-                          Positioned(right: 20, top: 80, child: userImg()),
+                                onPressed: () {
+                                  Navigator.maybePop(context);
+                                },
+                              )),
+                          // ignore: prefer_const_constructors
+                          SliverAppBar(
+                            backgroundColor:
+                                const Color.fromARGB(255, 234, 234, 234),
+                            floating: true,
+                            flexibleSpace: const FlexibleSpaceBar(
+                              title: Text(
+                                'Edit Profile',
+                                style: TextStyle(color: Colors.black),
+                              ),
+                            ),
+                            leading: const Text(''),
+                          )
                         ],
                       ),
-                      Expanded(child: formEdit()),
-                      // Expanded(child: )
-                      const SizedBox(height: 10)
+                      Positioned(right: 20, top: 80, child: userImg()),
                     ],
                   ),
-                );
-              }
-              return Container();
-            },
-          ),
-        ));
+                  Expanded(child: formEdit()),
+                  // Expanded(child: )
+                  const SizedBox(height: 10)
+                ],
+              ),
+            );
+          }
+          return Container();
+        },
+      ),
+    );
   }
 
   Widget userImg() {
@@ -158,8 +156,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
         await pickImg();
       },
       child: pickedFile == null
-          ? (userViewModel.userDTO!.imageUrl == null ||
-                  userViewModel.userDTO!.imageUrl!.isEmpty)
+          ? (userViewModel.userDTO?.imageUrl == null)
               ? Container(
                   // constraints: const BoxConstraints.expand(width: 150, height: 150),
                   width: 150.0,
