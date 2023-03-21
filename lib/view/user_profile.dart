@@ -44,6 +44,7 @@ class _UserProfileState extends State<UserProfile> {
       isInfo = !isInfo;
     });
     userViewModel.getAppliedJob();
+    userViewModel.getUserProfile();
   }
 
   Future<WorkerDTO?> fetchData() async {
@@ -115,13 +116,28 @@ class _UserProfileState extends State<UserProfile> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceEvenly,
                                       children: [
-                                        Text(
-                                          "${userViewModel.userDTO!.firstName!.toUpperCase()} ${userViewModel.userDTO!.lastName!.toUpperCase()}",
-                                          style: const TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 25,
-                                              fontWeight: FontWeight.bold),
-                                        ),
+                                        if (userViewModel.userDTO!.firstName!
+                                                    .toUpperCase() !=
+                                                "" &&
+                                            userViewModel.userDTO!.lastName!
+                                                    .toUpperCase() !=
+                                                "") ...[
+                                          Text(
+                                            "${userViewModel.userDTO!.firstName!.toUpperCase()} ${userViewModel.userDTO!.lastName!.toUpperCase()}",
+                                            style: const TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 25,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        ] else ...[
+                                          const Text(
+                                            "User",
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 25,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        ]
                                         // editBtn()
                                       ],
                                     ),
@@ -265,11 +281,22 @@ class _UserProfileState extends State<UserProfile> {
               child: Padding(
                 padding: const EdgeInsets.only(bottom: 10),
                 child: Column(children: [
-                  userInfo("Email", "Email"),
+                  userInfo("Email", "${userViewModel.userDTO!.email}"),
                   // userInfo("Address", user.address.toString()),
                   // userInfo("Phone", user.phone.toString()),
                   userInfo("Education", "${userViewModel.userDTO!.education}"),
-                  userInfo("Birth", birth!)
+                  userInfo("Birth", birth!),
+                  userInfo("Phone", "${userViewModel.userDTO!.phone}"),
+                  TextButton(
+                    style: ButtonStyle(
+                      foregroundColor:
+                          MaterialStateProperty.all<Color>(Colors.blue),
+                    ),
+                    onPressed: () {
+                      reload();
+                    },
+                    child: const Text('Reload'),
+                  )
                 ]),
               ),
             ))
@@ -340,8 +367,7 @@ class _UserProfileState extends State<UserProfile> {
   }
 
   Widget userInfo(String tittle, String userdata) {
-    // ignore: sort_child_properties_last
-    if (userdata != null) {
+    if (userdata != "") {
       return SizedBox(
         width: MediaQuery.of(context).size.width,
         child: Card(
@@ -379,6 +405,8 @@ class _UserProfileState extends State<UserProfile> {
       child: const Icon(Icons.edit),
       onPressed: () {
         Get.to(const EditProfilePage());
+        // Navigator.push(context,
+        //     MaterialPageRoute(builder: (context) => const EditProfilePage()));
       },
     );
   }

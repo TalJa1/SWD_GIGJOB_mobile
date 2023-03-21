@@ -131,6 +131,32 @@ class ApiService {
     }
   }
 
+  static Future<dynamic> patch(
+    String path,
+    Map<String, dynamic>? queryParams,
+    Map<String, String>? headers,
+    FormData body,
+  ) async {
+    headers ??= {};
+    body;
+    queryParams ??= {};
+    try {
+      final response = await dio.patch(
+        path,
+        queryParameters: queryParams,
+        data: body,
+        options: Options(headers: {...baseHeaders, ...headers}),
+      );
+      return response.data;
+    } on DioError catch (e) {
+      if (e.response != null) {
+        throw Exception(e.response!.data);
+      } else {
+        throw Exception(e.message);
+      }
+    }
+  }
+
   static setToken(String token) {
     if (token.isNotEmpty) {
       baseHeaders["Authorization"] = "Bearer $token";
