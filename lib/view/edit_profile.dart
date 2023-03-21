@@ -691,8 +691,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
           String? accountId = await getAccountID();
           WorkerDTO? workDTO = await JobDAO().getWorkerId(accountId!);
           String? workerID = workDTO.id;
-          UploadFileService().uploadImage(uploadfile!);
-          // userViewModel.updateUser(dto, workerID!);
+          await UploadFileService().uploadImage(uploadfile!);
+          await userViewModel.updateUser(dto, workerID!);
         },
         style: ButtonStyle(
             backgroundColor: MaterialStateProperty.all(Colors.black),

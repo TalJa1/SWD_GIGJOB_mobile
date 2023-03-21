@@ -11,6 +11,7 @@ class JobDTO {
   String? createdDate;
   String? updatedDate;
   String? expiredDate;
+  int? salary;
 
   JobDTO(
       {this.id,
@@ -22,7 +23,8 @@ class JobDTO {
       this.benefit,
       this.createdDate,
       this.updatedDate,
-      this.expiredDate});
+      this.expiredDate,
+      this.salary});
 
   JobDTO.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -36,6 +38,7 @@ class JobDTO {
     createdDate = json['createdDate'];
     updatedDate = json['updatedDate'];
     expiredDate = json['expiredDate'];
+    salary = json['salary'];
   }
 
   Map<String, dynamic> toJson() {
@@ -54,6 +57,7 @@ class JobDTO {
     data['createdDate'] = this.createdDate;
     data['updatedDate'] = this.updatedDate;
     data['expiredDate'] = this.expiredDate;
+    data['salary'] = this.salary;
     return data;
   }
 

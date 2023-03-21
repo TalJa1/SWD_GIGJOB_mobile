@@ -20,6 +20,7 @@ class JobViewModel extends BaseModel {
   List<JobDTO>? jobs;
   List<ApplyJobDTO>? appliedjob;
   List<JobType>? jobTypes;
+
   JobViewModel() {
     jobDAO = JobDAO();
     jobTypeDAO = JobTypeDAO();
@@ -44,6 +45,7 @@ class JobViewModel extends BaseModel {
         jobTypes = await jobTypeDAO?.getJobType();
         appliedjob = await jobDAO?.getJobApplied(workDTO?.id);
         setState(ViewStatus.Completed);
+
       }
 
       // setState(ViewStatus.Loading);
@@ -54,7 +56,7 @@ class JobViewModel extends BaseModel {
       print(e);
     }
   }
-
+  
   Future getJobApplied() async {
     try {
       String? accountId = await getAccountID();

@@ -134,4 +134,15 @@ class JobType {
     var list = data as List;
     return list.map((map) => JobType.fromJson(map)).toList();
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is JobType &&
+          runtimeType == other.runtimeType &&
+          id == other.id &&
+          name == other.name;
+
+  @override
+  int get hashCode => id.hashCode ^ name.hashCode;
 }
