@@ -111,13 +111,28 @@ class _UserProfileState extends State<UserProfile> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceEvenly,
                                       children: [
-                                        Text(
-                                          "${userViewModel.userDTO!.firstName!.toUpperCase()} ${userViewModel.userDTO!.lastName!.toUpperCase()}",
-                                          style: const TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 25,
-                                              fontWeight: FontWeight.bold),
-                                        ),
+                                        if (userViewModel.userDTO!.firstName!
+                                                    .toUpperCase() !=
+                                                "" &&
+                                            userViewModel.userDTO!.lastName!
+                                                    .toUpperCase() !=
+                                                "") ...[
+                                          Text(
+                                            "${userViewModel.userDTO!.firstName!.toUpperCase()} ${userViewModel.userDTO!.lastName!.toUpperCase()}",
+                                            style: const TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 25,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        ] else ...[
+                                          const Text(
+                                            "User",
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 25,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        ]
                                         // editBtn()
                                       ],
                                     ),
@@ -194,16 +209,18 @@ class _UserProfileState extends State<UserProfile> {
       height: 150.0,
       decoration: BoxDecoration(
         color: const Color(0xff7c94b6),
-        image: userViewModel.userDTO!.imageUrl == null ||
-                userViewModel.userDTO!.imageUrl!.isEmpty
-            ? const DecorationImage(
-                image: AssetImage('assets/images/GigJob.png'),
-                fit: BoxFit.cover,
-              )
-            : DecorationImage(
-                image: NetworkImage('${userViewModel.userDTO!.imageUrl}'),
-                fit: BoxFit.cover,
-              ),
+        image:
+            // userViewModel.userDTO!.imageUrl == null ||
+            //         userViewModel.userDTO!.imageUrl!.isEmpty
+            //     ?
+            const DecorationImage(
+          image: AssetImage('assets/images/GigJob.png'),
+          fit: BoxFit.cover,
+        ),
+        // : DecorationImage(
+        //     image: NetworkImage('${userViewModel.userDTO!.imageUrl}'),
+        //     fit: BoxFit.cover,
+        //   ),
         borderRadius: const BorderRadius.all(Radius.circular(80.0)),
         border: Border.all(
           color: const Color.fromARGB(179, 124, 123, 123),
@@ -261,7 +278,7 @@ class _UserProfileState extends State<UserProfile> {
               child: Padding(
                 padding: const EdgeInsets.only(bottom: 10),
                 child: Column(children: [
-                  userInfo("Email", "Email"),
+                  userInfo("Email", "${userViewModel.userDTO!.email}"),
                   // userInfo("Address", user.address.toString()),
                   // userInfo("Phone", user.phone.toString()),
                   userInfo("Education", "${userViewModel.userDTO!.education}"),
@@ -336,8 +353,7 @@ class _UserProfileState extends State<UserProfile> {
   }
 
   Widget userInfo(String tittle, String userdata) {
-    // ignore: sort_child_properties_last
-    if (userdata != null) {
+    if (userdata != "") {
       return SizedBox(
         width: MediaQuery.of(context).size.width,
         child: Card(
@@ -374,7 +390,9 @@ class _UserProfileState extends State<UserProfile> {
     return FloatingActionButton(
       child: const Icon(Icons.edit),
       onPressed: () {
-        Get.to(const EditProfilePage());
+        // Get.to(const EditProfilePage());
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => const EditProfilePage()));
       },
     );
   }

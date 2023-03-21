@@ -10,20 +10,24 @@ import 'package:flutter/services.dart';
 
 class UploadFileService extends BaseDAO {
   String urlAPI = "http://13.228.218.62:8080/api/v1/resource/upload";
-  String urlAPIlocal = "";
+  String urlAPIl = "/v1/resource/upload";
 
   Future<String> uploadImage(XFile? file) async {
-    Map<String, String> baseHeaders = ApiService.getHeader();
-    Dio dio = Dio();
-    dio.options.headers = baseHeaders;
+    // Map<String, String> baseHeaders = ApiService.getHeader();
+    // Dio dio = Dio();
+    // dio.options.headers = baseHeaders;
     String fileName = file!.path.split('/').last;
     final Uint8List bytes = await file.readAsBytes();
-    FormData formData = FormData.fromMap({
-      "file": MultipartFile.fromBytes(bytes,
-          filename: fileName, contentType: new MediaType('image', 'jpeg')),
-    });
+    // FormData formData = FormData.fromMap({
+    //   "file": MultipartFile.fromBytes(bytes,
+    //       filename: fileName, contentType: new MediaType('image', 'jpeg')),
+    // });
     try {
-      Response response = await dio.post(urlAPI, data: formData);
+      // Response response = await dio.post(urlAPI, data: formData);
+      Response response = await ApiService.post(urlAPIl, null, null, {
+        "file": MultipartFile.fromBytes(bytes,
+            filename: fileName, contentType: new MediaType('image', 'jpeg'))
+      });
       return "Upload Status for $fileName ${response.statusCode}";
     } catch (e) {
       return e.toString();
