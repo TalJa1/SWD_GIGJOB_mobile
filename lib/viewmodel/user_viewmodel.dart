@@ -42,8 +42,8 @@ class UserViewModel extends BaseModel {
 
   Future processLogout() async {
     try {
-      await DefaultCacheManager().emptyCache();
-      await clearCacheAndStorage();
+      // await DefaultCacheManager().emptyCache();
+      // await clearCacheAndStorage();
       await GoogleSignIn().signOut();
       await FirebaseAuth.instance.signOut();
       await removeALL();
