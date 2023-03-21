@@ -209,18 +209,16 @@ class _UserProfileState extends State<UserProfile> {
       height: 150.0,
       decoration: BoxDecoration(
         color: const Color(0xff7c94b6),
-        image:
-            // userViewModel.userDTO!.imageUrl == null ||
-            //         userViewModel.userDTO!.imageUrl!.isEmpty
-            //     ?
-            const DecorationImage(
-          image: AssetImage('assets/images/GigJob.png'),
-          fit: BoxFit.cover,
-        ),
-        // : DecorationImage(
-        //     image: NetworkImage('${userViewModel.userDTO!.imageUrl}'),
-        //     fit: BoxFit.cover,
-        //   ),
+        image: userViewModel.userDTO!.imageUrl == null ||
+                userViewModel.userDTO!.imageUrl!.isEmpty
+            ? const DecorationImage(
+                image: AssetImage('assets/images/GigJob.png'),
+                fit: BoxFit.cover,
+              )
+            : DecorationImage(
+                image: NetworkImage('${userViewModel.userDTO!.imageUrl}'),
+                fit: BoxFit.cover,
+              ),
         borderRadius: const BorderRadius.all(Radius.circular(80.0)),
         border: Border.all(
           color: const Color.fromARGB(179, 124, 123, 123),

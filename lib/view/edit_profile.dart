@@ -157,44 +157,42 @@ class _EditProfilePageState extends State<EditProfilePage> {
         await pickImg();
       },
       child: pickedFile == null
-          ?
-          // (userViewModel.userDTO!.imageUrl == null ||
-          //         userViewModel.userDTO!.imageUrl!.isEmpty)
-          //     ?
-          Container(
-              // constraints: const BoxConstraints.expand(width: 150, height: 150),
-              width: 150.0,
-              height: 150.0,
-              decoration: BoxDecoration(
-                // color: const Color(0xff7c94b6),
-                image: const DecorationImage(
-                  image: AssetImage('assets/images/GigJob.png'),
-                  fit: BoxFit.cover,
-                ),
-                borderRadius: const BorderRadius.all(Radius.circular(80.0)),
-                border: Border.all(
-                  color: const Color.fromARGB(179, 124, 123, 123),
-                  width: 4.0,
-                ),
-              ),
-            )
-          // : Container(
-          //     // constraints: const BoxConstraints.expand(width: 150, height: 150),
-          //     width: 150.0,
-          //     height: 150.0,
-          //     decoration: BoxDecoration(
-          //       // color: const Color(0xff7c94b6),
-          //       image: DecorationImage(
-          //         image: NetworkImage('${userViewModel.userDTO!.imageUrl}'),
-          //         fit: BoxFit.cover,
-          //       ),
-          //       borderRadius: const BorderRadius.all(Radius.circular(80.0)),
-          //       border: Border.all(
-          //         color: const Color.fromARGB(179, 124, 123, 123),
-          //         width: 4.0,
-          //       ),
-          //     ),
-          //   )
+          ? (userViewModel.userDTO!.imageUrl == null ||
+                  userViewModel.userDTO!.imageUrl!.isEmpty)
+              ? Container(
+                  // constraints: const BoxConstraints.expand(width: 150, height: 150),
+                  width: 150.0,
+                  height: 150.0,
+                  decoration: BoxDecoration(
+                    // color: const Color(0xff7c94b6),
+                    image: const DecorationImage(
+                      image: AssetImage('assets/images/GigJob.png'),
+                      fit: BoxFit.cover,
+                    ),
+                    borderRadius: const BorderRadius.all(Radius.circular(80.0)),
+                    border: Border.all(
+                      color: const Color.fromARGB(179, 124, 123, 123),
+                      width: 4.0,
+                    ),
+                  ),
+                )
+              : Container(
+                  // constraints: const BoxConstraints.expand(width: 150, height: 150),
+                  width: 150.0,
+                  height: 150.0,
+                  decoration: BoxDecoration(
+                    // color: const Color(0xff7c94b6),
+                    image: DecorationImage(
+                      image: NetworkImage('${userViewModel.userDTO!.imageUrl}'),
+                      fit: BoxFit.cover,
+                    ),
+                    borderRadius: const BorderRadius.all(Radius.circular(80.0)),
+                    border: Border.all(
+                      color: const Color.fromARGB(179, 124, 123, 123),
+                      width: 4.0,
+                    ),
+                  ),
+                )
           : Container(
               width: 150.0,
               height: 150.0,
@@ -230,13 +228,13 @@ class _EditProfilePageState extends State<EditProfilePage> {
   }
 
   Widget textForm() {
-    var username = userViewModel.userDTO!.username ?? "";
-    var diploma = userViewModel.userDTO!.education ?? "";
-    var firstname = userViewModel.userDTO!.firstName ?? "";
-    var midlename = userViewModel.userDTO!.middleName ?? "";
-    var lastname = userViewModel.userDTO!.lastName ?? "";
-    var phone = userViewModel.userDTO!.phone ?? "";
-    var pass = userViewModel.userDTO!.password ?? "";
+    var username = userViewModel.userDTO?.username ?? "";
+    var diploma = userViewModel.userDTO?.education ?? "";
+    var firstname = userViewModel.userDTO?.firstName ?? "";
+    var midlename = userViewModel.userDTO?.middleName ?? "";
+    var lastname = userViewModel.userDTO?.lastName ?? "";
+    var phone = userViewModel.userDTO?.phone ?? "";
+    var pass = userViewModel.userDTO?.password ?? "";
     return Form(
         key: _formKey,
         child: Column(
@@ -465,8 +463,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
             const SizedBox(
               height: 10,
             ),
-            uploadbtn(_formKey.currentState, firstname!, lastname!, midlename!,
-                phone!, username!, pass!, selectedDate.toString(), diploma!),
+            uploadbtn(_formKey.currentState, firstname, lastname, midlename,
+                phone, username, pass, selectedDate.toString(), diploma),
           ],
         ));
   }
@@ -499,8 +497,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
           String? accountId = await getAccountID();
           WorkerDTO? workDTO = await JobDAO().getWorkerId(accountId!);
           String? workerID = workDTO.id;
-          UploadFileService().uploadImage(uploadfile!);
-          // userViewModel.updateUser(dto, workerID!);
+          // UploadFileService().uploadImage(uploadfile!);
+          userViewModel.updateUser(dto, workerID!);
         },
         style: ButtonStyle(
             backgroundColor: MaterialStateProperty.all(Colors.black),
