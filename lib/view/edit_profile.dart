@@ -49,14 +49,14 @@ class _EditProfilePageState extends State<EditProfilePage> {
   }
 
   final _formKey = GlobalKey<FormState>();
-  // final _textnameController = TextEditingController();
-  // final _textdiplomaController = TextEditingController();
-  // // final _textbirtdayController = TextEditingController();
-  // final _textfirstController = TextEditingController();
-  // final _textmidleController = TextEditingController();
-  // final _textlastController = TextEditingController();
-  // final _textpassController = TextEditingController();
-  // final _textphoneController = TextEditingController();
+  final _textnameController = TextEditingController();
+  final _textdiplomaController = TextEditingController();
+  // final _textbirtdayController = TextEditingController();
+  final _textfirstController = TextEditingController();
+  final _textmidleController = TextEditingController();
+  final _textlastController = TextEditingController();
+  final _textpassController = TextEditingController();
+  final _textphoneController = TextEditingController();
 
   DateTime? selectedDate;
 
@@ -248,8 +248,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
               child: TextFormField(
-                // controller: _textnameController,
-                initialValue: username,
+                controller: _textnameController,
+                // initialValue: username,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'Enter your username',
@@ -261,21 +261,19 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   return null;
                 },
                 onChanged: (value1) {
-                  if (_formKey.currentState!.validate()) {
-                    // The form is valid, do something with the input
-                    setState(() {
-                      username1 = value1;
-                    });
-                    print('User entered: $value1');
-                  }
+                  // The form is valid, do something with the input
+                  setState(() {
+                    username1 = value1;
+                  });
+                  print('User entered: $value1');
                 },
               ),
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
               child: TextFormField(
-                // controller: _textdiplomaController,
-                initialValue: diploma,
+                controller: _textdiplomaController,
+                // initialValue: diploma,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'Enter your diploma',
@@ -287,21 +285,20 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   return null;
                 },
                 onChanged: (value2) {
-                  if (_formKey.currentState!.validate()) {
-                    setState(() {
-                      diploma1 = value2;
-                    });
-                    // The form is valid, do something with the input
-                    print('User entered: $value2');
-                  }
+                  print(">>>>>>>>>>>>>" + username1);
+                  setState(() {
+                    diploma1 = value2;
+                  });
+                  // The form is valid, do something with the input
+                  print('User entered: $value2');
                 },
               ),
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
               child: TextFormField(
-                // controller: _textfirstController,
-                initialValue: firstname,
+                controller: _textfirstController,
+                // initialValue: firstname,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'Enter your firstname',
@@ -313,21 +310,20 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   return null;
                 },
                 onChanged: (value3) {
-                  if (_formKey.currentState!.validate()) {
-                    setState(() {
-                      firstname1 = value3;
-                    });
-                    // The form is valid, do something with the input
-                    print('User entered: $value3');
-                  }
+                  print(">>>>>>>>>>>>>$diploma1");
+                  setState(() {
+                    firstname1 = value3;
+                  });
+                  // The form is valid, do something with the input
+                  print('User entered: $value3');
                 },
               ),
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
               child: TextFormField(
-                // controller: _textmidleController,
-                initialValue: midlename,
+                controller: _textmidleController,
+                // initialValue: midlename,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'Enter your midlename',
@@ -339,21 +335,21 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   return null;
                 },
                 onChanged: (value4) {
-                  if (_formKey.currentState!.validate()) {
-                    setState(() {
-                      midlename1 = value4;
-                    });
-                    // The form is valid, do something with the input
-                    print('User entered: $value4');
-                  }
+                  print(">>>>>>>>>>>>>" + firstname1);
+
+                  setState(() {
+                    midlename1 = value4;
+                  });
+                  // The form is valid, do something with the input
+                  print('User entered: $value4');
                 },
               ),
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
               child: TextFormField(
-                // controller: _textlastController,
-                initialValue: lastname,
+                controller: _textlastController,
+                // initialValue: lastname,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'Enter your lastname',
@@ -365,42 +361,38 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   return null;
                 },
                 onChanged: (value5) {
-                  if (_formKey.currentState!.validate()) {
-                    setState(() {
-                      lastname1 = value5;
-                    });
-                    // The form is valid, do something with the input
-                    print('User entered: $value5');
-                  }
+                  setState(() {
+                    lastname1 = value5;
+                  });
+                  // The form is valid, do something with the input
+                  print('User entered: $value5');
                 },
               ),
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
               child: TextFormField(
-                // controller: _textphoneController,
-                initialValue: phone,
+                controller: _textphoneController,
+                // initialValue: phone,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'Enter your phone',
                 ),
                 validator: _validatePhoneNumber,
                 onChanged: (value6) {
-                  if (_formKey.currentState!.validate()) {
-                    setState(() {
-                      phone1 = value6;
-                    });
-                    // The form is valid, do something with the input
-                    print('User entered: $value6');
-                  }
+                  setState(() {
+                    phone1 = value6;
+                  });
+                  // The form is valid, do something with the input
+                  print('User entered: $value6');
                 },
               ),
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
               child: TextFormField(
-                // controller: _textpassController,
-                initialValue: pass,
+                controller: _textpassController,
+                // initialValue: pass,
                 obscureText: true,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
@@ -413,13 +405,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   return null;
                 },
                 onChanged: (value7) {
-                  if (_formKey.currentState!.validate()) {
-                    setState(() {
-                      pass1 = value7;
-                    });
-                    // The form is valid, do something with the input
-                    print('User entered: $value7');
-                  }
+                  setState(() {
+                    pass1 = value7;
+                  });
+                  // The form is valid, do something with the input
+                  print('User entered: $value7');
                 },
               ),
             ),
@@ -530,10 +520,12 @@ class _EditProfilePageState extends State<EditProfilePage> {
           String? accountId = await getAccountID();
           WorkerDTO? workDTO = await JobDAO().getWorkerId(accountId!);
           String? workerID = workDTO.id;
-          if (uploadfile != null) {
-            UploadFileService().uploadImage(uploadfile!);
+          if (state!.validate()) {
+            if (uploadfile != null) {
+              UploadFileService().uploadImage(uploadfile!);
+            }
+            userViewModel.updateUser(dto, workerID!);
           }
-          userViewModel.updateUser(dto, workerID!);
         },
         style: ButtonStyle(
             backgroundColor: MaterialStateProperty.all(Colors.black),
