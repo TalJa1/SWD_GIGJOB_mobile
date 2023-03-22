@@ -97,7 +97,7 @@ class _PostListDetailState extends State<PostListDetail> {
             builder: (context, child, model) {
               if (jobDetailViewModel.status == ViewStatus.Completed) {
                 return Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 48, 16, 0),
+                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
                   child: SingleChildScrollView(
                     child: Column(
                       children: [
@@ -127,17 +127,17 @@ class _PostListDetailState extends State<PostListDetail> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    CircleAvatar(
-                                      radius: 32, // Image radius
-                                      backgroundImage: NetworkImage(
-                                          'https://cdn.searchenginejournal.com/wp-content/uploads/2017/06/shutterstock_268688447.jpg'),
-                                    ),
                                     Text(
                                       "${jobDetailViewModel.jobDTO?.shop?.name}",
                                       style: TextStyle(
                                           fontSize: 18,
                                           color: Colors.black,
                                           fontWeight: FontWeight.bold),
+                                    ),
+                                    CircleAvatar(
+                                      radius: 32, // Image radius
+                                      backgroundImage: NetworkImage(
+                                          'https://cdn.searchenginejournal.com/wp-content/uploads/2017/06/shutterstock_268688447.jpg'),
                                     ),
                                   ],
                                 ),
@@ -159,29 +159,30 @@ class _PostListDetailState extends State<PostListDetail> {
                                           color: Colors.black,
                                           fontWeight: FontWeight.bold),
                                     ),
-                                    widget.data.expiredDate == null ? Container() :
-                                    Row(
-                                      children: [
-                                        Text(
-                                          "Expire: ",
-                                          maxLines: 3,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(
-                                            fontSize: 14,
-                                            color: Colors.grey[600],
-                                          ),
-                                        ),
-                                        Text(
-                                          DateFormat("yyyy-MM-dd")
-                                            .format(DateTime.parse(widget.data.expiredDate!))
-                                          ,
-                                          style: TextStyle(
-                                            fontSize: 14,
-                                            color: Colors.indigo,
-                                          ),
-                                        ),
-                                      ],
-                                    )
+                                    widget.data.expiredDate == null
+                                        ? Container()
+                                        : Row(
+                                            children: [
+                                              Text(
+                                                "Expire: ",
+                                                maxLines: 3,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: TextStyle(
+                                                  fontSize: 14,
+                                                  color: Colors.grey[600],
+                                                ),
+                                              ),
+                                              Text(
+                                                DateFormat("yyyy-MM-dd").format(
+                                                    DateTime.parse(widget
+                                                        .data.expiredDate!)),
+                                                style: TextStyle(
+                                                  fontSize: 14,
+                                                  color: Colors.indigo,
+                                                ),
+                                              ),
+                                            ],
+                                          )
                                   ],
                                 ),
                               )
@@ -192,7 +193,7 @@ class _PostListDetailState extends State<PostListDetail> {
                           height: 16,
                         ),
                         Column(
-                          children: [],
+                          children: const [],
                         ),
                         Row(
                           // ignore: prefer_const_literals_to_create_immutables
@@ -218,6 +219,14 @@ class _PostListDetailState extends State<PostListDetail> {
                           ],
                         ),
                         _buildTabView(),
+                        Column(
+                          children: const [
+                            Text(
+                              "Relate",
+                              style: TextStyle(fontSize: 24.0),
+                            ),
+                          ],
+                        )
                         // const SizedBox(
                         //   height: 12,
                         // ),
@@ -258,7 +267,8 @@ class _PostListDetailState extends State<PostListDetail> {
                   indicatorColor: Colors.black,
                   enableFeedback: true,
                   unselectedLabelColor: Colors.grey,
-                  tabs: [
+                  isScrollable: true,
+                  tabs: const [
                     Tab(text: 'Job type'),
                     Tab(text: 'Skill'),
                     Tab(text: 'Salary'),
@@ -347,7 +357,7 @@ class _PostListDetailState extends State<PostListDetail> {
                   }
                 : null,
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(16, 48, 16, 16),
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
               child: Container(
                   height: 50,
                   width: double.infinity,

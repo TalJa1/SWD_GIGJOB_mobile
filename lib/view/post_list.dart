@@ -113,8 +113,8 @@ class _PostListState extends State<PostList> {
   late SortBy selectedSort;
 
   final List<SortBy> itemsSort = [
-    SortBy(id: 1, label: 'Create date new to old', value: 'id', isAcs: "desc"),
-    SortBy(id: 2, label: 'Create date old to new', value: 'id', isAcs: "asc"),
+    SortBy(id: 1, label: 'Create date new to old', value: 'createdDate', isAcs: "desc"),
+    SortBy(id: 2, label: 'Create date old to new', value: 'createdDate', isAcs: "asc"),
   ];
 
   late FilterDTO body;
@@ -242,7 +242,7 @@ class _PostListState extends State<PostList> {
                         borderSide: BorderSide.none,
                       ),
                       suffixIcon: IconButton(
-                        icon: Icon(Icons.cancel),
+                        icon: const Icon(Icons.cancel),
                         onPressed: () {
                           _searchController.clear();
                           _searchFocusNode.unfocus();
@@ -431,7 +431,7 @@ class _PostListState extends State<PostList> {
                       title: Text(item.label),
                       value: item,
                       activeColor: Colors.black,
-                      contentPadding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                      contentPadding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
                       groupValue: selectedSort,
                       onChanged: (value) {
                         setState(() {
@@ -497,10 +497,11 @@ class _PostListState extends State<PostList> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  _buildMultipSelectCheckBox(),
+                  _buildMultipChipSelectCheckBox(),
                   const Divider(
                     thickness: 1,
-                  )
+                  ),
+
                 ],
               ),
             ),
@@ -508,6 +509,46 @@ class _PostListState extends State<PostList> {
           ),
         );
       },
+    );
+  }
+
+  Widget _buildMultipChipSelectCheckBox() {
+    List<JobType> emptyList = [];
+    return MultiSelectChipField<JobType?>(
+      decoration: const BoxDecoration(
+        // border: Border(
+        //   bottom: BorderSide(color: Colors.black)
+        // ),
+      ),
+      selectedChipColor: Colors.black,
+      selectedTextStyle: const TextStyle(
+        color: Colors.white
+      ),
+      icon: const Icon(Icons.cancel,
+      color: Colors.white),
+      scroll: true,
+      headerColor: Colors.black,
+      title: const Text("Job type",
+      style: TextStyle(
+        fontSize: 20,
+        color: Colors.white
+      ),
+      ),
+
+
+      items: jobViewModel.jobTypes == null
+          ? emptyList.map((e) => MultiSelectItem(e, e.name ?? '')).toList()
+          : jobViewModel.jobTypes!
+              .map((e) => MultiSelectItem(e, e.name ?? ''))
+              .toList(),
+
+      initialValue: preSelectItems ?? [],
+      onTap: (values) {
+        setState(() {
+          preSelectItems = values.cast<JobType>();
+        });
+      },
+
     );
   }
 
@@ -648,7 +689,7 @@ class _PostListState extends State<PostList> {
                 child: Image.network(
                   "https://cdn.searchenginejournal.com/wp-content/uploads/2017/06/shutterstock_268688447.jpg",
                   width: 140,
-                  height: 140,
+                  height: 160,
                   fit: BoxFit.cover,
                 ),
               ),
@@ -679,6 +720,19 @@ class _PostListState extends State<PostList> {
                         ),
                       ),
                     ),
+                    const SizedBox(height: 8),
+                    Container(
+                      child: Text(
+                        "Salary: ${job.salary}",
+                        maxLines: 3,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.grey[600],
+                        ),
+                      ),
+                    ),
+                    
                     const SizedBox(height: 8),
                     Row(
                       children: [
