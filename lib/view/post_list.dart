@@ -1,6 +1,7 @@
 // ignore_for_file: sized_box_for_whitespace
 
 import 'package:date_format/date_format.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:gigjob_mobile/DTO/ApplyJobDTO.dart';
@@ -23,8 +24,21 @@ class PostList extends StatefulWidget {
 }
 
 class _PostListState extends State<PostList> {
-  List<JobType> selectedItems = [];
-  List<JobType> preSelectItems = [];
+
+   JobType job1 =   JobType(id: 3, name: "Jobtype3");
+   JobType job2 =   JobType(id: 3, name: "Jobtype3");
+   
+  
+
+  late List<JobType>? selectedItems;
+  late List<JobType>? preSelectItems;
+  // List<JobType> AutoSelectItems = [
+  //   JobType(id: 3, name: "Jobtype3"),
+  //   JobType(id: 4, name: "Jobtype4"),
+  //   JobType(id: 5, name: "Jobtype5"),
+  // ];
+
+  late List<JobType> init;
 
   late JobViewModel jobViewModel;
 
@@ -36,49 +50,73 @@ class _PostListState extends State<PostList> {
   Map<String, dynamic> params = {
     "pageIndex": _page,
     "pageSize": _pageSize,
+    "searchValue": "",
   };
 
-  void onChangeSort(SortBy sortBy) {
-    SearchCriteriaList? searchCriteriaWithSort = searchCriteriaList.firstWhere(
-        (element) => element.filterKey == "sortCriteria",
-        orElse: () => SearchCriteriaList());
-    if (searchCriteriaWithSort.filterKey == "sortCriteria") {
-      searchCriteriaWithSort.sortCriteria = SortCriteria.fromJson({
-        "sortKey": sortBy.value,
-          "direction": sortBy.isAcs,
-      });
-    }
+  void onChangeSort(SortBy sortBy) async {
+    // SearchCriteriaList? searchCriteriaWithSort = searchCriteriaList.firstWhere(
+    //     (element) => element.filterKey == "sortCriteria",
+    //     orElse: () => SearchCriteriaList());
+    // if (searchCriteriaWithSort.filterKey == "sortCriteria") {
+    //   SortCriteria tmpSort =
+    //       SortCriteria(sortKey: sortBy.value, direction: sortBy.isAcs);
+    //   searchCriteriaWithSort.sortCriteria = tmpSort;
+    // }
+    sortCriteria.sortKey = sortBy.value;
+    sortCriteria.direction = sortBy.isAcs;
     setState(() {
       _page = 0;
       params = {...params, "page": 0};
-      body = FilterDTO(searchCriteriaList: searchCriteriaList, dataOption: "");
+      body = FilterDTO(searchCriteriaList: searchCriteriaList, sortCriteria: sortCriteria,dataOption: "");
     });
-    jobViewModel.getJobs(params: params, body: body.toJson());
+    await jobViewModel.getJobs(params: params, body: body.toJson());
   }
 
   void _onSummitSearch(String searchText) async {
-    SearchCriteriaList? searchCriteriaWithTitle = searchCriteriaList.firstWhere(
-        (element) => element.filterKey == "title",
-        orElse: () => SearchCriteriaList());
-    if (searchCriteriaWithTitle.filterKey == "title") {
-      searchCriteriaWithTitle.value = searchText;
-    } else if (searchCriteriaWithTitle.filterKey != "title") {
-      searchCriteriaWithTitle = SearchCriteriaList.fromJson({
-        "filterKey": "title",
-        "value": searchText,
-        "dataOption": "",
-        "operation": "eq",
-        "sortCriteria": {
-          "sortKey": "id",
-          "direction": "asc",
-        }
-      });
-      searchCriteriaList.add(searchCriteriaWithTitle);
-    }
+    // SearchCriteriaList? searchCriteriaWithTitle = searchCriteriaList.firstWhere(
+    //     (element) => element.filterKey == "title",
+    //     orElse: () => SearchCriteriaList());
+    // if (searchCriteriaWithTitle.filterKey == "title") {
+    //   searchCriteriaWithTitle.value = searchText;
+    // } else if (searchCriteriaWithTitle.filterKey != "title") {
+    //   searchCriteriaWithTitle = SearchCriteriaList.fromJson({
+    //     "filterKey": "title",
+    //     "value": searchText,
+    //     "dataOption": "",
+    //     "operation": "eq",
+    //     "sortCriteria": sortCriteria.toJson()
+    //   });
+    //   searchCriteriaList.add(searchCriteriaWithTitle);
+    // }
     setState(() {
       _page = 0;
-      params = {...params, "pageIndex": 0};
-      body = FilterDTO(searchCriteriaList: searchCriteriaList, dataOption: "");
+      params = {...params, "pageIndex": 0, "searchValue": searchText};
+      // body = FilterDTO(searchCriteriaList: searchCriteriaList, dataOption: "");
+    });
+    await jobViewModel.getJobs(params: params, body: body.toJson());
+  }
+
+  Future<void> filterByCate() async {
+    searchCriteriaList = [];
+    String dataOperation = "";
+    for (var element in preSelectItems!) {
+      SearchCriteriaList item = SearchCriteriaList.fromJson({
+        "filterKey": "jobType",
+        "value": element.id.toString(),
+        "operation": "eq",
+      });
+      searchCriteriaList.add(item);
+    }
+    // jobViewModel.setSelectFilter(preSelectItems);
+    if(searchCriteriaList.length > 1){
+      dataOperation = "ANY";
+    }
+
+    setState(() {
+      _page = 0;
+      params = {...params, "pageIndex": 0,};
+      body = FilterDTO(searchCriteriaList: searchCriteriaList, sortCriteria: sortCriteria,dataOption: dataOperation);
+      // init = jobViewModel.selectedFilterJobType;
     });
     await jobViewModel.getJobs(params: params, body: body.toJson());
   }
@@ -97,13 +135,19 @@ class _PostListState extends State<PostList> {
   @override
   void initState() {
     // TODO: implement initState
-    super.initState();
+    selectedSort = itemsSort.first;
+
     sortCriteria = SortCriteria(
-      sortKey: "id",
-      direction: "asc",
+      sortKey: selectedSort.value,
+      direction: selectedSort.isAcs,
     );
     searchCriteriaList = [];
-    body = FilterDTO(searchCriteriaList: searchCriteriaList, dataOption: "");
+
+    body = FilterDTO(searchCriteriaList: searchCriteriaList, sortCriteria: sortCriteria, dataOption: "");
+
+    selectedItems = [];
+    preSelectItems = [];
+    init = [];
 
     jobViewModel = JobViewModel();
     _fetchPage(_page);
@@ -118,7 +162,9 @@ class _PostListState extends State<PostList> {
       }
     });
 
-    selectedSort = itemsSort.first;
+
+    print(job1 == job2);
+    super.initState();
   }
 
   Future<void> _fetchPage(int page) async {
@@ -130,10 +176,6 @@ class _PostListState extends State<PostList> {
     if (newItems != null && newItems.length < _pageSize) {
       _isLastPage = true;
     }
-  }
-
-  void filterByCate(String? id) async {
-    await jobViewModel.getJobs(params: params, body: {});
   }
 
   @override
@@ -189,17 +231,6 @@ class _PostListState extends State<PostList> {
               ),
             ),
             centerTitle: true,
-            // actions: [
-            //   IconButton(
-            //     icon: const Icon(Icons.filter_list_alt),
-            //     tooltip: 'Show Snackbar',
-            //     onPressed: () {
-            //       showDialog<String>(
-            //           context: context,
-            //           builder: (BuildContext context) => _buildDialog(context));
-            //     },
-            //   ),
-            // ],
             bottom: PreferredSize(
               preferredSize: const Size.fromHeight(80.0),
               child: Container(
@@ -224,126 +255,140 @@ class _PostListState extends State<PostList> {
               ),
             ),
           ),
-          body: SafeArea(
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 16),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Padding(
-                        padding:
-                            const EdgeInsets.only(left: 8, right: 4, top: 16),
-                        child: InkWell(
-                          onTap: () {
-                            showModalBottomSheet(
-                                context: context,
-                                builder: (context) {
-                                  return _buiBottomSheetSort();
-                                });
-                          },
-                          child: Container(
-                            width: 190,
-                            height: 50,
-                            child: Card(
-                              child: Center(
-                                  child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: const [
-                                  Icon(Icons.sort),
-                                  Padding(
-                                    padding: EdgeInsets.all(8.0),
-                                    child: Text(
-                                      "Sort",
-                                      style: TextStyle(fontSize: 18),
-                                    ),
-                                  ),
-                                ],
-                              )),
+          body: ScopedModelDescendant<JobViewModel>(
+            builder: (context, child, model) {
+              if (jobViewModel.status == ViewStatus.Loading) {
+                return Center(
+                  child: Container(
+                      padding: const EdgeInsets.fromLTRB(0, 16, 0, 0),
+                      width: 100,
+                      height: 100,
+                      child: const CircularProgressIndicator()),
+                );
+              }
+              return SafeArea(
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 16),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                left: 8, right: 4, top: 16),
+                            child: InkWell(
+                              onTap: () {
+                                showModalBottomSheet(
+                                    context: context,
+                                    builder: (context) {
+                                      return _buiBottomSheetSort();
+                                    });
+                              },
+                              child: Container(
+                                width: 190,
+                                height: 50,
+                                child: Card(
+                                  child: Center(
+                                      child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: const [
+                                      Icon(Icons.sort),
+                                      Padding(
+                                        padding: EdgeInsets.all(8.0),
+                                        child: Text(
+                                          "Sort",
+                                          style: TextStyle(fontSize: 18),
+                                        ),
+                                      ),
+                                    ],
+                                  )),
+                                ),
+                              ),
                             ),
                           ),
-                        ),
-                      ),
-                      Padding(
-                        padding:
-                            const EdgeInsets.only(left: 4, right: 8, top: 16),
-                        child: InkWell(
-                          onTap: () {
-                            showModalBottomSheet(
-                                context: context,
-                                isScrollControlled: true,
-                                enableDrag: false,
-                                builder: (context) {
-                                  return _buidBottomSheetFilter();
-                                });
-                          },
-                          child: Container(
-                            width: 190,
-                            height: 50,
-                            child: Card(
-                              child: Center(
-                                  child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: const [
-                                  Icon(Icons.filter_alt_sharp),
-                                  Padding(
-                                    padding: EdgeInsets.all(8.0),
-                                    child: Text(
-                                      "Filter",
-                                      style: TextStyle(fontSize: 18),
-                                    ),
-                                  ),
-                                ],
-                              )),
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                left: 4, right: 8, top: 16),
+                            child: InkWell(
+                              onTap: () async {
+                                await showModalBottomSheet(
+                                    context: context,
+                                    isScrollControlled: true,
+                                    enableDrag: false,
+                                    builder: (context) {
+                                      return _buidBottomSheetFilter();
+                                    });
+                                    
+                              },
+                              child: Container(
+                                width: 190,
+                                height: 50,
+                                child: Card(
+                                  child: Center(
+                                      child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: const [
+                                      Icon(Icons.filter_alt_sharp),
+                                      Padding(
+                                        padding: EdgeInsets.all(8.0),
+                                        child: Text(
+                                          "Filter",
+                                          style: TextStyle(fontSize: 18),
+                                        ),
+                                      ),
+                                    ],
+                                  )),
+                                ),
+                              ),
                             ),
                           ),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      child: RefreshIndicator(
+                        onRefresh: () async {
+                          setState(() {
+                            _page = 0;
+                          });
+                          _fetchPage(0);
+                        },
+                        child: SingleChildScrollView(
+                          controller: _scrollController,
+                          child: Column(children: [
+                            ...jobViewModel.jobs!
+                                .map((e) => _buildPostLists(e))
+                                .toList(),
+                            if (jobViewModel.status == ViewStatus.LoadMore) ...[
+                              const SizedBox(
+                                  width: 50,
+                                  height: 50,
+                                  child: CircularProgressIndicator())
+                            ]
+                          ]),
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                    // ScopedModelDescendant<JobViewModel>(
+                    //   builder: (context, child, model) {
+                    //     if (jobViewModel.status == ViewStatus.Loading) {
+                    //       return Center(
+                    //         child: Container(
+                    //             padding: const EdgeInsets.fromLTRB(0, 16, 0, 0),
+                    //             width: 100,
+                    //             height: 100,
+                    //             child: const CircularProgressIndicator()),
+                    //       );
+                    //     } else {
+                    //       return
+                    //     }
+                    //   },
+                    // )
+                  ],
                 ),
-                ScopedModelDescendant<JobViewModel>(
-                  builder: (context, child, model) {
-                    if (jobViewModel.status == ViewStatus.Loading) {
-                      return Center(
-                        child: Container(
-                            padding: const EdgeInsets.fromLTRB(0, 16, 0, 0),
-                            width: 100,
-                            height: 100,
-                            child: const CircularProgressIndicator()),
-                      );
-                    } else {
-                      return Expanded(
-                        child: RefreshIndicator(
-                          onRefresh: () async {
-                            setState(() {
-                              _page = 0;
-                            });
-                            _fetchPage(0);
-                          },
-                          child: SingleChildScrollView(
-                            controller: _scrollController,
-                            child: Column(children: [
-                              ...jobViewModel.jobs!
-                                  .map((e) => _buildPostLists(e))
-                                  .toList(),
-                              if (jobViewModel.status ==
-                                  ViewStatus.LoadMore) ...[
-                                const SizedBox(
-                                    width: 50,
-                                    height: 50,
-                                    child: CircularProgressIndicator())
-                              ]
-                            ]),
-                          ),
-                        ),
-                      );
-                    }
-                  },
-                )
-              ],
-            ),
+              );
+            },
           ),
         ),
       ),
@@ -421,7 +466,7 @@ class _PostListState extends State<PostList> {
             onPressed: () {
               Navigator.pop(context);
               print(selectedItems);
-              preSelectItems = [...selectedItems];
+              preSelectItems = [...selectedItems!];
             },
           ),
           foregroundColor: Colors.black,
@@ -452,6 +497,7 @@ class _PostListState extends State<PostList> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               _buildMultipSelectCheckBox(),
+
               const Divider(
                 thickness: 1,
               )
@@ -467,7 +513,7 @@ class _PostListState extends State<PostList> {
     List<JobType> emptyList = [];
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-      child: MultiSelectDialogField(
+      child: MultiSelectDialogField<JobType>(
         decoration: const BoxDecoration(
           border: null,
         ),
@@ -484,16 +530,18 @@ class _PostListState extends State<PostList> {
           "Job type",
           style: TextStyle(fontSize: 18),
         ),
-        initialValue: preSelectItems,
 
         items: jobViewModel.jobTypes == null
             ? emptyList.map((e) => MultiSelectItem(e, e.name ?? '')).toList()
             : jobViewModel.jobTypes!
                 .map((e) => MultiSelectItem(e, e.name ?? ''))
                 .toList(),
+                
+        initialValue: preSelectItems ?? [],
+        
         listType: MultiSelectListType.CHIP,
 
-        chipDisplay: MultiSelectChipDisplay(
+        chipDisplay: MultiSelectChipDisplay<JobType>(
           icon: const Icon(
             Icons.cancel,
             color: Colors.white,
@@ -502,11 +550,11 @@ class _PostListState extends State<PostList> {
           textStyle: const TextStyle(color: Colors.white),
           scroll: true,
           items: preSelectItems
-              .map((e) => MultiSelectItem(e, e.name ?? ''))
+              ?.map((e) => MultiSelectItem(e, e.name ?? ''))
               .toList(),
           onTap: (value) {
             setState(() {
-              preSelectItems.remove(value);
+              preSelectItems?.remove(value);
             });
             return preSelectItems;
           },
@@ -525,11 +573,14 @@ class _PostListState extends State<PostList> {
     return Container(
       color: Colors.white,
       child: InkWell(
-        onTap: () {
-          filterByCate;
-          selectedItems = [
-            ...preSelectItems,
-          ];
+        onTap: () async {
+          setState(() {
+            selectedItems = [
+              ...preSelectItems!,
+            ];
+          });
+          await filterByCate();
+          // Get.back();
           Navigator.pop(context);
         },
         child: Padding(

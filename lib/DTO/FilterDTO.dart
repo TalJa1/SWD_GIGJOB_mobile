@@ -1,8 +1,9 @@
 class FilterDTO {
   List<SearchCriteriaList>? searchCriteriaList;
+  SortCriteria? sortCriteria;
   String? dataOption;
 
-  FilterDTO({this.searchCriteriaList, this.dataOption});
+  FilterDTO({this.searchCriteriaList, this.sortCriteria, this.dataOption});
 
   FilterDTO.fromJson(Map<String, dynamic> json) {
     if (json['searchCriteriaList'] != null) {
@@ -11,6 +12,9 @@ class FilterDTO {
         searchCriteriaList!.add(new SearchCriteriaList.fromJson(v));
       });
     }
+    sortCriteria = json['sortCriteria'] != null
+        ? new SortCriteria.fromJson(json['sortCriteria'])
+        : null;
     dataOption = json['dataOption'];
   }
 
@@ -19,6 +23,9 @@ class FilterDTO {
     if (this.searchCriteriaList != null) {
       data['searchCriteriaList'] =
           this.searchCriteriaList!.map((v) => v.toJson()).toList();
+    }
+    if (this.sortCriteria != null) {
+      data['sortCriteria'] = this.sortCriteria!.toJson();
     }
     data['dataOption'] = this.dataOption;
     return data;
@@ -29,24 +36,13 @@ class SearchCriteriaList {
   String? filterKey;
   String? value;
   String? operation;
-  String? dataOption;
-  SortCriteria? sortCriteria;
 
-  SearchCriteriaList(
-      {this.filterKey,
-      this.value,
-      this.operation,
-      this.dataOption,
-      this.sortCriteria});
+  SearchCriteriaList({this.filterKey, this.value, this.operation});
 
   SearchCriteriaList.fromJson(Map<String, dynamic> json) {
     filterKey = json['filterKey'];
     value = json['value'];
     operation = json['operation'];
-    dataOption = json['dataOption'];
-    sortCriteria = json['sortCriteria'] != null
-        ? new SortCriteria.fromJson(json['sortCriteria'])
-        : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -54,10 +50,6 @@ class SearchCriteriaList {
     data['filterKey'] = this.filterKey;
     data['value'] = this.value;
     data['operation'] = this.operation;
-    data['dataOption'] = this.dataOption;
-    if (this.sortCriteria != null) {
-      data['sortCriteria'] = this.sortCriteria!.toJson();
-    }
     return data;
   }
 }

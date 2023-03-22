@@ -158,27 +158,27 @@ class _PostListDetailState extends State<PostListDetail> {
                                           color: Colors.black,
                                           fontWeight: FontWeight.bold),
                                     ),
-                                    Row(
-                                      children: [
-                                        Text(
-                                          "Expire: ",
-                                          maxLines: 3,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(
-                                            fontSize: 14,
-                                            color: Colors.grey[600],
-                                          ),
-                                        ),
-                                        Text(
-                                          Jiffy("${widget.data.expiredDate}")
-                                              .fromNow(),
-                                          style: TextStyle(
-                                            fontSize: 14,
-                                            color: Colors.indigo,
-                                          ),
-                                        ),
-                                      ],
-                                    )
+                                    // Row(
+                                    //   children: [
+                                    //     Text(
+                                    //       "Expire: ",
+                                    //       maxLines: 3,
+                                    //       overflow: TextOverflow.ellipsis,
+                                    //       style: TextStyle(
+                                    //         fontSize: 14,
+                                    //         color: Colors.grey[600],
+                                    //       ),
+                                    //     ),
+                                    //     Text(
+                                    //       Jiffy("${widget.data.expiredDate}")
+                                    //           .fromNow(),
+                                    //       style: TextStyle(
+                                    //         fontSize: 14,
+                                    //         color: Colors.indigo,
+                                    //       ),
+                                    //     ),
+                                    //   ],
+                                    // )
                                   ],
                                 ),
                               )

@@ -39,6 +39,10 @@ class _UserProfileState extends State<UserProfile> {
   late UserViewModel userViewModel;
 
   Future<void> reload() async {
+    setState(() {
+      
+      isInfo = !isInfo;
+    });
     userViewModel.getAppliedJob();
     userViewModel.getUserProfile();
   }
@@ -251,11 +255,11 @@ class _UserProfileState extends State<UserProfile> {
                   },
               child: const Text('Info')),
           ButtonBarEntry(
-              onTap: () => {
+              onTap: () async {
                     setState(() {
                       isInfo = false;
                       print("isInfo $isInfo");
-                    })
+                    });
                   },
               child: const Text('Applied job')),
         ],
@@ -271,7 +275,7 @@ class _UserProfileState extends State<UserProfile> {
     return checkIsInfo
         ? Container(
             width: MediaQuery.of(context).size.width,
-            // height: MediaQuery.of(context).size.height,
+            height: MediaQuery.of(context).size.height,
             padding: const EdgeInsets.only(left: 10, right: 10, bottom: 5),
             child: Center(
               child: Padding(
@@ -297,7 +301,7 @@ class _UserProfileState extends State<UserProfile> {
               ),
             ))
         : SizedBox(
-            // height: MediaQuery.of(context).size.height,
+            height: MediaQuery.of(context).size.height,
             width: MediaQuery.of(context).size.width,
             child: Column(
               children: [
