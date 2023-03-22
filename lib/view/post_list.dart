@@ -55,7 +55,8 @@ class _PostListState extends State<PostList> {
       body = FilterDTO(
           searchCriteriaList: searchCriteriaList,
           sortCriteria: sortCriteria,
-          dataOption: "");
+          dataOption: "any"
+          );
     });
     await jobViewModel.getJobs(params: params, body: body.toJson());
   }

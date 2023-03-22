@@ -20,7 +20,10 @@ Future<void> showMyDialog(BuildContext context, String status, String content) a
           TextButton(
             child: Text('OK'),
             onPressed: () {
+              if(Navigator.of(context).canPop()) {
               Navigator.of(context).pop();
+
+              }
             },
           ),
         ],
