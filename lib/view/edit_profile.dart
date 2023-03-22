@@ -521,10 +521,33 @@ class _EditProfilePageState extends State<EditProfilePage> {
           WorkerDTO? workDTO = await JobDAO().getWorkerId(accountId!);
           String? workerID = workDTO.id;
           if (state!.validate()) {
-            if (uploadfile != null) {
-              UploadFileService().uploadImage(uploadfile!);
+            try {
+              if (uploadfile != null) {
+                UploadFileService().uploadImage(uploadfile!);
+              }
+              userViewModel.updateUser(dto, workerID!);
+              // ignore: use_build_context_synchronously
+              return showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return const AlertDialog(
+                      title: Center(
+                        child: Text('Updated'),
+                      ),
+                    );
+                  });
+            } catch (e) {
+              // ignore: use_build_context_synchronously
+              return showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return const AlertDialog(
+                      title: Center(
+                        child: Text('Update failed'),
+                      ),
+                    );
+                  });
             }
-            userViewModel.updateUser(dto, workerID!);
           }
         },
         style: ButtonStyle(
