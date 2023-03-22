@@ -39,10 +39,11 @@ class _UserProfileState extends State<UserProfile> {
   late UserViewModel userViewModel;
 
   Future<void> reload() async {
-    setState(() {
-      
-      isInfo = !isInfo;
-    });
+    if (isInfo == false) {
+      setState(() {
+        isInfo = !isInfo;
+      });
+    }
     userViewModel.getAppliedJob();
     userViewModel.getUserProfile();
   }
@@ -256,11 +257,11 @@ class _UserProfileState extends State<UserProfile> {
               child: const Text('Info')),
           ButtonBarEntry(
               onTap: () async {
-                    setState(() {
-                      isInfo = false;
-                      print("isInfo $isInfo");
-                    });
-                  },
+                setState(() {
+                  isInfo = false;
+                  print("isInfo $isInfo");
+                });
+              },
               child: const Text('Applied job')),
         ],
       ),
@@ -287,16 +288,16 @@ class _UserProfileState extends State<UserProfile> {
                   userInfo("Education", "${userViewModel.userDTO!.education}"),
                   userInfo("Birth", birth!),
                   userInfo("Phone", "${userViewModel.userDTO!.phone}"),
-                  TextButton(
-                    style: ButtonStyle(
-                      foregroundColor:
-                          MaterialStateProperty.all<Color>(Colors.blue),
-                    ),
-                    onPressed: () {
-                      reload();
-                    },
-                    child: const Text('Reload'),
-                  )
+                  // TextButton(
+                  //   style: ButtonStyle(
+                  //     foregroundColor:
+                  //         MaterialStateProperty.all<Color>(Colors.blue),
+                  //   ),
+                  //   onPressed: () {
+                  //     reload();
+                  //   },
+                  //   child: const Text('Reload'),
+                  // )
                 ]),
               ),
             ))
