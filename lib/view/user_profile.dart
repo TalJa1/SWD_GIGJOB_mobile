@@ -11,6 +11,7 @@ import 'package:gigjob_mobile/viewmodel/job_viewmodel.dart';
 import 'package:gigjob_mobile/viewmodel/user_viewmodel.dart';
 import 'package:intl/intl.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'package:location/location.dart';
 
 // ignore: depend_on_referenced_packages
 
@@ -288,16 +289,44 @@ class _UserProfileState extends State<UserProfile> {
                   userInfo("Education", "${userViewModel.userDTO!.education}"),
                   userInfo("Birth", birth!),
                   userInfo("Phone", "${userViewModel.userDTO!.phone}"),
-                  // TextButton(
-                  //   style: ButtonStyle(
-                  //     foregroundColor:
-                  //         MaterialStateProperty.all<Color>(Colors.blue),
-                  //   ),
-                  //   onPressed: () {
-                  //     reload();
-                  //   },
-                  //   child: const Text('Reload'),
-                  // )
+                  TextButton(
+                    style: ButtonStyle(
+                      foregroundColor:
+                          MaterialStateProperty.all<Color>(Colors.blue),
+                    ),
+                    onPressed: () async {
+                      Location location = new Location();
+                      final formatter = NumberFormat('.######');
+                      bool _serviceEnabled;
+                      PermissionStatus _permissionGranted;
+                      LocationData _locationData;
+
+                      _serviceEnabled = await location.serviceEnabled();
+                      if (!_serviceEnabled) {
+                        _serviceEnabled = await location.requestService();
+                        if (!_serviceEnabled) {
+                          return;
+                        }
+                      }
+
+                      _permissionGranted = await location.hasPermission();
+                      if (_permissionGranted == PermissionStatus.denied) {
+                        _permissionGranted = await location.requestPermission();
+                        if (_permissionGranted != PermissionStatus.granted) {
+                          return;
+                        }
+                      }
+
+                      _locationData = await location.getLocation();
+                      print(
+                          "Longitude>>>>>>>>>>> ${formatter.format(_locationData.longitude)}");
+                      print(
+                          "Latitude>>>>>>>>>>> ${formatter.format(_locationData.latitude)}");
+                      print(
+                          ">>>>>>>>>>>${formatter.format(12312312.12123123123)}");
+                    },
+                    child: const Text('Reload'),
+                  )
                 ]),
               ),
             ))
