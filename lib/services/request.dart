@@ -44,8 +44,8 @@ class ApiService {
       return response;
     } on DioError catch (e) {
       if (e.response?.statusCode == 401) {
-        await DefaultCacheManager().emptyCache();
-        await clearCacheAndStorage();
+        // await DefaultCacheManager().emptyCache();
+        // await clearCacheAndStorage();
         await GoogleSignIn().signOut();
         await FirebaseAuth.instance.signOut();
         await removeALL();
@@ -87,8 +87,8 @@ class ApiService {
       return response;
     } on DioError catch (e) {
       if (e.response?.statusCode == 401) {
-        await DefaultCacheManager().emptyCache();
-        await clearCacheAndStorage();
+        // await DefaultCacheManager().emptyCache();
+        // await clearCacheAndStorage();
         await GoogleSignIn().signOut();
         await FirebaseAuth.instance.signOut();
         await removeALL();

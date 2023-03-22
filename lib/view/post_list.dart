@@ -49,7 +49,7 @@ class _PostListState extends State<PostList> {
     sortCriteria.direction = sortBy.isAcs;
     setState(() {
       _page = 0;
-      params = {...params, "page": 0};
+      params = {...params, "pageIndex": 0};
       body = FilterDTO(
           searchCriteriaList: searchCriteriaList,
           sortCriteria: sortCriteria,
@@ -87,7 +87,7 @@ class _PostListState extends State<PostList> {
 
     // jobViewModel.setSelectFilter(preSelectItems);
     if (searchCriteriaList.length > 1) {
-      dataOperation = "ANY";
+      dataOperation = "any";
     }
 
     setState(() {

@@ -30,6 +30,18 @@ Future<bool> expireToken() async {
   }
 }
 
+Future<bool> setFCMToken(String value) async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+  return prefs.setString('fcmToken', value);
+}
+
+Future<String?> getFCMToken() async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+  return prefs.getString('fcmToken');
+}
+
 Future<String?> getToken() async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
 

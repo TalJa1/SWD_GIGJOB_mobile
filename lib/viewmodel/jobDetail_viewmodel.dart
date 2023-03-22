@@ -1,3 +1,4 @@
+import 'package:gigjob_mobile/DAO/AccountDAO.dart';
 import 'package:gigjob_mobile/DAO/JobDAO.dart';
 import 'package:gigjob_mobile/DTO/ApplyJobDTO.dart';
 import 'package:gigjob_mobile/DTO/JobDTO.dart';
@@ -11,10 +12,12 @@ class JobDetailViewModel extends BaseModel {
   List<ApplyJobDTO>? appliedjob;
   JobDTO? jobDTO;
   JobDAO? jobDAO;
+  AccountDAO? accountDAO;
   ApplyJobDTO? isApplied;
 
   JobDetailViewModel() {
     jobDAO = JobDAO();
+    accountDAO = AccountDAO();
   }
 
   Future getJobApplied(int? jobID) async {
@@ -62,6 +65,10 @@ class JobDetailViewModel extends BaseModel {
       WorkerDTO workerDTO = await JobDAO().getWorkerId(accountID);
       print("Worker id ${workerDTO.id}");
       bool isApply = await JobDAO().applyJob(workerDTO.id, jobId);
+      String? fcmToken = await getFCMToken();
+      if (isApply) {
+        await accountDAO?.postFcmToken(fcmToken, "Apply job", "SUCCESS");
+      }
       setState(ViewStatus.Completed);
       return isApply;
     } catch (e) {

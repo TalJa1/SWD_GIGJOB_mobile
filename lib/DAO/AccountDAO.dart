@@ -20,7 +20,7 @@ class AccountDAO extends BaseDAO {
     return token != null;
   }
 
-  Future<void> postToken(String? idToken) async {
+  Future<void> postToken(String? idToken, String? fcmToken) async {
     try {
       String path = "/v1/account/login/google";
       Map<String, String> headers = {
@@ -38,6 +38,7 @@ class AccountDAO extends BaseDAO {
         ApiService.setToken(response.data["accessToken"]);
         setAccountId(decode["account"]["id"]);
         setToken(response.data["accessToken"]);
+        setFCMToken(fcmToken!);
       } else {
         throw Exception("Your account is invalid");
       }
@@ -50,13 +51,13 @@ class AccountDAO extends BaseDAO {
     // return null;
   }
 
-  Future<bool> postFcmToken(String? fcmToken) async {
+  Future<bool> postFcmToken(String? fcmToken, String title, String content) async {
     try {
       String path = "/v1/notification/send";
       Map<String, String> headers = {'Content-Type': 'application/json'};
       Map<String, dynamic> body = {
-        "subject": "FROM ME",
-        "content": "TO HUY",
+        "subject": title,
+        "content": content,
         "imageUrl": "",
         "data": {
           "additionalProp1": "",

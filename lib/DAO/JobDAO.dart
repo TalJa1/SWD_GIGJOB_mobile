@@ -6,6 +6,7 @@ import 'package:gigjob_mobile/DTO/JobDTO.dart';
 import 'package:gigjob_mobile/DTO/MetaDataDTO.dart';
 import 'package:gigjob_mobile/DTO/WorkerDTO.dart';
 import 'package:gigjob_mobile/services/request.dart';
+import 'package:gigjob_mobile/utils/share_pref.dart';
 
 class JobDAO extends BaseDAO {
   late MetaDataDTO _metaDataDTO;
@@ -29,9 +30,9 @@ class JobDAO extends BaseDAO {
     try {
       final res = await ApiService.post('/v1/application', null, null,
           {"workerId": id, "status": "PENDING", "jobId": jobId});
+      
       return true;
       // ignore: avoid_print
-      print(res);
     } catch (e) {
       print(e);
       return false;

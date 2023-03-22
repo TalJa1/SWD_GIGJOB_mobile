@@ -199,9 +199,9 @@ class _PostListDetailState extends State<PostListDetail> {
                           children: [
                             Expanded(
                                 child: Text(
-                              "Description",
+                              "Description:",
                               style: TextStyle(fontSize: 24.0),
-                            ))
+                            )),
                           ],
                         ),
                         const SizedBox(
@@ -247,7 +247,7 @@ class _PostListDetailState extends State<PostListDetail> {
 
   Widget _buildTabView() {
     return DefaultTabController(
-        length: 4, // length of tabs
+        length: 5, // length of tabs
         initialIndex: 0,
         child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -261,6 +261,7 @@ class _PostListDetailState extends State<PostListDetail> {
                   tabs: [
                     Tab(text: 'Job type'),
                     Tab(text: 'Skill'),
+                    Tab(text: 'Salary'),
                     Tab(text: 'Benifit'),
                     Tab(text: 'Shop info'),
                   ],
@@ -280,6 +281,11 @@ class _PostListDetailState extends State<PostListDetail> {
                     Container(
                       padding: EdgeInsets.fromLTRB(0, 12, 0, 12),
                       child: Text('${widget.data.skill}',
+                          style: TextStyle(fontSize: 16)),
+                    ),
+                    Container(
+                      padding: EdgeInsets.fromLTRB(0, 12, 0, 12),
+                      child: Text('${widget.data.salary}\$',
                           style: TextStyle(fontSize: 16)),
                     ),
                     Container(

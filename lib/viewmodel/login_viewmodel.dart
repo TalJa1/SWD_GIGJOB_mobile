@@ -42,11 +42,11 @@ class LoginViewModel extends BaseModel {
 
       String? token = await googleAuth?.idToken;
 
-      // String? fcmToken =
-      //     await PushNotificationService.getInstance()?.getFcmToken();
+      String? fcmToken =
+          await PushNotificationService.getInstance()?.getFcmToken();
 
       // AccountDTO? accountDTO = await dao.postToken(token);
-      await dao.postToken(token);
+      await dao.postToken(token, fcmToken);
       // await dao.postFcmToken(fcmToken);
       String? accountID = await getAccountID();
       WorkerDTO workerDTO = await JobDAO().getWorkerId(accountID!);
