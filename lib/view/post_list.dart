@@ -19,6 +19,8 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 
 class PostList extends StatefulWidget {
+  const PostList({super.key});
+
   @override
   _PostListState createState() => _PostListState();
 }

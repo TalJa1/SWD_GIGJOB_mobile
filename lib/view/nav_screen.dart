@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:gigjob_mobile/view/login_home.dart';
 import 'package:gigjob_mobile/view/post_list.dart';
 import 'package:gigjob_mobile/view/post_list_detail.dart';
@@ -22,7 +23,7 @@ class _RootScreen extends State<RootScreen> {
 
     List<Widget> _buildScreens() {
       return [
-        PostList(),
+        const PostList(),
         const WalletPage(),
         const UserProfile()
       ];
