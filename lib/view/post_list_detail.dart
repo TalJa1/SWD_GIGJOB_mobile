@@ -17,6 +17,7 @@ import 'package:gigjob_mobile/view/nav_screen.dart';
 import 'package:gigjob_mobile/view/start_up.dart';
 import 'package:gigjob_mobile/viewmodel/jobDetail_viewmodel.dart';
 import 'package:gigjob_mobile/viewmodel/job_viewmodel.dart';
+import 'package:intl/intl.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:jwt_decode/jwt_decode.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -158,27 +159,29 @@ class _PostListDetailState extends State<PostListDetail> {
                                           color: Colors.black,
                                           fontWeight: FontWeight.bold),
                                     ),
-                                    // Row(
-                                    //   children: [
-                                    //     Text(
-                                    //       "Expire: ",
-                                    //       maxLines: 3,
-                                    //       overflow: TextOverflow.ellipsis,
-                                    //       style: TextStyle(
-                                    //         fontSize: 14,
-                                    //         color: Colors.grey[600],
-                                    //       ),
-                                    //     ),
-                                    //     Text(
-                                    //       Jiffy("${widget.data.expiredDate}")
-                                    //           .fromNow(),
-                                    //       style: TextStyle(
-                                    //         fontSize: 14,
-                                    //         color: Colors.indigo,
-                                    //       ),
-                                    //     ),
-                                    //   ],
-                                    // )
+                                    widget.data.expiredDate == null ? Container() :
+                                    Row(
+                                      children: [
+                                        Text(
+                                          "Expire: ",
+                                          maxLines: 3,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            color: Colors.grey[600],
+                                          ),
+                                        ),
+                                        Text(
+                                          DateFormat("yyyy-MM-dd")
+                                            .format(DateTime.parse(widget.data.expiredDate!))
+                                          ,
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            color: Colors.indigo,
+                                          ),
+                                        ),
+                                      ],
+                                    )
                                   ],
                                 ),
                               )

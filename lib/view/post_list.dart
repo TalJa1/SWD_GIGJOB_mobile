@@ -24,26 +24,17 @@ class PostList extends StatefulWidget {
 }
 
 class _PostListState extends State<PostList> {
-
-   JobType job1 =   JobType(id: 3, name: "Jobtype3");
-   JobType job2 =   JobType(id: 3, name: "Jobtype3");
-   
-  
-
   late List<JobType>? selectedItems;
   late List<JobType>? preSelectItems;
-  // List<JobType> AutoSelectItems = [
-  //   JobType(id: 3, name: "Jobtype3"),
-  //   JobType(id: 4, name: "Jobtype4"),
-  //   JobType(id: 5, name: "Jobtype5"),
-  // ];
 
   late List<JobType> init;
 
   late JobViewModel jobViewModel;
 
+  final _searchFocusNode = FocusNode();
+  TextEditingController _searchController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
-  static const _pageSize = 5;
+  static const _pageSize = 10;
   static int _page = 0;
   bool _isLastPage = false;
 
@@ -54,43 +45,27 @@ class _PostListState extends State<PostList> {
   };
 
   void onChangeSort(SortBy sortBy) async {
-    // SearchCriteriaList? searchCriteriaWithSort = searchCriteriaList.firstWhere(
-    //     (element) => element.filterKey == "sortCriteria",
-    //     orElse: () => SearchCriteriaList());
-    // if (searchCriteriaWithSort.filterKey == "sortCriteria") {
-    //   SortCriteria tmpSort =
-    //       SortCriteria(sortKey: sortBy.value, direction: sortBy.isAcs);
-    //   searchCriteriaWithSort.sortCriteria = tmpSort;
-    // }
     sortCriteria.sortKey = sortBy.value;
     sortCriteria.direction = sortBy.isAcs;
     setState(() {
       _page = 0;
       params = {...params, "page": 0};
-      body = FilterDTO(searchCriteriaList: searchCriteriaList, sortCriteria: sortCriteria,dataOption: "");
+      body = FilterDTO(
+          searchCriteriaList: searchCriteriaList,
+          sortCriteria: sortCriteria,
+          dataOption: "");
     });
     await jobViewModel.getJobs(params: params, body: body.toJson());
   }
 
   void _onSummitSearch(String searchText) async {
-    // SearchCriteriaList? searchCriteriaWithTitle = searchCriteriaList.firstWhere(
-    //     (element) => element.filterKey == "title",
-    //     orElse: () => SearchCriteriaList());
-    // if (searchCriteriaWithTitle.filterKey == "title") {
-    //   searchCriteriaWithTitle.value = searchText;
-    // } else if (searchCriteriaWithTitle.filterKey != "title") {
-    //   searchCriteriaWithTitle = SearchCriteriaList.fromJson({
-    //     "filterKey": "title",
-    //     "value": searchText,
-    //     "dataOption": "",
-    //     "operation": "eq",
-    //     "sortCriteria": sortCriteria.toJson()
-    //   });
-    //   searchCriteriaList.add(searchCriteriaWithTitle);
-    // }
     setState(() {
       _page = 0;
-      params = {...params, "pageIndex": 0, "searchValue": searchText};
+      params = {
+        ...params,
+        "pageIndex": 0,
+        "searchValue": _searchController.text
+      };
       // body = FilterDTO(searchCriteriaList: searchCriteriaList, dataOption: "");
     });
     await jobViewModel.getJobs(params: params, body: body.toJson());
@@ -99,23 +74,34 @@ class _PostListState extends State<PostList> {
   Future<void> filterByCate() async {
     searchCriteriaList = [];
     String dataOperation = "";
-    for (var element in preSelectItems!) {
-      SearchCriteriaList item = SearchCriteriaList.fromJson({
-        "filterKey": "jobType",
-        "value": element.id.toString(),
-        "operation": "eq",
-      });
-      searchCriteriaList.add(item);
+    if (preSelectItems!.isNotEmpty) {
+      for (var element in preSelectItems!) {
+        SearchCriteriaList item = SearchCriteriaList.fromJson({
+          "filterKey": "jobType",
+          "value": element.id.toString(),
+          "operation": "eq",
+        });
+        searchCriteriaList.add(item);
+      }
     }
+
     // jobViewModel.setSelectFilter(preSelectItems);
-    if(searchCriteriaList.length > 1){
+    if (searchCriteriaList.length > 1) {
       dataOperation = "ANY";
     }
 
     setState(() {
+      _searchController.text = "";
       _page = 0;
-      params = {...params, "pageIndex": 0,};
-      body = FilterDTO(searchCriteriaList: searchCriteriaList, sortCriteria: sortCriteria,dataOption: dataOperation);
+      params = {
+        ...params,
+        "pageIndex": 0,
+        "searchValue": _searchController.text
+      };
+      body = FilterDTO(
+          searchCriteriaList: searchCriteriaList,
+          sortCriteria: sortCriteria,
+          dataOption: dataOperation);
       // init = jobViewModel.selectedFilterJobType;
     });
     await jobViewModel.getJobs(params: params, body: body.toJson());
@@ -143,7 +129,10 @@ class _PostListState extends State<PostList> {
     );
     searchCriteriaList = [];
 
-    body = FilterDTO(searchCriteriaList: searchCriteriaList, sortCriteria: sortCriteria, dataOption: "");
+    body = FilterDTO(
+        searchCriteriaList: searchCriteriaList,
+        sortCriteria: sortCriteria,
+        dataOption: "");
 
     selectedItems = [];
     preSelectItems = [];
@@ -162,8 +151,6 @@ class _PostListState extends State<PostList> {
       }
     });
 
-
-    print(job1 == job2);
     super.initState();
   }
 
@@ -181,6 +168,9 @@ class _PostListState extends State<PostList> {
   @override
   void dispose() {
     _scrollController.dispose();
+    _searchController.dispose();
+    _searchFocusNode.dispose();
+
     super.dispose();
   }
 
@@ -190,207 +180,209 @@ class _PostListState extends State<PostList> {
       model: jobViewModel,
       child: SafeArea(
         child: Scaffold(
-          appBar: AppBar(
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.vertical(
-                bottom: Radius.circular(16),
-              ),
-            ),
-            toolbarHeight: 100,
-            backgroundColor: const Color.fromARGB(255, 45, 45, 45),
-            title: GestureDetector(
-              onTap: () {
-                Get.to(StartUpView());
-              },
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  CircleAvatar(
-                    backgroundColor: Colors.white,
-                    radius: 25,
-                    child: Container(
-                      width: 50,
-                      height: 50,
-                      decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
-                        image: DecorationImage(
-                          fit: BoxFit.fill,
-                          image: AssetImage('assets/images/GigJob.png'),
-                        ),
-                      ),
-                    ),
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.fromLTRB(16, 0, 0, 0),
-                    child: Text(
-                      'GIG JOB',
-                      style: TextStyle(fontSize: 32),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            centerTitle: true,
-            bottom: PreferredSize(
-              preferredSize: const Size.fromHeight(80.0),
-              child: Container(
-                padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                child: TextField(
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor: Colors.white,
-                    hintText: 'Search by title',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20.0),
-                      borderSide: BorderSide.none,
-                    ),
-                    suffixIcon: const Icon(Icons.search),
-                  ),
-                  textInputAction: TextInputAction.search,
-                  style: const TextStyle(fontSize: 16.0),
-                  onSubmitted: (value) {
-                    _onSummitSearch(value);
-                  },
+            appBar: AppBar(
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.vertical(
+                  bottom: Radius.circular(16),
                 ),
               ),
-            ),
-          ),
-          body: ScopedModelDescendant<JobViewModel>(
-            builder: (context, child, model) {
-              if (jobViewModel.status == ViewStatus.Loading) {
-                return Center(
-                  child: Container(
-                      padding: const EdgeInsets.fromLTRB(0, 16, 0, 0),
-                      width: 100,
-                      height: 100,
-                      child: const CircularProgressIndicator()),
-                );
-              }
-              return SafeArea(
-                child: Column(
+              toolbarHeight: 100,
+              backgroundColor: const Color.fromARGB(255, 45, 45, 45),
+              title: GestureDetector(
+                onTap: () {
+                  _searchFocusNode.unfocus();
+
+                  Get.to(StartUpView());
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 16),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(
-                                left: 8, right: 4, top: 16),
-                            child: InkWell(
-                              onTap: () {
-                                showModalBottomSheet(
-                                    context: context,
-                                    builder: (context) {
-                                      return _buiBottomSheetSort();
-                                    });
-                              },
-                              child: Container(
-                                width: 190,
-                                height: 50,
-                                child: Card(
-                                  child: Center(
-                                      child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: const [
-                                      Icon(Icons.sort),
-                                      Padding(
-                                        padding: EdgeInsets.all(8.0),
-                                        child: Text(
-                                          "Sort",
-                                          style: TextStyle(fontSize: 18),
-                                        ),
-                                      ),
-                                    ],
-                                  )),
-                                ),
-                              ),
-                            ),
+                    CircleAvatar(
+                      backgroundColor: Colors.white,
+                      radius: 25,
+                      child: Container(
+                        width: 50,
+                        height: 50,
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          image: DecorationImage(
+                            fit: BoxFit.fill,
+                            image: AssetImage('assets/images/GigJob.png'),
                           ),
-                          Padding(
-                            padding: const EdgeInsets.only(
-                                left: 4, right: 8, top: 16),
-                            child: InkWell(
-                              onTap: () async {
-                                await showModalBottomSheet(
-                                    context: context,
-                                    isScrollControlled: true,
-                                    enableDrag: false,
-                                    builder: (context) {
-                                      return _buidBottomSheetFilter();
-                                    });
-                                    
-                              },
-                              child: Container(
-                                width: 190,
-                                height: 50,
-                                child: Card(
-                                  child: Center(
-                                      child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: const [
-                                      Icon(Icons.filter_alt_sharp),
-                                      Padding(
-                                        padding: EdgeInsets.all(8.0),
-                                        child: Text(
-                                          "Filter",
-                                          style: TextStyle(fontSize: 18),
-                                        ),
-                                      ),
-                                    ],
-                                  )),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Expanded(
-                      child: RefreshIndicator(
-                        onRefresh: () async {
-                          setState(() {
-                            _page = 0;
-                          });
-                          _fetchPage(0);
-                        },
-                        child: SingleChildScrollView(
-                          controller: _scrollController,
-                          child: Column(children: [
-                            ...jobViewModel.jobs!
-                                .map((e) => _buildPostLists(e))
-                                .toList(),
-                            if (jobViewModel.status == ViewStatus.LoadMore) ...[
-                              const SizedBox(
-                                  width: 50,
-                                  height: 50,
-                                  child: CircularProgressIndicator())
-                            ]
-                          ]),
                         ),
                       ),
                     ),
-                    // ScopedModelDescendant<JobViewModel>(
-                    //   builder: (context, child, model) {
-                    //     if (jobViewModel.status == ViewStatus.Loading) {
-                    //       return Center(
-                    //         child: Container(
-                    //             padding: const EdgeInsets.fromLTRB(0, 16, 0, 0),
-                    //             width: 100,
-                    //             height: 100,
-                    //             child: const CircularProgressIndicator()),
-                    //       );
-                    //     } else {
-                    //       return
-                    //     }
-                    //   },
-                    // )
+                    const Padding(
+                      padding: EdgeInsets.fromLTRB(16, 0, 0, 0),
+                      child: Text(
+                        'GIG JOB',
+                        style: TextStyle(fontSize: 32),
+                      ),
+                    ),
                   ],
                 ),
-              );
-            },
-          ),
-        ),
+              ),
+              centerTitle: true,
+              bottom: PreferredSize(
+                preferredSize: const Size.fromHeight(80.0),
+                child: Container(
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                  child: TextField(
+                    controller: _searchController,
+                    focusNode: _searchFocusNode,
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.white,
+                      hintText: 'Search by title',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                        borderSide: BorderSide.none,
+                      ),
+                      suffixIcon: IconButton(
+                        icon: Icon(Icons.cancel),
+                        onPressed: () {
+                          _searchController.clear();
+                          _searchFocusNode.unfocus();
+                          // setState(() {
+                          //   _showSuggestions = false; // turn off suggestions
+                          // });
+                        },
+                      ),
+                      prefixIcon: const Icon(Icons.search),
+                    ),
+                    textInputAction: TextInputAction.search,
+                    style: const TextStyle(fontSize: 16.0),
+                    onSubmitted: (value) {
+                      _onSummitSearch(value);
+                    },
+                  ),
+                ),
+              ),
+            ),
+            body: SafeArea(
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 16),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Padding(
+                          padding:
+                              const EdgeInsets.only(left: 8, right: 4, top: 16),
+                          child: InkWell(
+                            onTap: () {
+                              _searchFocusNode.unfocus();
+                              showModalBottomSheet(
+                                  context: context,
+                                  builder: (context) {
+                                    return _buiBottomSheetSort();
+                                  });
+                            },
+                            child: Container(
+                              width: 190,
+                              height: 50,
+                              child: Card(
+                                child: Center(
+                                    child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: const [
+                                    Icon(Icons.sort),
+                                    Padding(
+                                      padding: EdgeInsets.all(8.0),
+                                      child: Text(
+                                        "Sort",
+                                        style: TextStyle(fontSize: 18),
+                                      ),
+                                    ),
+                                  ],
+                                )),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding:
+                              const EdgeInsets.only(left: 4, right: 8, top: 16),
+                          child: InkWell(
+                            onTap: () async {
+                              _searchFocusNode.unfocus();
+
+                              await showModalBottomSheet(
+                                  context: context,
+                                  isScrollControlled: true,
+                                  enableDrag: false,
+                                  builder: (context) {
+                                    return _buidBottomSheetFilter();
+                                  });
+                            },
+                            child: Container(
+                              width: 190,
+                              height: 50,
+                              child: Card(
+                                child: Center(
+                                    child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: const [
+                                    Icon(Icons.filter_alt_sharp),
+                                    Padding(
+                                      padding: EdgeInsets.all(8.0),
+                                      child: Text(
+                                        "Filter",
+                                        style: TextStyle(fontSize: 18),
+                                      ),
+                                    ),
+                                  ],
+                                )),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  ScopedModelDescendant<JobViewModel>(
+                    builder: (context, child, model) {
+                      if (jobViewModel.status == ViewStatus.Loading) {
+                        return Center(
+                          child: Container(
+                              padding: const EdgeInsets.fromLTRB(0, 16, 0, 0),
+                              width: 100,
+                              height: 100,
+                              child: const CircularProgressIndicator()),
+                        );
+                      } else {
+                        return Expanded(
+                          child: RefreshIndicator(
+                            onRefresh: () async {
+                              setState(() {
+                                _page = 0;
+                              });
+                              _fetchPage(0);
+                            },
+                            child: SingleChildScrollView(
+                              controller: _scrollController,
+                              child: Column(children: [
+                                ...jobViewModel.jobs!
+                                    .map((e) => _buildPostLists(e))
+                                    .toList(),
+                                if (jobViewModel.status ==
+                                    ViewStatus.LoadMore) ...[
+                                  const SizedBox(
+                                      width: 50,
+                                      height: 50,
+                                      child: CircularProgressIndicator())
+                                ]
+                              ]),
+                            ),
+                          ),
+                        );
+                      }
+                    },
+                  )
+                ],
+              ),
+            )),
       ),
     );
   }
@@ -403,6 +395,7 @@ class _PostListState extends State<PostList> {
             padding: const EdgeInsets.only(top: 12),
             child: GestureDetector(
               onTap: () {
+                
                 Navigator.pop(context);
               },
               child: Container(
@@ -457,55 +450,62 @@ class _PostListState extends State<PostList> {
   }
 
   Widget _buidBottomSheetFilter() {
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          toolbarHeight: 100,
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back_ios),
-            onPressed: () {
-              Navigator.pop(context);
-              print(selectedItems);
-              preSelectItems = [...selectedItems!];
-            },
-          ),
-          foregroundColor: Colors.black,
-          title: const Text(
-            "Filter",
-          ),
-          centerTitle: true,
-          backgroundColor: Colors.white,
-          elevation: 0,
-          actions: [
-            Padding(
-              padding: const EdgeInsets.only(right: 28),
-              child: Center(
-                child: InkWell(
-                  onTap: () {},
-                  child: const Text(
-                    "Reset",
-                    style: TextStyle(fontSize: 16),
-                  ),
-                ),
+    return StatefulBuilder(
+      builder: (context, setState) {
+        return SafeArea(
+          child: Scaffold(
+            appBar: AppBar(
+              toolbarHeight: 100,
+              leading: IconButton(
+                icon: const Icon(Icons.arrow_back_ios),
+                onPressed: () {
+                  Navigator.pop(context);
+                  print(selectedItems);
+                  preSelectItems = [...selectedItems!];
+                },
               ),
-            )
-          ],
-        ),
-        body: Container(
-          color: Colors.white,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              _buildMultipSelectCheckBox(),
-
-              const Divider(
-                thickness: 1,
-              )
-            ],
+              foregroundColor: Colors.black,
+              title: const Text(
+                "Filter",
+              ),
+              centerTitle: true,
+              backgroundColor: Colors.white,
+              elevation: 0,
+              actions: [
+                Padding(
+                  padding: const EdgeInsets.only(right: 28),
+                  child: Center(
+                    child: InkWell(
+                      onTap: () {
+                        setState(() {
+                          preSelectItems = [];
+                        });
+                      },
+                      child: const Text(
+                        "Reset",
+                        style: TextStyle(fontSize: 16),
+                      ),
+                    ),
+                  ),
+                )
+              ],
+            ),
+            body: Container(
+              color: Colors.white,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  _buildMultipSelectCheckBox(),
+                  const Divider(
+                    thickness: 1,
+                  )
+                ],
+              ),
+            ),
+            bottomNavigationBar: _buildFilterButton(),
           ),
-        ),
-        bottomNavigationBar: _buildFilterButton(),
-      ),
+        );
+      },
     );
   }
 
@@ -536,9 +536,9 @@ class _PostListState extends State<PostList> {
             : jobViewModel.jobTypes!
                 .map((e) => MultiSelectItem(e, e.name ?? ''))
                 .toList(),
-                
+
         initialValue: preSelectItems ?? [],
-        
+
         listType: MultiSelectListType.CHIP,
 
         chipDisplay: MultiSelectChipDisplay<JobType>(
@@ -622,6 +622,8 @@ class _PostListState extends State<PostList> {
 
     return GestureDetector(
       onTap: () {
+        _searchFocusNode.unfocus();
+
         Get.to(PostListDetail(
           data: job,
         ));
@@ -716,6 +718,8 @@ class _PostListState extends State<PostList> {
                 padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
                 child: GestureDetector(
                   onTap: () {
+                    _searchFocusNode.unfocus();
+
                     Get.to(PostListDetail(
                       data: job,
                     ));
