@@ -195,7 +195,7 @@ class _PostListState extends State<PostList> {
                 onTap: () {
                   _searchFocusNode.unfocus();
 
-                  Get.to(StartUpView());
+                  // Get.to(StartUpView());
                 },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -398,7 +398,6 @@ class _PostListState extends State<PostList> {
             padding: const EdgeInsets.only(top: 12),
             child: GestureDetector(
               onTap: () {
-                
                 Navigator.pop(context);
               },
               child: Container(
