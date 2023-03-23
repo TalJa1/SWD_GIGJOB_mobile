@@ -62,6 +62,18 @@ class JobDAO extends BaseDAO {
     }
   }
 
+  Future<List<JobDTO>> getRelateJobs({Map<String, dynamic>? params, Map<String, dynamic>? body}) async {
+    try {
+      final res = await ApiService.post('/v1/job/search', params, null, body);
+      List<dynamic> list = res.data;
+      final jobs = JobDTO.fromList(list);
+      return jobs;
+    } catch (e) {
+      print(e);
+      throw Exception(e);
+    }
+  }
+
   set metaDataDTO(MetaDataDTO value) {
     _metaDataDTO = value;
   }

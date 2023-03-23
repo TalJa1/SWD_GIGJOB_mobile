@@ -116,7 +116,7 @@ class _PostListDetailState extends State<PostListDetail> {
                                 child: Image.network(
                                   'https://cdn.searchenginejournal.com/wp-content/uploads/2017/06/shutterstock_268688447.jpg',
                                   width: 500,
-                                  height: 240,
+                                  height: 180,
                                   fit: BoxFit.cover,
                                 ),
                               ),
@@ -152,14 +152,16 @@ class _PostListDetailState extends State<PostListDetail> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text(
-                                      "${widget.data.title}",
-                                      style: TextStyle(
-                                          fontSize: 24,
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.bold),
+                                    Flexible(
+                                      child: Text(
+                                        "${jobDetailViewModel.jobDTO!.title}",
+                                        style: TextStyle(
+                                            fontSize: 24,
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.bold),
+                                      ),
                                     ),
-                                    widget.data.expiredDate == null
+                                    jobDetailViewModel.jobDTO!.expiredDate == null
                                         ? Container()
                                         : Row(
                                             children: [
@@ -213,7 +215,7 @@ class _PostListDetailState extends State<PostListDetail> {
                           children: [
                             Expanded(
                                 child: Text(
-                              widget.data.description.toString(),
+                              jobDetailViewModel.jobDTO!.description.toString(),
                               style: TextStyle(fontSize: 16),
                             ))
                           ],
@@ -226,16 +228,9 @@ class _PostListDetailState extends State<PostListDetail> {
                               style: TextStyle(fontSize: 24.0),
                             ),
                           ],
-                        )
-                        // const SizedBox(
-                        //   height: 12,
-                        // ),
-                        // Text("Job type"),
-                        // Row(
-                        //   children: [
-                        //     Expanded(child: Text(widget.data.description.toString()))
-                        //   ],
-                        // )
+                        ),
+                        _buildRelateJobList()
+
                       ],
                     ),
                   ),
@@ -251,6 +246,67 @@ class _PostListDetailState extends State<PostListDetail> {
             },
           ),
           bottomNavigationBar: _buildButtonApply()),
+    );
+  }
+
+  Widget _buildRelateJobList(){
+    return Container(
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: [
+            if(jobDetailViewModel.relateJobs != null && jobDetailViewModel.relateJobs!.isNotEmpty)
+            ...jobDetailViewModel.relateJobs!.map((e) => _buildRelateJob(e)).toList()
+            else
+            ...[
+              Center(child: Text("No relate job"))
+            ]
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildRelateJob(JobDTO job){
+    return InkWell(
+      onTap: ()  {
+        setState(() async {
+          await jobDetailViewModel.getJobApplied(job.id);
+        });
+        // Get.to(PostListDetail(data: job));
+      },
+      child: Container(
+        child: Card(
+            // color: Color(0xFFf7418c),
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(
+                Radius.circular(5.0),
+              ),
+            ),
+            child: Container(
+              // padding: const EdgeInsets.all(8.0),
+              width: 200,
+              child: Column(
+                children: [
+                  Image.network(
+                    "https://cdn.searchenginejournal.com/wp-content/uploads/2017/06/shutterstock_268688447.jpg",
+                    width: 300,
+                    height: 140,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text("${job.title}",
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 2,
+                        style: const TextStyle(
+                            color: Colors.black,
+                            fontSize: 15,
+                            fontWeight: FontWeight.w500)),
+                  )
+                ],
+              ),
+            )),
+      ),
     );
   }
 
@@ -278,29 +334,32 @@ class _PostListDetailState extends State<PostListDetail> {
                 ),
               ),
               Container(
-                  height: 200, //height of TabBarView
+                
+                  constraints: BoxConstraints(
+                    maxHeight: 200,
+                  ), //height of TabBarView
                   decoration: BoxDecoration(
                       border: Border(
                           top: BorderSide(color: Colors.grey, width: 0.5))),
                   child: TabBarView(children: <Widget>[
                     Container(
                       padding: EdgeInsets.fromLTRB(0, 12, 0, 12),
-                      child: Text('${widget.data.jobType?.name}',
+                      child: Text('${jobDetailViewModel.jobDTO!.jobType?.name}',
                           style: TextStyle(fontSize: 16)),
                     ),
                     Container(
                       padding: EdgeInsets.fromLTRB(0, 12, 0, 12),
-                      child: Text('${widget.data.skill}',
+                      child: Text('${jobDetailViewModel.jobDTO!.skill}',
                           style: TextStyle(fontSize: 16)),
                     ),
                     Container(
                       padding: EdgeInsets.fromLTRB(0, 12, 0, 12),
-                      child: Text('${widget.data.salary}\$',
+                      child: Text('${jobDetailViewModel.jobDTO!.salary}\$',
                           style: TextStyle(fontSize: 16)),
                     ),
                     Container(
                       padding: EdgeInsets.fromLTRB(0, 12, 0, 12),
-                      child: Text('${widget.data.benefit}',
+                      child: Text('${jobDetailViewModel.jobDTO!.benefit}',
                           style: TextStyle(fontSize: 16)),
                     ),
                     Container(
@@ -310,7 +369,10 @@ class _PostListDetailState extends State<PostListDetail> {
                           children: [
                             Text("Shop Name:", style: TextStyle(fontSize: 16)),
                             Text(
-                              " ${widget.data.shop?.name}",
+                              " ${jobDetailViewModel.jobDTO!.shop?.name}",
+                              style: TextStyle(fontSize: 16,
+                              color: Colors.blue),
+                              
                             )
                           ],
                         ),
@@ -329,7 +391,8 @@ class _PostListDetailState extends State<PostListDetail> {
                               children: [
                                 Flexible(
                                   child:
-                                      Text("${widget.data.shop?.description}"),
+                                      Text("${jobDetailViewModel.jobDTO!.shop?.description}",
+                                      maxLines: 10,),
                                 ),
                               ],
                             ),

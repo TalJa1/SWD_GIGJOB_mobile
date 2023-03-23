@@ -10,6 +10,7 @@ import 'package:jwt_decode/jwt_decode.dart';
 
 class JobDetailViewModel extends BaseModel {
   List<ApplyJobDTO>? appliedjob;
+  List<JobDTO>? relateJobs;
   JobDTO? jobDTO;
   JobDAO? jobDAO;
   AccountDAO? accountDAO;
@@ -28,6 +29,22 @@ class JobDetailViewModel extends BaseModel {
       WorkerDTO? workDTO = await jobDAO?.getWorkerId(accountId!);
       appliedjob = await jobDAO?.getJobApplied(workDTO?.id);
       isApplied = isAppliedJob(appliedjob, jobDTO);
+      relateJobs = await jobDAO?.getJob(body: {
+        "searchCriteriaList": [
+          {
+            "filterKey": "shop",
+            "value": jobDTO!.shop!.id,
+            "operation": "eq"
+          },
+          {
+            "filterKey": "jobType",
+            "value": jobDTO!.jobType!.id,
+            "operation": "eq"
+          }
+        ],
+        "sortCriteria": {"sortKey": "createdDate", "direction": "asc"},
+        "dataOption": "any"
+      });
       setState(ViewStatus.Completed);
     } catch (e) {
       print(e);

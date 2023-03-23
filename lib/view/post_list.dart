@@ -29,7 +29,8 @@ class _PostListState extends State<PostList> {
   late List<JobType>? selectedItems;
   late List<JobType>? preSelectItems;
 
-  late List<JobType> init;
+  List<String> listLocation = ['All location', 'Near by'];
+
 
   late JobViewModel jobViewModel;
 
@@ -139,7 +140,6 @@ class _PostListState extends State<PostList> {
 
     selectedItems = [];
     preSelectItems = [];
-    init = [];
 
     jobViewModel = JobViewModel();
     _fetchPage(_page);
@@ -497,7 +497,11 @@ class _PostListState extends State<PostList> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  _buildMultipChipSelectCheckBox(),
+                  _buildMultipJobTypeChipSelectCheckBox(),
+                  const Divider(
+                    thickness: 1,
+                  ),
+                  _buildMultipLocationChipSelectCheckBox(),
                   const Divider(
                     thickness: 1,
                   ),
@@ -512,7 +516,7 @@ class _PostListState extends State<PostList> {
     );
   }
 
-  Widget _buildMultipChipSelectCheckBox() {
+  Widget _buildMultipJobTypeChipSelectCheckBox() {
     List<JobType> emptyList = [];
     return MultiSelectChipField<JobType?>(
       decoration: const BoxDecoration(
@@ -527,11 +531,11 @@ class _PostListState extends State<PostList> {
       icon: const Icon(Icons.cancel,
       color: Colors.white),
       scroll: true,
-      headerColor: Colors.black,
+      headerColor: Colors.white,
       title: const Text("Job type",
       style: TextStyle(
         fontSize: 20,
-        color: Colors.white
+        color: Colors.black
       ),
       ),
 
@@ -548,6 +552,46 @@ class _PostListState extends State<PostList> {
           preSelectItems = values.cast<JobType>();
         });
       },
+
+    );
+  }
+
+  Widget _buildMultipLocationChipSelectCheckBox() {
+    List<JobType> emptyList = [];
+    return MultiSelectChipField(
+      decoration: const BoxDecoration(
+        // border: Border(
+        //   bottom: BorderSide(color: Colors.black)
+        // ),
+      ),
+      selectedChipColor: Colors.black,
+      selectedTextStyle: const TextStyle(
+        color: Colors.white
+      ),
+      icon: const Icon(Icons.cancel,
+      color: Colors.white),
+      scroll: true,
+      headerColor: Colors.white,
+      title: const Text("Location",
+      style: TextStyle(
+        fontSize: 20,
+        color: Colors.black
+      ),
+      ),
+
+
+      items: listLocation == null
+          ? emptyList.map((e) => MultiSelectItem(e, e.name ?? '')).toList()
+          : listLocation
+              .map((e) => MultiSelectItem(e, e))
+              .toList(),
+
+      initialValue: preSelectItems ?? [],
+      // onTap: (values) {
+      //   setState(() {
+      //     preSelectItems = values.cast<JobType>();
+      //   });
+      // },
 
     );
   }
@@ -689,7 +733,7 @@ class _PostListState extends State<PostList> {
                 child: Image.network(
                   "https://cdn.searchenginejournal.com/wp-content/uploads/2017/06/shutterstock_268688447.jpg",
                   width: 140,
-                  height: 160,
+                  height: 168,
                   fit: BoxFit.cover,
                 ),
               ),
