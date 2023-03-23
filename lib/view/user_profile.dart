@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print, unnecessary_new
+// ignore_for_file: avoid_print, unnecessary_new, no_leading_underscores_for_local_identifiers
 import 'package:flutter/material.dart';
 import 'package:animated_button_bar/animated_button_bar.dart';
 import 'package:get/get.dart';
@@ -325,7 +325,7 @@ class _UserProfileState extends State<UserProfile> {
                       print(
                           ">>>>>>>>>>>${formatter.format(12312312.12123123123)}");
                     },
-                    child: const Text('Reload'),
+                    child: const Text('Location'),
                   )
                 ]),
               ),
