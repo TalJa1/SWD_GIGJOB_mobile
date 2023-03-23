@@ -3,11 +3,14 @@
 import 'package:date_format/date_format.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:gigjob_mobile/DTO/ApplyJobDTO.dart';
 import 'package:gigjob_mobile/DTO/FilterDTO.dart';
 import 'package:gigjob_mobile/DTO/JobDTO.dart';
+import 'package:gigjob_mobile/accesories/dialog.dart';
 import 'package:gigjob_mobile/enum/view_status.dart';
+import 'package:gigjob_mobile/services/locaiton_service.dart';
 import 'package:gigjob_mobile/view/nav_screen.dart';
 import 'package:filter_list/filter_list.dart';
 import 'package:gigjob_mobile/view/post_list_detail.dart';
@@ -17,6 +20,7 @@ import 'package:scoped_model/scoped_model.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class PostList extends StatefulWidget {
   const PostList({super.key});
@@ -29,10 +33,16 @@ class _PostListState extends State<PostList> {
   late List<JobType>? selectedItems;
   late List<JobType>? preSelectItems;
 
-  List<String> listLocation = ['All location', 'Near by'];
+  late List<Location>? selectLocation;
+  late List<Location>? preSelectLocation;
 
+  List<Location> listLocation = [
+    Location(id: 1, label: 'All location', value: 'allLocation'),
+    Location(id: 2, label: 'Near your locaiton', value: 'nearYourLocation')
+  ];
 
   late JobViewModel jobViewModel;
+  late LocationService locationService;
 
   final _searchFocusNode = FocusNode();
   TextEditingController _searchController = TextEditingController();
@@ -56,8 +66,7 @@ class _PostListState extends State<PostList> {
       body = FilterDTO(
           searchCriteriaList: searchCriteriaList,
           sortCriteria: sortCriteria,
-          dataOption: "any"
-          );
+          dataOption: "any");
     });
     await jobViewModel.getJobs(params: params, body: body.toJson());
   }
@@ -74,10 +83,74 @@ class _PostListState extends State<PostList> {
     });
     await jobViewModel.getJobs(params: params, body: body.toJson());
   }
+  Future setStateLocation(List<dynamic> values) async {
+    bool isEnable =
+              await locationService.location.isBackgroundModeEnabled();
+          if (isEnable) {
+            preSelectItems = [];
+            values = [];
+            preSelectLocation = values.last as List<Location>?;
+          } else {
+            // ignore: use_build_context_synchronously
+            preSelectItems = [];
+            values = [];
+            // ignore: use_build_context_synchronously
+            await locationService.enableLocation();
+            // showDialog(
+            //   context: context,
+            //   builder: (BuildContext context) {
+            //     return AlertDialog(
+            //       title: Text('Location Permission'),
+            //       content: Text(
+            //           'Background location access is required to use this feature.'),
+            //       actions: [
+            //         TextButton(
+            //           onPressed: () {
+            //             Navigator.of(context).pop();
+            //           },
+            //           child: Text('Cancel'),
+            //         ),
+            //         ElevatedButton(
+            //           onPressed: () async {
+            //             // Launch the location settings page
+
+            //             try {
+            //               final result = await launchUrl(Uri.parse(
+            //                   'intent:#Intent;action=android.settings.LOCATION_SOURCE_SETTINGS;end'));
+            //               if (!result) {
+            //                 // If the settings page cannot be opened, show a snackbar message
+            //                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            //                   content: Text('Unable to open location settings'),
+            //                 ));
+            //               }
+            //             } on PlatformException catch (e) {
+            //               if (e.code == 'ACTIVITY_NOT_FOUND') {
+            //                 // Handle the exception gracefully
+            //                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            //                   content: Text('Unable to open location settings'),
+            //                 ));
+            //               } else {
+            //                 // Handle other exceptions
+            //               }
+            //             }
+            //             // if (await canLaunchUrl(Uri.parse('app-settings:'))) {
+            //             // }
+            //           },
+            //           child: Text('Settings'),
+            //         ),
+            //       ],
+            //     );
+            //   },
+            // );
+          }
+  }
 
   Future<void> filterByCate() async {
     searchCriteriaList = [];
     String dataOperation = "";
+    double latitude;
+    double longitude;
+
     if (preSelectItems!.isNotEmpty) {
       for (var element in preSelectItems!) {
         SearchCriteriaList item = SearchCriteriaList.fromJson({
@@ -87,6 +160,10 @@ class _PostListState extends State<PostList> {
         });
         searchCriteriaList.add(item);
       }
+    }
+    if (preSelectLocation!.isNotEmpty) {
+      latitude = locationService.locationData.latitude!;
+      longitude = locationService.locationData.longitude!;
     }
 
     // jobViewModel.setSelectFilter(preSelectItems);
@@ -114,8 +191,16 @@ class _PostListState extends State<PostList> {
   late SortBy selectedSort;
 
   final List<SortBy> itemsSort = [
-    SortBy(id: 1, label: 'Create date new to old', value: 'createdDate', isAcs: "desc"),
-    SortBy(id: 2, label: 'Create date old to new', value: 'createdDate', isAcs: "asc"),
+    SortBy(
+        id: 1,
+        label: 'Create date new to old',
+        value: 'createdDate',
+        isAcs: "desc"),
+    SortBy(
+        id: 2,
+        label: 'Create date old to new',
+        value: 'createdDate',
+        isAcs: "asc"),
   ];
 
   late FilterDTO body;
@@ -125,6 +210,8 @@ class _PostListState extends State<PostList> {
   @override
   void initState() {
     // TODO: implement initState
+    jobViewModel = JobViewModel();
+    locationService = LocationService();
     selectedSort = itemsSort.first;
 
     sortCriteria = SortCriteria(
@@ -136,12 +223,16 @@ class _PostListState extends State<PostList> {
     body = FilterDTO(
         searchCriteriaList: searchCriteriaList,
         sortCriteria: sortCriteria,
-        dataOption: "");
+        dataOption: "",
+        latitude: locationService.defaultLatitude,
+        longitude: locationService.defaultLongtitude);
 
     selectedItems = [];
     preSelectItems = [];
 
-    jobViewModel = JobViewModel();
+    selectLocation = [];
+    preSelectLocation = [];
+
     _fetchPage(_page);
     _scrollController.addListener(() {
       if (_scrollController.position.pixels ==
@@ -505,7 +596,6 @@ class _PostListState extends State<PostList> {
                   const Divider(
                     thickness: 1,
                   ),
-
                 ],
               ),
             ),
@@ -520,39 +610,30 @@ class _PostListState extends State<PostList> {
     List<JobType> emptyList = [];
     return MultiSelectChipField<JobType?>(
       decoration: const BoxDecoration(
-        // border: Border(
-        //   bottom: BorderSide(color: Colors.black)
-        // ),
-      ),
+          // border: Border(
+          //   bottom: BorderSide(color: Colors.black)
+          // ),
+          ),
       selectedChipColor: Colors.black,
-      selectedTextStyle: const TextStyle(
-        color: Colors.white
-      ),
-      icon: const Icon(Icons.cancel,
-      color: Colors.white),
+      selectedTextStyle: const TextStyle(color: Colors.white),
+      icon: const Icon(Icons.cancel, color: Colors.white),
       scroll: true,
       headerColor: Colors.white,
-      title: const Text("Job type",
-      style: TextStyle(
-        fontSize: 20,
-        color: Colors.black
+      title: const Text(
+        "Job type",
+        style: TextStyle(fontSize: 20, color: Colors.black),
       ),
-      ),
-
-
       items: jobViewModel.jobTypes == null
           ? emptyList.map((e) => MultiSelectItem(e, e.name ?? '')).toList()
           : jobViewModel.jobTypes!
               .map((e) => MultiSelectItem(e, e.name ?? ''))
               .toList(),
-
       initialValue: preSelectItems ?? [],
       onTap: (values) {
         setState(() {
           preSelectItems = values.cast<JobType>();
         });
       },
-
     );
   }
 
@@ -560,39 +641,30 @@ class _PostListState extends State<PostList> {
     List<JobType> emptyList = [];
     return MultiSelectChipField(
       decoration: const BoxDecoration(
-        // border: Border(
-        //   bottom: BorderSide(color: Colors.black)
-        // ),
-      ),
+          // border: Border(
+          //   bottom: BorderSide(color: Colors.black)
+          // ),
+          ),
       selectedChipColor: Colors.black,
-      selectedTextStyle: const TextStyle(
-        color: Colors.white
-      ),
-      icon: const Icon(Icons.cancel,
-      color: Colors.white),
+      selectedTextStyle: const TextStyle(color: Colors.white),
+      icon: const Icon(Icons.cancel, color: Colors.white),
       scroll: true,
       headerColor: Colors.white,
-      title: const Text("Location",
-      style: TextStyle(
-        fontSize: 20,
-        color: Colors.black
+      title: const Text(
+        "Location",
+        style: TextStyle(fontSize: 20, color: Colors.black),
       ),
-      ),
-
-
       items: listLocation == null
           ? emptyList.map((e) => MultiSelectItem(e, e.name ?? '')).toList()
-          : listLocation
-              .map((e) => MultiSelectItem(e, e))
-              .toList(),
-
+          : listLocation.map((e) => MultiSelectItem(e, e.label)).toList(),
       initialValue: preSelectItems ?? [],
-      // onTap: (values) {
-      //   setState(() {
-      //     preSelectItems = values.cast<JobType>();
-      //   });
-      // },
+    
+      onTap: (values) {
+         setState(()  {
 
+          setStateLocation(values);
+        });
+      },
     );
   }
 
@@ -664,6 +736,9 @@ class _PostListState extends State<PostList> {
           setState(() {
             selectedItems = [
               ...preSelectItems!,
+            ];
+            selectLocation = [
+              ...preSelectLocation!,
             ];
           });
           await filterByCate();
@@ -776,7 +851,6 @@ class _PostListState extends State<PostList> {
                         ),
                       ),
                     ),
-                    
                     const SizedBox(height: 8),
                     Row(
                       children: [
@@ -900,4 +974,27 @@ class SortBy {
       required this.label,
       required this.value,
       required this.isAcs});
+}
+
+class Location {
+  final int id;
+  final String label;
+  final String value;
+
+  Location({
+    required this.id,
+    required this.label,
+    required this.value,
+  });
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Location &&
+          runtimeType == other.runtimeType &&
+          id == other.id &&
+          label == other.label &&
+          value == other.value;
+
+  @override
+  int get hashCode => id.hashCode ^ label.hashCode ^ value.hashCode;
 }

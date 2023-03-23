@@ -2,8 +2,15 @@ class FilterDTO {
   List<SearchCriteriaList>? searchCriteriaList;
   SortCriteria? sortCriteria;
   String? dataOption;
+  double? latitude;
+  double? longitude;
 
-  FilterDTO({this.searchCriteriaList, this.sortCriteria, this.dataOption});
+  FilterDTO(
+      {this.searchCriteriaList,
+      this.sortCriteria,
+      this.dataOption,
+      this.latitude,
+      this.longitude});
 
   FilterDTO.fromJson(Map<String, dynamic> json) {
     if (json['searchCriteriaList'] != null) {
@@ -16,6 +23,8 @@ class FilterDTO {
         ? new SortCriteria.fromJson(json['sortCriteria'])
         : null;
     dataOption = json['dataOption'];
+    latitude = json['latitude'];
+    longitude = json['longitude'];
   }
 
   Map<String, dynamic> toJson() {
@@ -28,13 +37,15 @@ class FilterDTO {
       data['sortCriteria'] = this.sortCriteria!.toJson();
     }
     data['dataOption'] = this.dataOption;
+    data['latitude'] = this.latitude;
+    data['longitude'] = this.longitude;
     return data;
   }
 }
 
 class SearchCriteriaList {
   String? filterKey;
-  String? value;
+  int? value;
   String? operation;
 
   SearchCriteriaList({this.filterKey, this.value, this.operation});

@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:gigjob_mobile/firebase_options.dart';
+import 'package:gigjob_mobile/services/locaiton_service.dart';
 import 'package:gigjob_mobile/services/push_notification_service.dart';
+import 'package:gigjob_mobile/setup.dart';
 import 'package:gigjob_mobile/view/edit_profile.dart';
 // import 'package:gigjob_mobile/view/edit_profile.dart';
 import 'package:gigjob_mobile/view/login_home.dart';
@@ -67,25 +69,15 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   FirebaseMessaging messaging = FirebaseMessaging.instance;
-
-  // final AndroidNotificationChannel channel = AndroidNotificationChannel(
-  //   'high_importance_channel', // id
-  //   'High Importance Notifications', // title// description
-  //   importance: Importance.max,
-  // );
-
-  // final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-  //     FlutterLocalNotificationsPlugin();
+  LocationService location = LocationService();
+  
   @override
   void initState() {
     super.initState();
+    
+    setUp();
+    
 
-    // Request permission to receive notifications and get the device token
-    messaging.requestPermission(
-      alert: true,
-      badge: true,
-      sound: true,
-    );
 
     // Listen to incoming messages
 
