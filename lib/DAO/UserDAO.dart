@@ -104,10 +104,24 @@ class UserDAO extends BaseDAO {
         "startDate": historyDTO.startDate,
         "endDate": historyDTO.endDate
       });
-      print("res.statusCode >>>>>>> $res.statusCode");
+      print("res.statusCode >>>>>>> ${res.statusCode}");
     } catch (e) {
       print(e);
       throw Exception(e);
+    }
+  }
+
+  Future updateHistory(HistoryDTO dto) async {
+    try {
+      final res = await ApiService.put("/v1/history", null, null, {
+        "id": dto.id,
+        "position": dto.position,
+        "startDate": dto.startDate,
+        "endDate": dto.endDate
+      });
+      print("res.statusCode >>>>>>> $res");
+    } catch (e) {
+      print(e);
     }
   }
 }

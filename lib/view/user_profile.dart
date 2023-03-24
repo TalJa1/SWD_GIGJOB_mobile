@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:animated_button_bar/animated_button_bar.dart';
 import 'package:get/get.dart';
 import 'package:gigjob_mobile/DAO/JobDAO.dart';
+import 'package:gigjob_mobile/DTO/HistoryDTO.dart';
 import 'package:gigjob_mobile/DTO/UserDTO.dart';
 import 'package:gigjob_mobile/DTO/WorkerDTO.dart';
 import 'package:gigjob_mobile/enum/view_status.dart';
 import 'package:gigjob_mobile/view/edit_profile.dart';
 import 'package:gigjob_mobile/view/history.dart';
+import 'package:gigjob_mobile/view/update_history.dart';
 import 'package:gigjob_mobile/viewmodel/job_viewmodel.dart';
 import 'package:gigjob_mobile/viewmodel/user_viewmodel.dart';
 import 'package:intl/intl.dart';
@@ -450,6 +452,42 @@ class _UserProfileState extends State<UserProfile> {
                                       style:
                                           const TextStyle(color: Colors.green),
                                     )
+                                  ],
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    const Text(''),
+                                    ElevatedButton(
+                                      style: ButtonStyle(
+                                        backgroundColor:
+                                            MaterialStateProperty.all<Color>(
+                                                Colors.blue),
+                                        textStyle: MaterialStateProperty
+                                            .all<TextStyle>(const TextStyle(
+                                                color: Colors.white)),
+                                        shape: MaterialStateProperty.all<
+                                            RoundedRectangleBorder>(
+                                          RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(18.0),
+                                            side: const BorderSide(
+                                                color: Colors.blue),
+                                          ),
+                                        ),
+                                      ),
+                                      onPressed: () {
+                                        HistoryDTO? dto =
+                                            userViewModel.history?[index];
+                                        Get.to(
+                                            UpdateHistoryPage(userData: dto));
+                                      },
+                                      child: const Text('Change'),
+                                    ),
                                   ],
                                 ),
                                 const SizedBox(

@@ -108,4 +108,12 @@ class UserViewModel extends BaseModel {
       print(e);
     }
   }
+
+  Future updateHistory(HistoryDTO dto) async {
+    try {
+      await userDAO?.updateHistory(dto);
+    } catch (e) {
+      print(e);
+    }
+  }
 }
