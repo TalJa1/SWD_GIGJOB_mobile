@@ -269,10 +269,11 @@ class _PostListDetailState extends State<PostListDetail> {
 
   Widget _buildRelateJob(JobDTO job){
     return InkWell(
-      onTap: ()  {
-        setState(() async {
+      onTap: () async {
           await jobDetailViewModel.getJobApplied(job.id);
-        });
+
+        // setState(() async {
+        // });
         // Get.to(PostListDetail(data: job));
       },
       child: Container(

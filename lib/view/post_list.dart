@@ -1,6 +1,7 @@
 // ignore_for_file: sized_box_for_whitespace
 
 import 'package:date_format/date_format.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -33,8 +34,8 @@ class _PostListState extends State<PostList> {
   late List<JobType>? selectedItems;
   late List<JobType>? preSelectItems;
 
-  late List<Location>? selectLocation;
-  late List<Location>? preSelectLocation;
+  late Location selectLocation;
+  late Location preSelectLocation;
 
   List<Location> listLocation = [
     Location(id: 1, label: 'All location', value: 'allLocation'),
@@ -46,10 +47,12 @@ class _PostListState extends State<PostList> {
 
   final _searchFocusNode = FocusNode();
   TextEditingController _searchController = TextEditingController();
+  
   final ScrollController _scrollController = ScrollController();
   static const _pageSize = 10;
   static int _page = 0;
   bool _isLastPage = false;
+  bool backToTop= false;
 
   Map<String, dynamic> params = {
     "pageIndex": _page,
@@ -66,7 +69,9 @@ class _PostListState extends State<PostList> {
       body = FilterDTO(
           searchCriteriaList: searchCriteriaList,
           sortCriteria: sortCriteria,
-          dataOption: "any");
+          dataOption: "any",
+          latitude: body.latitude,
+          longitude: body.longitude);
     });
     await jobViewModel.getJobs(params: params, body: body.toJson());
   }
@@ -83,73 +88,64 @@ class _PostListState extends State<PostList> {
     });
     await jobViewModel.getJobs(params: params, body: body.toJson());
   }
-  Future setStateLocation(List<dynamic> values) async {
-    bool isEnable =
-              await locationService.location.isBackgroundModeEnabled();
-          if (isEnable) {
-            preSelectItems = [];
-            values = [];
-            preSelectLocation = values.last as List<Location>?;
-          } else {
-            // ignore: use_build_context_synchronously
-            preSelectItems = [];
-            values = [];
-            // ignore: use_build_context_synchronously
-            await locationService.enableLocation();
-            // showDialog(
-            //   context: context,
-            //   builder: (BuildContext context) {
-            //     return AlertDialog(
-            //       title: Text('Location Permission'),
-            //       content: Text(
-            //           'Background location access is required to use this feature.'),
-            //       actions: [
-            //         TextButton(
-            //           onPressed: () {
-            //             Navigator.of(context).pop();
-            //           },
-            //           child: Text('Cancel'),
-            //         ),
-            //         ElevatedButton(
-            //           onPressed: () async {
-            //             // Launch the location settings page
 
-            //             try {
-            //               final result = await launchUrl(Uri.parse(
-            //                   'intent:#Intent;action=android.settings.LOCATION_SOURCE_SETTINGS;end'));
-            //               if (!result) {
-            //                 // If the settings page cannot be opened, show a snackbar message
-            //                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            //                   content: Text('Unable to open location settings'),
-            //                 ));
-            //               }
-            //             } on PlatformException catch (e) {
-            //               if (e.code == 'ACTIVITY_NOT_FOUND') {
-            //                 // Handle the exception gracefully
-            //                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            //                   content: Text('Unable to open location settings'),
-            //                 ));
-            //               } else {
-            //                 // Handle other exceptions
-            //               }
-            //             }
-            //             // if (await canLaunchUrl(Uri.parse('app-settings:'))) {
-            //             // }
-            //           },
-            //           child: Text('Settings'),
-            //         ),
-            //       ],
-            //     );
-            //   },
-            // );
-          }
+  Future checkEnable(Location value) async {
+    bool isServiceEnable = await locationService.location.serviceEnabled();
+    if (isServiceEnable) {
+      return true;
+    } else if (value.id == 2) {
+      // ignore: use_build_context_synchronously
+
+      // await locationService.enableLocation();
+      // ignore: use_build_context_synchronously
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Location Permission'),
+            content: Text(
+                'Background location access is required to use this feature.'),
+            actions: [
+              ElevatedButton(
+                onPressed: () async {
+                  Navigator.of(context).pop();
+                  // Launch the location settings page
+
+                  // try {
+                  //   final result = await launchUrl(Uri.parse(
+                  //       'intent:#Intent;action=android.settings.LOCATION_SOURCE_SETTINGS;end'));
+                  //   if (!result) {
+                  //     // If the settings page cannot be opened, show a snackbar message
+                  //     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  //       content: Text('Unable to open location settings'),
+                  //     ));
+                  //   }
+                  // } on PlatformException catch (e) {
+                  //   if (e.code == 'ACTIVITY_NOT_FOUND') {
+                  //     // Handle the exception gracefully
+                  //     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  //       content: Text('Unable to open location settings'),
+                  //     ));
+                  //   } else {
+                  //     // Handle other exceptions
+                  //   }
+                  // }
+                },
+                child: Text('I know'),
+              ),
+            ],
+          );
+        },
+      );
+    }
+    return false;
   }
 
   Future<void> filterByCate() async {
     searchCriteriaList = [];
     String dataOperation = "";
-    double latitude;
-    double longitude;
+    double latitude = locationService.defaultLatitude;
+    double longitude = locationService.defaultLongtitude;
 
     if (preSelectItems!.isNotEmpty) {
       for (var element in preSelectItems!) {
@@ -161,7 +157,8 @@ class _PostListState extends State<PostList> {
         searchCriteriaList.add(item);
       }
     }
-    if (preSelectLocation!.isNotEmpty) {
+
+    if (preSelectLocation.value == 'nearYourLocation') {
       latitude = locationService.locationData.latitude!;
       longitude = locationService.locationData.longitude!;
     }
@@ -182,8 +179,9 @@ class _PostListState extends State<PostList> {
       body = FilterDTO(
           searchCriteriaList: searchCriteriaList,
           sortCriteria: sortCriteria,
-          dataOption: dataOperation);
-      // init = jobViewModel.selectedFilterJobType;
+          dataOption: dataOperation,
+          latitude: latitude,
+          longitude: longitude);
     });
     await jobViewModel.getJobs(params: params, body: body.toJson());
   }
@@ -212,6 +210,8 @@ class _PostListState extends State<PostList> {
     // TODO: implement initState
     jobViewModel = JobViewModel();
     locationService = LocationService();
+    locationService.enableLocation();
+
     selectedSort = itemsSort.first;
 
     sortCriteria = SortCriteria(
@@ -230,8 +230,9 @@ class _PostListState extends State<PostList> {
     selectedItems = [];
     preSelectItems = [];
 
-    selectLocation = [];
-    preSelectLocation = [];
+    preSelectLocation =
+        Location(id: 1, label: 'All location', value: 'allLocation');
+    selectLocation = preSelectLocation;
 
     _fetchPage(_page);
     _scrollController.addListener(() {
@@ -242,9 +243,21 @@ class _PostListState extends State<PostList> {
           _page++;
           _fetchPage(_page);
         }
+        
       }
+      if(_scrollController.position.pixels  != 0) {
+          setState(() {
+            backToTop = true;
+          });
+        } 
+        else {
+          setState(() {
+            backToTop = false;
+          });
+        }
     });
 
+    print("WELCOME");
     super.initState();
   }
 
@@ -254,9 +267,9 @@ class _PostListState extends State<PostList> {
     });
     await jobViewModel.getJobs(params: params, body: body.toJson());
     final newItems = jobViewModel.jobs;
-    if (newItems != null && newItems.length < _pageSize) {
-      _isLastPage = true;
-    }
+    // if (newItems != null && newItems.length < _pageSize) {
+    //   _isLastPage = true;
+    // }
   }
 
   @override
@@ -476,8 +489,29 @@ class _PostListState extends State<PostList> {
                   )
                 ],
               ),
-            )),
+            ),
+            floatingActionButton: _buildBackToTopBtn()
+            ),
       ),
+    );
+  }
+
+  Widget _buildBackToTopBtn() {
+    if (!backToTop) {
+      return Container();
+    }
+    return FloatingActionButton(
+      child: const Icon(Icons.arrow_upward_outlined),
+      onPressed: () {
+        _scrollController.jumpTo(0);
+        _scrollController.animateTo(
+          0,
+          duration: Duration(milliseconds: 1000),
+          curve: Curves.easeInOut,
+        );
+        // Navigator.push(context,
+        //     MaterialPageRoute(builder: (context) => const EditProfilePage()));
+      },
     );
   }
 
@@ -555,6 +589,7 @@ class _PostListState extends State<PostList> {
                   Navigator.pop(context);
                   print(selectedItems);
                   preSelectItems = [...selectedItems!];
+                  preSelectLocation = selectLocation;
                 },
               ),
               foregroundColor: Colors.black,
@@ -572,6 +607,10 @@ class _PostListState extends State<PostList> {
                       onTap: () {
                         setState(() {
                           preSelectItems = [];
+                          preSelectLocation = Location(
+                              id: 1,
+                              label: 'All location',
+                              value: 'allLocation');
                         });
                       },
                       child: const Text(
@@ -588,11 +627,18 @@ class _PostListState extends State<PostList> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  _buildMultipJobTypeChipSelectCheckBox(),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 16, right: 16),
+                    child: _buildMultipJobTypeChipSelectCheckBox(),
+                  ),
                   const Divider(
                     thickness: 1,
                   ),
-                  _buildMultipLocationChipSelectCheckBox(),
+                  // _buildMultipLocationChipSelectCheckBox(),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 16, right: 16),
+                    child: _buildSelectLocationDropdown(),
+                  ),
                   const Divider(
                     thickness: 1,
                   ),
@@ -637,33 +683,56 @@ class _PostListState extends State<PostList> {
     );
   }
 
-  Widget _buildMultipLocationChipSelectCheckBox() {
-    List<JobType> emptyList = [];
-    return MultiSelectChipField(
-      decoration: const BoxDecoration(
-          // border: Border(
-          //   bottom: BorderSide(color: Colors.black)
-          // ),
-          ),
-      selectedChipColor: Colors.black,
-      selectedTextStyle: const TextStyle(color: Colors.white),
-      icon: const Icon(Icons.cancel, color: Colors.white),
-      scroll: true,
-      headerColor: Colors.white,
-      title: const Text(
-        "Location",
-        style: TextStyle(fontSize: 20, color: Colors.black),
-      ),
-      items: listLocation == null
-          ? emptyList.map((e) => MultiSelectItem(e, e.name ?? '')).toList()
-          : listLocation.map((e) => MultiSelectItem(e, e.label)).toList(),
-      initialValue: preSelectItems ?? [],
-    
-      onTap: (values) {
-         setState(()  {
-
-          setStateLocation(values);
-        });
+  Widget _buildSelectLocationDropdown() {
+    return StatefulBuilder(
+      builder: (context, setState) {
+        return Row(
+          children: [
+            Expanded(
+              child: Container(
+                width: MediaQuery.of(context).size.width,
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton2(
+                    hint: Text(
+                      'Select Item',
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: Theme.of(context).hintColor,
+                      ),
+                    ),
+                    items: listLocation
+                        .map((item) => DropdownMenuItem<Location>(
+                              value: item,
+                              child: Text(
+                                item.label,
+                                style: const TextStyle(
+                                  fontSize: 20,
+                                ),
+                              ),
+                            ))
+                        .toList(),
+                    value: preSelectLocation,
+                    onChanged: (value) async {
+                      bool isCheckEnable = await checkEnable(value!);
+                      if (isCheckEnable) {
+                        setState(() {
+                          preSelectLocation = value;
+                        });
+                      }
+                    },
+                    // buttonStyleData: const ButtonStyleData(
+                    //   height: 40,
+                    //   width: 140,
+                    // ),
+                    // menuItemStyleData: const MenuItemStyleData(
+                    //   height: 40,
+                    // ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        );
       },
     );
   }
@@ -737,9 +806,7 @@ class _PostListState extends State<PostList> {
             selectedItems = [
               ...preSelectItems!,
             ];
-            selectLocation = [
-              ...preSelectLocation!,
-            ];
+            selectLocation = preSelectLocation;
           });
           await filterByCate();
           // Get.back();

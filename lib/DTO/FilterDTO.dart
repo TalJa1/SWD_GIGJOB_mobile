@@ -45,7 +45,7 @@ class FilterDTO {
 
 class SearchCriteriaList {
   String? filterKey;
-  int? value;
+  String? value;
   String? operation;
 
   SearchCriteriaList({this.filterKey, this.value, this.operation});

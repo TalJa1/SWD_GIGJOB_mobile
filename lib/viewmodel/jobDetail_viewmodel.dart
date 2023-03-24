@@ -4,6 +4,7 @@ import 'package:gigjob_mobile/DTO/ApplyJobDTO.dart';
 import 'package:gigjob_mobile/DTO/JobDTO.dart';
 import 'package:gigjob_mobile/DTO/WorkerDTO.dart';
 import 'package:gigjob_mobile/enum/view_status.dart';
+import 'package:gigjob_mobile/services/locaiton_service.dart';
 import 'package:gigjob_mobile/utils/share_pref.dart';
 import 'package:gigjob_mobile/viewmodel/base_model.dart';
 import 'package:jwt_decode/jwt_decode.dart';
@@ -15,10 +16,12 @@ class JobDetailViewModel extends BaseModel {
   JobDAO? jobDAO;
   AccountDAO? accountDAO;
   ApplyJobDTO? isApplied;
+  LocationService? locationService;
 
   JobDetailViewModel() {
     jobDAO = JobDAO();
     accountDAO = AccountDAO();
+    locationService = LocationService();
   }
 
   Future getJobApplied(int? jobID) async {
@@ -43,7 +46,9 @@ class JobDetailViewModel extends BaseModel {
           }
         ],
         "sortCriteria": {"sortKey": "createdDate", "direction": "asc"},
-        "dataOption": "any"
+        "dataOption": "any",
+        "latitude": locationService!.defaultLatitude,
+        "longitude": locationService!.defaultLongtitude
       });
       setState(ViewStatus.Completed);
     } catch (e) {
