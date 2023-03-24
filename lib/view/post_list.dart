@@ -47,12 +47,12 @@ class _PostListState extends State<PostList> {
 
   final _searchFocusNode = FocusNode();
   TextEditingController _searchController = TextEditingController();
-  
+
   final ScrollController _scrollController = ScrollController();
   static const _pageSize = 10;
   static int _page = 0;
   bool _isLastPage = false;
-  bool backToTop= false;
+  bool backToTop = false;
 
   Map<String, dynamic> params = {
     "pageIndex": _page,
@@ -243,18 +243,16 @@ class _PostListState extends State<PostList> {
           _page++;
           _fetchPage(_page);
         }
-        
       }
-      if(_scrollController.position.pixels  != 0) {
-          setState(() {
-            backToTop = true;
-          });
-        } 
-        else {
-          setState(() {
-            backToTop = false;
-          });
-        }
+      if (_scrollController.position.pixels != 0) {
+        setState(() {
+          backToTop = true;
+        });
+      } else {
+        setState(() {
+          backToTop = false;
+        });
+      }
     });
 
     print("WELCOME");
@@ -490,8 +488,7 @@ class _PostListState extends State<PostList> {
                 ],
               ),
             ),
-            floatingActionButton: _buildBackToTopBtn()
-            ),
+            floatingActionButton: _buildBackToTopBtn()),
       ),
     );
   }
@@ -501,6 +498,7 @@ class _PostListState extends State<PostList> {
       return Container();
     }
     return FloatingActionButton(
+      heroTag: "btn1",
       child: const Icon(Icons.arrow_upward_outlined),
       onPressed: () {
         _scrollController.jumpTo(0);

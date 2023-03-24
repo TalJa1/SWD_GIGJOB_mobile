@@ -435,6 +435,7 @@ class _UserProfileState extends State<UserProfile> {
 
   Widget editBtn() {
     return FloatingActionButton(
+      heroTag: "btn2",
       child: const Icon(Icons.edit),
       onPressed: () {
         Get.to(const EditProfilePage());
