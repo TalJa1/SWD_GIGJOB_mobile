@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print, sized_box_for_whitespace, unnecessary_new, unused_local_variable, unnecessary_string_interpolations
+// ignore_for_file: avoid_print, sized_box_for_whitespace, unnecessary_new, unused_local_variable, unnecessary_string_interpolations, use_build_context_synchronously
 
 import 'dart:async';
 
@@ -249,6 +249,15 @@ class _UpdateHistoryPageState extends State<UpdateHistoryPage> {
                             builder: (context) => const UserProfile()),
                       );
                     });
+                    return showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return const AlertDialog(
+                            title: Center(
+                              child: Text('Updated'),
+                            ),
+                          );
+                        });
                   } catch (e) {
                     return showDialog(
                         context: context,
