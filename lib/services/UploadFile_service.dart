@@ -26,7 +26,7 @@ class UploadFileService extends BaseDAO {
           filename: fileName, contentType: new MediaType('image', 'jpeg')),
     });
     try {
-      Response response = await dio.patch(
+      Response response = await dio.post(
           "http://13.228.218.62:8080/api/v1/account/$accId/image",
           data: formData);
       // Response response = await ApiService.patch("/v1/account/$accId/image",
