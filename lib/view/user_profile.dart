@@ -7,6 +7,7 @@ import 'package:gigjob_mobile/DTO/UserDTO.dart';
 import 'package:gigjob_mobile/DTO/WorkerDTO.dart';
 import 'package:gigjob_mobile/enum/view_status.dart';
 import 'package:gigjob_mobile/view/edit_profile.dart';
+import 'package:gigjob_mobile/view/history.dart';
 import 'package:gigjob_mobile/viewmodel/job_viewmodel.dart';
 import 'package:gigjob_mobile/viewmodel/user_viewmodel.dart';
 import 'package:intl/intl.dart';
@@ -30,19 +31,27 @@ class _UserProfileState extends State<UserProfile> {
     userViewModel = UserViewModel();
     userViewModel.getAppliedJob();
     userViewModel.getUserProfile();
+    userViewModel.getHistory();
   }
 
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       GlobalKey<RefreshIndicatorState>();
 
   bool isInfo = true;
+  bool isHist = false;
+  int stateCheck = 1;
 
   late UserViewModel userViewModel;
 
   Future<void> reload() async {
-    if (isInfo == false) {
+    // if (isInfo == false) {
+    //   setState(() {
+    //     isInfo = !isInfo;
+    //   });
+    // }
+    if (stateCheck != 1) {
       setState(() {
-        isInfo = !isInfo;
+        stateCheck = 1;
       });
     }
     userViewModel.getAppliedJob();
@@ -149,7 +158,7 @@ class _UserProfileState extends State<UserProfile> {
                               ))),
                         ],
                       ),
-                      userData(isInfo),
+                      userData(stateCheck),
                       const SizedBox(
                         height: 15,
                       ),
@@ -251,31 +260,47 @@ class _UserProfileState extends State<UserProfile> {
           ButtonBarEntry(
               onTap: () => {
                     setState(() {
-                      isInfo = true;
-                      print("isInfo $isInfo");
+                      // isInfo = true;
+                      // print("isInfo $isInfo");
+                      stateCheck = 1;
+                      print("statecheck >>> $stateCheck");
                     })
                   },
               child: const Text('Info')),
           ButtonBarEntry(
               onTap: () async {
                 setState(() {
-                  isInfo = false;
-                  print("isInfo $isInfo");
+                  // isInfo = false;
+                  // print("isInfo $isInfo");
+                  stateCheck = 2;
+                  print("statecheck >>> $stateCheck");
                 });
               },
               child: const Text('Applied job')),
+          ButtonBarEntry(
+              onTap: () async {
+                setState(() {
+                  // isHist = true;
+                  // print("isInfo $isInfo");
+                  stateCheck = 3;
+                  print("statecheck >>> $stateCheck");
+                });
+              },
+              child: const Text('History'))
         ],
       ),
     );
   }
 
-  Widget userData(bool checkIsInfo) {
+  Widget userData(int check) {
+    //bool checkIsInfo
     String? birth = userViewModel.userDTO!.birthday;
     // int firstSpaceIndex = birth!.indexOf("T");
     // String firstWord = birth.substring(0, firstSpaceIndex);
     // String? getBirth = birth?.split(" ");
-    return checkIsInfo
-        ? Container(
+    switch (check) {
+      case 1:
+        return Container(
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height,
             padding: const EdgeInsets.only(left: 10, right: 10, bottom: 5),
@@ -289,111 +314,166 @@ class _UserProfileState extends State<UserProfile> {
                   userInfo("Education", "${userViewModel.userDTO!.education}"),
                   userInfo("Birth", birth!),
                   userInfo("Phone", "${userViewModel.userDTO!.phone}"),
-                  // TextButton(
-                  //   style: ButtonStyle(
-                  //     foregroundColor:
-                  //         MaterialStateProperty.all<Color>(Colors.blue),
-                  //   ),
-                  //   onPressed: () async {
-                  //     Location location = new Location();
-                  //     final formatter = NumberFormat('.######');
-                  //     bool _serviceEnabled;
-                  //     PermissionStatus _permissionGranted;
-                  //     LocationData _locationData;
-
-                  //     _serviceEnabled = await location.serviceEnabled();
-                  //     if (!_serviceEnabled) {
-                  //       _serviceEnabled = await location.requestService();
-                  //       if (!_serviceEnabled) {
-                  //         return;
-                  //       }
-                  //     }
-
-                  //     _permissionGranted = await location.hasPermission();
-                  //     if (_permissionGranted == PermissionStatus.denied) {
-                  //       _permissionGranted = await location.requestPermission();
-                  //       if (_permissionGranted != PermissionStatus.granted) {
-                  //         return;
-                  //       }
-                  //     }
-
-                  //     _locationData = await location.getLocation();
-                  //     print(
-                  //         "Longitude>>>>>>>>>>> ${formatter.format(_locationData.longitude)}");
-                  //     print(
-                  //         "Latitude>>>>>>>>>>> ${formatter.format(_locationData.latitude)}");
-                  //     print(
-                  //         ">>>>>>>>>>>${formatter.format(12312312.12123123123)}");
-                  //   },
-                  //   child: const Text('Location'),
-                  // )
                 ]),
               ),
-            ))
-        : SizedBox(
-            height: MediaQuery.of(context).size.height,
-            width: MediaQuery.of(context).size.width,
-            child: Column(
-              children: [
-                ListView.builder(
-                  physics: const NeverScrollableScrollPhysics(),
-                  scrollDirection: Axis.vertical,
-                  shrinkWrap: true,
-                  itemCount: userViewModel.appliedjob?.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return ListTile(
-                      title: Card(
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 10, right: 10),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                // user.experience![index].company.toString(),
-                                "${userViewModel.appliedjob![index].job?.shop?.name}",
-                                // ignore: prefer_const_constructors
-                                style: TextStyle(
-                                    fontSize: 20, fontWeight: FontWeight.bold),
-                              ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  const Text('Tittle:'),
-                                  Text(
-                                      "${userViewModel.appliedjob![index].job?.title}")
-                                ],
-                              ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  const Text('Status:'),
-                                  Text(
-                                    "${userViewModel.appliedjob![index].status}",
-                                    style: const TextStyle(color: Colors.green),
-                                  )
-                                ],
-                              ),
-                              const SizedBox(
-                                height: 10,
-                              )
-                            ],
-                          ),
+            ));
+      case 2:
+        return SizedBox(
+          height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width,
+          child: Column(
+            children: [
+              ListView.builder(
+                physics: const NeverScrollableScrollPhysics(),
+                scrollDirection: Axis.vertical,
+                shrinkWrap: true,
+                itemCount: userViewModel.appliedjob?.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return ListTile(
+                    title: Card(
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 10, right: 10),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              // user.experience![index].company.toString(),
+                              "${userViewModel.appliedjob![index].job?.shop?.name}",
+                              // ignore: prefer_const_constructors
+                              style: TextStyle(
+                                  fontSize: 20, fontWeight: FontWeight.bold),
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text('Tittle:'),
+                                Text(
+                                    "${userViewModel.appliedjob![index].job?.title}")
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text('Status:'),
+                                Text(
+                                  "${userViewModel.appliedjob![index].status}",
+                                  style: const TextStyle(color: Colors.green),
+                                )
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            )
+                          ],
                         ),
                       ),
-                    );
-                  },
-                )
-              ],
-            ),
-          );
+                    ),
+                  );
+                },
+              )
+            ],
+          ),
+        );
+      case 3:
+        return SizedBox(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height,
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: Column(children: [
+                  ListView.builder(
+                    physics: const NeverScrollableScrollPhysics(),
+                    scrollDirection: Axis.vertical,
+                    shrinkWrap: true,
+                    itemCount: userViewModel.history?.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return ListTile(
+                        title: Card(
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 10, right: 10),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                // const Text(
+                                //   // user.experience![index].company.toString(),
+                                //   // "${userViewModel.history![index].position}",
+                                //   "Company",
+                                //   // ignore: prefer_const_constructors
+                                //   style: TextStyle(
+                                //       fontSize: 20,
+                                //       fontWeight: FontWeight.bold),
+                                // ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    const Text('Position:'),
+                                    Text(
+                                        "${userViewModel.history![index].position}")
+                                  ],
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    const Text('Start date:'),
+                                    Text(
+                                      "${userViewModel.history![index].startDate}",
+                                      style:
+                                          const TextStyle(color: Colors.green),
+                                    )
+                                  ],
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    const Text('End date:'),
+                                    Text(
+                                      "${userViewModel.history![index].endDate}",
+                                      style:
+                                          const TextStyle(color: Colors.green),
+                                    )
+                                  ],
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      Get.to(const HistoryPage());
+                    },
+                    child: const Text('Add experience'),
+                  ),
+                ]),
+              ),
+            ));
+      default:
+        return Container();
+    }
   }
 
   Widget userInfo(String tittle, String userdata) {

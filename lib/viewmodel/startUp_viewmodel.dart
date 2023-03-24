@@ -10,6 +10,8 @@ import 'package:gigjob_mobile/view/nav_screen.dart';
 import 'package:gigjob_mobile/view/register_Worker.dart';
 import 'package:gigjob_mobile/viewmodel/base_model.dart';
 
+import '../view/history.dart';
+
 class StartUpViewModel extends BaseModel {
   late BuildContext context;
   bool loadingWelcome = true;
@@ -31,6 +33,7 @@ class StartUpViewModel extends BaseModel {
       Get.offAll(RootScreen());
     } else {
       Get.offAll(LoginHome());
+      // Get.offAll(HistoryPage());
     }
   }
 

@@ -1,4 +1,7 @@
+// ignore_for_file: avoid_print
+
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:gigjob_mobile/DTO/HistoryDTO.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:get/get.dart';
@@ -19,6 +22,7 @@ class UserViewModel extends BaseModel {
   JobDAO? jobDAO;
   UserDAO? userDAO;
   WalletDTO? walletdto;
+  List<HistoryDTO>? history;
   List<JobDTO>? jobs;
   List<ApplyJobDTO>? appliedjob;
   WorkerDTO? userDTO;
@@ -80,6 +84,28 @@ class UserViewModel extends BaseModel {
       setState(ViewStatus.Completed);
     } catch (e) {
       throw Exception(e);
+    }
+  }
+
+  Future getHistory() async {
+    try {
+      setState(ViewStatus.Loading);
+      String? accountId = await getAccountID();
+      WorkerDTO? workDTO = await jobDAO?.getWorkerId(accountId!);
+      history = await userDAO?.getHistory(workDTO?.id);
+      setState(ViewStatus.Completed);
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future addHistory(HistoryDTO historyDTO, String? workerid) async {
+    try {
+      // String? accountId = await getAccountID();
+      // WorkerDTO? workDTO = await jobDAO?.getWorkerId(accountId!);
+      await userDAO?.addHitory(historyDTO, workerid);
+    } catch (e) {
+      print(e);
     }
   }
 }

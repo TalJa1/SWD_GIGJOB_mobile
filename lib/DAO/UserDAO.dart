@@ -1,5 +1,8 @@
+// ignore_for_file: avoid_print
+
 import 'package:gigjob_mobile/DAO/BaseDAO.dart';
 import 'package:gigjob_mobile/DAO/JobDAO.dart';
+import 'package:gigjob_mobile/DTO/HistoryDTO.dart';
 import 'package:gigjob_mobile/DTO/UserDTO.dart';
 import 'package:gigjob_mobile/DTO/WalletDTO.dart';
 import 'package:gigjob_mobile/DTO/WorkerDTO.dart';
@@ -67,7 +70,6 @@ class UserDAO extends BaseDAO {
         "username": dto.username,
         "password": dto.password
       });
-      // ignore: avoid_print
       // print(res.data);
     } catch (e) {
       throw Exception(e);
@@ -79,5 +81,33 @@ class UserDAO extends BaseDAO {
     final res = await ApiService.get('/v1/wallet/account/$accid', null, null);
     WalletDTO walletDTO = WalletDTO.fromJson(res.data);
     return walletDTO;
+  }
+
+  Future<List<HistoryDTO>> getHistory(String? workerid) async {
+    try {
+      final res =
+          await ApiService.get('/v1/history/worker/$workerid', null, null);
+      List<dynamic> list = res.data;
+      final history = HistoryDTO.fromList(list);
+      return history;
+    } catch (e) {
+      print(e);
+      throw Exception(e);
+    }
+  }
+
+  Future addHitory(HistoryDTO historyDTO, String? workerid) async {
+    try {
+      final res = await ApiService.post("/v1/history", null, null, {
+        "workerId": workerid,
+        "position": historyDTO.position,
+        "startDate": historyDTO.startDate,
+        "endDate": historyDTO.endDate
+      });
+      print("res.statusCode >>>>>>> $res.statusCode");
+    } catch (e) {
+      print(e);
+      throw Exception(e);
+    }
   }
 }
