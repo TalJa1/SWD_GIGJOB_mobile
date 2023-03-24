@@ -289,44 +289,44 @@ class _UserProfileState extends State<UserProfile> {
                   userInfo("Education", "${userViewModel.userDTO!.education}"),
                   userInfo("Birth", birth!),
                   userInfo("Phone", "${userViewModel.userDTO!.phone}"),
-                  TextButton(
-                    style: ButtonStyle(
-                      foregroundColor:
-                          MaterialStateProperty.all<Color>(Colors.blue),
-                    ),
-                    onPressed: () async {
-                      Location location = new Location();
-                      final formatter = NumberFormat('.######');
-                      bool _serviceEnabled;
-                      PermissionStatus _permissionGranted;
-                      LocationData _locationData;
+                  // TextButton(
+                  //   style: ButtonStyle(
+                  //     foregroundColor:
+                  //         MaterialStateProperty.all<Color>(Colors.blue),
+                  //   ),
+                  //   onPressed: () async {
+                  //     Location location = new Location();
+                  //     final formatter = NumberFormat('.######');
+                  //     bool _serviceEnabled;
+                  //     PermissionStatus _permissionGranted;
+                  //     LocationData _locationData;
 
-                      _serviceEnabled = await location.serviceEnabled();
-                      if (!_serviceEnabled) {
-                        _serviceEnabled = await location.requestService();
-                        if (!_serviceEnabled) {
-                          return;
-                        }
-                      }
+                  //     _serviceEnabled = await location.serviceEnabled();
+                  //     if (!_serviceEnabled) {
+                  //       _serviceEnabled = await location.requestService();
+                  //       if (!_serviceEnabled) {
+                  //         return;
+                  //       }
+                  //     }
 
-                      _permissionGranted = await location.hasPermission();
-                      if (_permissionGranted == PermissionStatus.denied) {
-                        _permissionGranted = await location.requestPermission();
-                        if (_permissionGranted != PermissionStatus.granted) {
-                          return;
-                        }
-                      }
+                  //     _permissionGranted = await location.hasPermission();
+                  //     if (_permissionGranted == PermissionStatus.denied) {
+                  //       _permissionGranted = await location.requestPermission();
+                  //       if (_permissionGranted != PermissionStatus.granted) {
+                  //         return;
+                  //       }
+                  //     }
 
-                      _locationData = await location.getLocation();
-                      print(
-                          "Longitude>>>>>>>>>>> ${formatter.format(_locationData.longitude)}");
-                      print(
-                          "Latitude>>>>>>>>>>> ${formatter.format(_locationData.latitude)}");
-                      print(
-                          ">>>>>>>>>>>${formatter.format(12312312.12123123123)}");
-                    },
-                    child: const Text('Location'),
-                  )
+                  //     _locationData = await location.getLocation();
+                  //     print(
+                  //         "Longitude>>>>>>>>>>> ${formatter.format(_locationData.longitude)}");
+                  //     print(
+                  //         "Latitude>>>>>>>>>>> ${formatter.format(_locationData.latitude)}");
+                  //     print(
+                  //         ">>>>>>>>>>>${formatter.format(12312312.12123123123)}");
+                  //   },
+                  //   child: const Text('Location'),
+                  // )
                 ]),
               ),
             ))
@@ -416,7 +416,10 @@ class _UserProfileState extends State<UserProfile> {
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 20, right: 20),
-                child: Text(userdata),
+                child: Text(
+                  userdata,
+                  textAlign: TextAlign.center,
+                ),
               ),
               const SizedBox(
                 height: 10,
