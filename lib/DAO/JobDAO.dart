@@ -30,7 +30,7 @@ class JobDAO extends BaseDAO {
     try {
       final res = await ApiService.post('/v1/application', null, null,
           {"workerId": id, "status": "PENDING", "jobId": jobId});
-      
+
       return true;
       // ignore: avoid_print
     } catch (e) {
@@ -62,7 +62,8 @@ class JobDAO extends BaseDAO {
     }
   }
 
-  Future<List<JobDTO>> getRelateJobs({Map<String, dynamic>? params, Map<String, dynamic>? body}) async {
+  Future<List<JobDTO>> getRelateJobs(
+      {Map<String, dynamic>? params, Map<String, dynamic>? body}) async {
     try {
       final res = await ApiService.post('/v1/job/search', params, null, body);
       List<dynamic> list = res.data;
@@ -72,6 +73,19 @@ class JobDAO extends BaseDAO {
       print(e);
       throw Exception(e);
     }
+  }
+
+  Future<Addresses?> getAddress(String? shopID) async {
+    
+    final res = await ApiService.get('/v1/shop/$shopID', {}, {});
+    try {
+    Shop shop = Shop.fromJson(res.data);
+    return shop.addresses!.first;
+
+    } catch (e) {
+      print(e);
+    }
+    return null;
   }
 
   set metaDataDTO(MetaDataDTO value) {

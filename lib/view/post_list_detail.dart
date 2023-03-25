@@ -318,6 +318,7 @@ class _PostListDetailState extends State<PostListDetail> {
   }
 
   Widget _buildTabView() {
+    print(jobDetailViewModel.jobDTO!.shop?.account!.id);
     return DefaultTabController(
         length: 5, // length of tabs
         initialIndex: 0,
@@ -342,7 +343,7 @@ class _PostListDetailState extends State<PostListDetail> {
               ),
               Container(
                   constraints: BoxConstraints(
-                    maxHeight: 200,
+                    maxHeight: 300,
                   ), //height of TabBarView
                   decoration: BoxDecoration(
                       border: Border(
@@ -376,8 +377,10 @@ class _PostListDetailState extends State<PostListDetail> {
                       padding: EdgeInsets.fromLTRB(0, 12, 0, 12),
                       child: Column(children: [
                         Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text("Shop Name:", style: TextStyle(fontSize: 16)),
+                          
                             Text(
                               " ${jobDetailViewModel.jobDTO!.shop?.name}",
                               style:
@@ -385,6 +388,64 @@ class _PostListDetailState extends State<PostListDetail> {
                             )
                           ],
                         ),
+                        SizedBox(
+                          height: 12,
+                        ),
+                        jobDetailViewModel.jobDTO!.shop?.account != null ?
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
+                          children: [
+                            Text("Email:", style: TextStyle(fontSize: 16)),
+                            
+                            Text(
+                              " ${jobDetailViewModel.jobDTO!.shop?.account!.email}",
+                              style:
+                                  TextStyle(fontSize: 16, color: Colors.blue),
+                            )
+                          ],
+                        ) : Container(),
+                        SizedBox(
+                          height: 12,
+                        ),
+                        jobDetailViewModel.jobDTO!.shop?.account != null ?
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
+                          children: [
+                            Text("Phone:", style: TextStyle(fontSize: 16)),
+                          
+                            Text(
+                              " ${jobDetailViewModel.jobDTO!.shop?.account!.phone}",
+                              style:
+                                  TextStyle(fontSize: 16, color: Colors.blue),
+                            )
+                          ],
+                        ) : Container(),
+                        SizedBox(
+                          height: 12,
+                        ),
+                        jobDetailViewModel.address != null ?
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Address:",
+                              style: TextStyle(fontSize: 16),
+                            ),
+                            SizedBox(height: 4),
+                            Row(
+                              children: [
+                                Flexible(
+                                  child: Text(
+                                    "${jobDetailViewModel.address!.getAddress()}",
+                                    maxLines: 10,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ) : Container(),
                         SizedBox(
                           height: 12,
                         ),
@@ -401,6 +462,7 @@ class _PostListDetailState extends State<PostListDetail> {
                                 Flexible(
                                   child: Text(
                                     "${jobDetailViewModel.jobDTO!.shop?.description}",
+                                    overflow: TextOverflow.ellipsis,
                                     maxLines: 10,
                                   ),
                                 ),

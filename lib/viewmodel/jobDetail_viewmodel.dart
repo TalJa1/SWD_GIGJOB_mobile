@@ -17,6 +17,7 @@ class JobDetailViewModel extends BaseModel {
   AccountDAO? accountDAO;
   ApplyJobDTO? isApplied;
   LocationService? locationService;
+  Addresses? address;
 
   JobDetailViewModel() {
     jobDAO = JobDAO();
@@ -32,6 +33,7 @@ class JobDetailViewModel extends BaseModel {
       WorkerDTO? workDTO = await jobDAO?.getWorkerId(accountId!);
       appliedjob = await jobDAO?.getJobApplied(workDTO?.id);
       isApplied = isAppliedJob(appliedjob, jobDTO);
+      address = await jobDAO?.getAddress(jobDTO!.shop!.accountId);
       relateJobs = await jobDAO?.getJob(body: {
         "searchCriteriaList": [
           {

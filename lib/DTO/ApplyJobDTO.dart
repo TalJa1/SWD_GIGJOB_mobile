@@ -92,14 +92,25 @@ class Shop {
   String? name;
   String? description;
   String? accountId;
+  List<Addresses>? addresses;
+  Account? account;
 
-  Shop({this.id, this.name, this.description, this.accountId});
+
+  Shop({this.id, this.name, this.description, this.accountId, this.addresses, this.account});
 
   Shop.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     name = json['name'];
     description = json['description'];
     accountId = json['accountId'];
+    account =
+        json['account'] != null ? new Account.fromJson(json['account']) : null;
+    if (json['addresses'] != null) {
+      addresses = <Addresses>[];
+      json['addresses'].forEach((v) {
+        addresses!.add(new Addresses.fromJson(v));
+      });
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -108,9 +119,108 @@ class Shop {
     data['name'] = this.name;
     data['description'] = this.description;
     data['accountId'] = this.accountId;
+    if (this.account != null) {
+      data['account'] = this.account!.toJson();
+    }
+    if (this.addresses != null) {
+      data['addresses'] = this.addresses!.map((v) => v.toJson()).toList();
+    }
     return data;
   }
 }
+
+class Account {
+  String? id;
+  String? username;
+  String? email;
+  String? phone;
+  String? createdDate;
+  String? updatedDate;
+  String? role;
+  bool? locked;
+  bool? disable;
+
+  Account(
+      {this.id,
+      this.username,
+      this.email,
+      this.phone,
+      this.createdDate,
+      this.updatedDate,
+      this.role,
+      this.locked,
+      this.disable});
+
+  Account.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    username = json['username'];
+    email = json['email'];
+    phone = json['phone'];
+    createdDate = json['createdDate'];
+    updatedDate = json['updatedDate'];
+    role = json['role'];
+    locked = json['locked'];
+    disable = json['disable'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['username'] = this.username;
+    data['email'] = this.email;
+    data['phone'] = this.phone;
+    data['createdDate'] = this.createdDate;
+    data['updatedDate'] = this.updatedDate;
+    data['role'] = this.role;
+    data['locked'] = this.locked;
+    data['disable'] = this.disable;
+    return data;
+  }
+}
+
+class Addresses {
+  int? id;
+  String? street;
+  String? district;
+  String? city;
+  String? province;
+  String? country;
+
+  String getAddress() {
+    String fullAddress = '${street ?? ""}, ${district ?? ""}, ${city ?? ""}, ${country ?? ""}';
+
+    return fullAddress;
+  }
+
+  Addresses(
+      {this.id,
+      this.street,
+      this.district,
+      this.city,
+      this.province,
+      this.country});
+
+  Addresses.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    street = json['street'];
+    district = json['district'];
+    city = json['city'];
+    province = json['province'];
+    country = json['country'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['street'] = this.street;
+    data['district'] = this.district;
+    data['city'] = this.city;
+    data['province'] = this.province;
+    data['country'] = this.country;
+    return data;
+  }
+}
+
 
 class JobType {
   int? id;
