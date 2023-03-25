@@ -62,6 +62,7 @@ dependencies:
   path_provider: ^2.0.13
   location: ^4.4.0
   url_launcher: ^6.1.10
+  permission_handler: ^10.2.0
   
 
 dev_dependencies:

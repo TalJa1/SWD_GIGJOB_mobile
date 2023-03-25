@@ -5,6 +5,7 @@ Future setUp() async {
 
   FirebaseMessaging messaging = FirebaseMessaging.instance;
   LocationService location = LocationService();
+  
 
   // Request permission to enable location
   await location.enableLocation();

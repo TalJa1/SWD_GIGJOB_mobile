@@ -17,11 +17,15 @@ import 'package:filter_list/filter_list.dart';
 import 'package:gigjob_mobile/view/post_list_detail.dart';
 import 'package:gigjob_mobile/view/start_up.dart';
 import 'package:gigjob_mobile/viewmodel/job_viewmodel.dart';
+import 'package:intl/intl.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:location/location.dart';
+
+// import 'package:permission_handler/permission_handler.dart';
 
 class PostList extends StatefulWidget {
   const PostList({super.key});
@@ -90,8 +94,12 @@ class _PostListState extends State<PostList> {
   }
 
   Future checkEnable(Location value) async {
+
     bool isServiceEnable = await locationService.location.serviceEnabled();
-    if (isServiceEnable) {
+    PermissionStatus _permissionGranted = await locationService.location.hasPermission();
+
+
+    if (isServiceEnable && _permissionGranted != PermissionStatus.denied) {
       return true;
     } else if (value.id == 2) {
       // ignore: use_build_context_synchronously
@@ -159,8 +167,8 @@ class _PostListState extends State<PostList> {
     }
 
     if (preSelectLocation.value == 'nearYourLocation') {
-      latitude = locationService.locationData.latitude!;
-      longitude = locationService.locationData.longitude!;
+      latitude = LocationService.locationData!.latitude!;
+      longitude = LocationService.locationData!.longitude!;
     }
 
     // jobViewModel.setSelectFilter(preSelectItems);
@@ -193,12 +201,14 @@ class _PostListState extends State<PostList> {
         id: 1,
         label: 'Create date new to old',
         value: 'createdDate',
-        isAcs: "desc"),
+        isAcs: "desc"
+        ),
     SortBy(
         id: 2,
         label: 'Create date old to new',
         value: 'createdDate',
-        isAcs: "asc"),
+        isAcs: "asc"
+        ),
   ];
 
   late FilterDTO body;
@@ -210,7 +220,7 @@ class _PostListState extends State<PostList> {
     // TODO: implement initState
     jobViewModel = JobViewModel();
     locationService = LocationService();
-    locationService.enableLocation();
+    // locationService.enableLocation();
 
     selectedSort = itemsSort.first;
 
@@ -265,6 +275,7 @@ class _PostListState extends State<PostList> {
     });
     await jobViewModel.getJobs(params: params, body: body.toJson());
     final newItems = jobViewModel.jobs;
+    
     // if (newItems != null && newItems.length < _pageSize) {
     //   _isLastPage = true;
     // }
@@ -929,7 +940,10 @@ class _PostListState extends State<PostList> {
                           ),
                         ),
                         Text(
-                          Jiffy("${job.createdDate}").fromNow(),
+                          DateFormat("yyyy-MM-dd").format(
+                                                    DateTime.parse(job.createdDate!)),
+                          // "${job.createdDate}",
+                          // Jiffy("${job.createdDate}").fromNow(),
                           style: const TextStyle(
                             fontSize: 14,
                             color: Colors.indigo,

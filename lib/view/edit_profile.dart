@@ -1,9 +1,11 @@
 // ignore_for_file: avoid_print, sized_box_for_whitespace, unnecessary_new, unused_local_variable
 
+import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:gigjob_mobile/DTO/UserDTO.dart';
+import 'package:gigjob_mobile/view/nav_screen.dart';
 import 'package:gigjob_mobile/viewmodel/user_viewmodel.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:gigjob_mobile/services/UploadFile_service.dart';
@@ -526,6 +528,15 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 UploadFileService().uploadImage(uploadfile!);
               }
               userViewModel.updateUser(dto, workerID!);
+              Timer(const Duration(seconds: 1), () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const RootScreen(
+                            initPage: 2,
+                          )),
+                );
+              });
               // ignore: use_build_context_synchronously
               return showDialog(
                   context: context,

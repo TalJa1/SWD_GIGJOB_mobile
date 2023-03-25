@@ -9,6 +9,7 @@ import 'package:gigjob_mobile/DTO/AccountDTO.dart';
 import 'package:gigjob_mobile/DTO/WorkerDTO.dart';
 import 'package:gigjob_mobile/accesories/dialog.dart';
 import 'package:gigjob_mobile/services/push_notification_service.dart';
+import 'package:gigjob_mobile/services/request.dart';
 import 'package:gigjob_mobile/utils/share_pref.dart';
 import 'package:gigjob_mobile/view/nav_screen.dart';
 import 'package:gigjob_mobile/view/register_Worker.dart';
@@ -58,12 +59,13 @@ class LoginViewModel extends BaseModel {
     } catch (e) {
       print(e);
       if (e == 401) {
-
         Get.offAll(RegisterWorkerPage());
-      }
-      else {
-      await showMyDialog(context, "Error", "Login fail");
-
+      } else {
+        await GoogleSignIn().signOut();
+        await FirebaseAuth.instance.signOut();
+        await removeALL();
+        await ApiService.setToken("");
+        await showMyDialog(context, "Error", "Login fail");
       }
     } finally {
       _isSigningIn = false;

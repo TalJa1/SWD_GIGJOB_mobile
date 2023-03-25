@@ -9,8 +9,13 @@ import 'package:gigjob_mobile/view/wallet.dart';
 import "package:persistent_bottom_nav_bar/persistent_tab_view.dart";
 
 class RootScreen extends StatefulWidget {
+
+  
   @override
   _RootScreen createState() => _RootScreen();
+
+  final int? initPage;
+  const RootScreen({super.key, this.initPage});
 }
 
 class _RootScreen extends State<RootScreen> {
@@ -19,7 +24,7 @@ class _RootScreen extends State<RootScreen> {
   Widget build(BuildContext context) {
     PersistentTabController _controller;
 
-    _controller = PersistentTabController(initialIndex: 0);
+    _controller = PersistentTabController(initialIndex: widget.initPage ?? 0);
 
     List<Widget> _buildScreens() {
       return [

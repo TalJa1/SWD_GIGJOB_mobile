@@ -4,7 +4,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:get/get.dart';
 import 'package:gigjob_mobile/DTO/HistoryDTO.dart';
+import 'package:gigjob_mobile/view/nav_screen.dart';
 import 'package:gigjob_mobile/view/user_profile.dart';
 
 import 'package:gigjob_mobile/viewmodel/user_viewmodel.dart';
@@ -236,10 +238,11 @@ class _HistoryPageState extends State<HistoryPage> {
                     String? workerID = workDTO.id;
                     await userViewModel.addHistory(dto, workerID);
                     Timer(const Duration(seconds: 1), () {
-                      Navigator.push(
+                      
+                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const UserProfile()),
+                            builder: (context) => const RootScreen(initPage: 2,)),
                       );
                     });
                     return showDialog(
