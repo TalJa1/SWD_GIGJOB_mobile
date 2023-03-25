@@ -364,7 +364,7 @@ class _PostListDetailState extends State<PostListDetail> {
                           '${NumberFormat.currency(
                             locale: 'vi_VN',
                             symbol: '₫',
-                          ).format(jobDetailViewModel.jobDTO!.salary)}',
+                          ).format(jobDetailViewModel.jobDTO!.salary)}/h',
                           style: TextStyle(fontSize: 16)),
                     ),
                     Container(

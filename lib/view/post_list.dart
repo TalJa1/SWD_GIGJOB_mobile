@@ -934,7 +934,7 @@ class _PostListState extends State<PostList> {
                         "Salary:  ${NumberFormat.currency(
                           locale: 'vi_VN',
                           symbol: '₫',
-                        ).format(job.salary)}",
+                        ).format(job.salary)}/h",
                         maxLines: 3,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
