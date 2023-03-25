@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gigjob_mobile/DTO/WalletDTO.dart';
 import 'package:gigjob_mobile/viewmodel/user_viewmodel.dart';
+import 'package:intl/intl.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 import '../enum/view_status.dart';
@@ -158,7 +159,11 @@ class _WalletPageState extends State<WalletPage> {
         // ignore: prefer_const_literals_to_create_immutables
         children: [
           Text(
-            "\$ $cash",
+            
+            "${NumberFormat.currency(
+                            locale: 'vi_VN',
+                            symbol: '₫',
+                          ).format(cash)}",
             style: TextStyle(color: cashColor, fontSize: 25),
           ),
         ],

@@ -161,7 +161,8 @@ class _PostListDetailState extends State<PostListDetail> {
                                             fontWeight: FontWeight.bold),
                                       ),
                                     ),
-                                    jobDetailViewModel.jobDTO!.expiredDate == null
+                                    jobDetailViewModel.jobDTO!.expiredDate ==
+                                            null
                                         ? Container()
                                         : Row(
                                             children: [
@@ -180,7 +181,13 @@ class _PostListDetailState extends State<PostListDetail> {
                                                         .data.expiredDate!)),
                                                 style: TextStyle(
                                                   fontSize: 14,
-                                                  color: Colors.indigo,
+                                                  color: DateTime.now().isBefore(
+                                                          DateTime.parse(
+                                                              jobDetailViewModel
+                                                                  .jobDTO!
+                                                                  .expiredDate!))
+                                                      ? Colors.indigo
+                                                      : Colors.red,
                                                 ),
                                               ),
                                             ],
@@ -230,7 +237,6 @@ class _PostListDetailState extends State<PostListDetail> {
                           ],
                         ),
                         _buildRelateJobList()
-
                       ],
                     ),
                   ),
@@ -249,28 +255,28 @@ class _PostListDetailState extends State<PostListDetail> {
     );
   }
 
-  Widget _buildRelateJobList(){
+  Widget _buildRelateJobList() {
     return Container(
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Row(
           children: [
-            if(jobDetailViewModel.relateJobs != null && jobDetailViewModel.relateJobs!.isNotEmpty)
-            ...jobDetailViewModel.relateJobs!.map((e) => _buildRelateJob(e)).toList()
-            else
-            ...[
-              Center(child: Text("No relate job"))
-            ]
+            if (jobDetailViewModel.relateJobs != null &&
+                jobDetailViewModel.relateJobs!.isNotEmpty)
+              ...jobDetailViewModel.relateJobs!
+                  .map((e) => _buildRelateJob(e))
+                  .toList()
+            else ...[Center(child: Text("No relate job"))]
           ],
         ),
       ),
     );
   }
 
-  Widget _buildRelateJob(JobDTO job){
+  Widget _buildRelateJob(JobDTO job) {
     return InkWell(
       onTap: () async {
-          await jobDetailViewModel.getJobApplied(job.id);
+        await jobDetailViewModel.getJobApplied(job.id);
 
         // setState(() async {
         // });
@@ -335,7 +341,6 @@ class _PostListDetailState extends State<PostListDetail> {
                 ),
               ),
               Container(
-                
                   constraints: BoxConstraints(
                     maxHeight: 200,
                   ), //height of TabBarView
@@ -355,7 +360,11 @@ class _PostListDetailState extends State<PostListDetail> {
                     ),
                     Container(
                       padding: EdgeInsets.fromLTRB(0, 12, 0, 12),
-                      child: Text('${jobDetailViewModel.jobDTO!.salary}\$',
+                      child: Text(
+                          '${NumberFormat.currency(
+                            locale: 'vi_VN',
+                            symbol: '₫',
+                          ).format(jobDetailViewModel.jobDTO!.salary)}',
                           style: TextStyle(fontSize: 16)),
                     ),
                     Container(
@@ -371,9 +380,8 @@ class _PostListDetailState extends State<PostListDetail> {
                             Text("Shop Name:", style: TextStyle(fontSize: 16)),
                             Text(
                               " ${jobDetailViewModel.jobDTO!.shop?.name}",
-                              style: TextStyle(fontSize: 16,
-                              color: Colors.blue),
-                              
+                              style:
+                                  TextStyle(fontSize: 16, color: Colors.blue),
                             )
                           ],
                         ),
@@ -391,9 +399,10 @@ class _PostListDetailState extends State<PostListDetail> {
                             Row(
                               children: [
                                 Flexible(
-                                  child:
-                                      Text("${jobDetailViewModel.jobDTO!.shop?.description}",
-                                      maxLines: 10,),
+                                  child: Text(
+                                    "${jobDetailViewModel.jobDTO!.shop?.description}",
+                                    maxLines: 10,
+                                  ),
                                 ),
                               ],
                             ),
@@ -412,8 +421,13 @@ class _PostListDetailState extends State<PostListDetail> {
           return Container();
         } else if (jobDetailViewModel.status == ViewStatus.Completed) {
           return InkWell(
-            onTap: jobDetailViewModel.isApplied == null
+            onTap: jobDetailViewModel.isApplied == null &&
+                    DateTime.now().isBefore(
+                        DateTime.parse(jobDetailViewModel.jobDTO!.expiredDate!))
                 ? () {
+                    // Get.dialog(
+                    //   _buildDialog(context)
+                    // );
                     showDialog<String>(
                         context: context,
                         builder: (BuildContext context) =>
@@ -426,7 +440,9 @@ class _PostListDetailState extends State<PostListDetail> {
                   height: 50,
                   width: double.infinity,
                   decoration: BoxDecoration(
-                    color: jobDetailViewModel.isApplied == null
+                    color: jobDetailViewModel.isApplied == null &&
+                            DateTime.now().isBefore(DateTime.parse(
+                                jobDetailViewModel.jobDTO!.expiredDate!))
                         ? Colors.black
                         : Colors.grey,
                     borderRadius: BorderRadius.circular(25),
@@ -434,7 +450,10 @@ class _PostListDetailState extends State<PostListDetail> {
                   child: Center(
                     child: Text(
                       jobDetailViewModel.isApplied == null
-                          ? 'Apply Now!!!'
+                          ? DateTime.now().isBefore(DateTime.parse(
+                                  jobDetailViewModel.jobDTO!.expiredDate!))
+                              ? 'Apply Now!!!'
+                              : 'Expire job'
                           : 'You are applying',
                       style: TextStyle(
                         color: Colors.white,

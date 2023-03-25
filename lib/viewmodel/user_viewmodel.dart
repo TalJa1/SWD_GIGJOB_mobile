@@ -38,6 +38,7 @@ class UserViewModel extends BaseModel {
       String? accountId = await getAccountID();
       WorkerDTO? workDTO = await jobDAO?.getWorkerId(accountId!);
       appliedjob = await jobDAO?.getJobApplied(workDTO?.id);
+      // appliedjob = appliedjob!.reversed.toList();
       setState(ViewStatus.Completed);
     } catch (e) {
       throw Exception(e);

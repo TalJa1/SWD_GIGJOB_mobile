@@ -421,7 +421,7 @@ class _UserProfileState extends State<UserProfile> {
                                   children: [
                                     const Text('Position:'),
                                     Text(
-                                        "${userViewModel.history![index].position}")
+                                        "${userViewModel.history![index].position!.toUpperCase()}")
                                   ],
                                 ),
                                 const SizedBox(

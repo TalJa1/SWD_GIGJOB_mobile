@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:gigjob_mobile/DTO/ApplyJobDTO.dart';
 
 class JobDTO {
@@ -11,7 +13,7 @@ class JobDTO {
   String? createdDate;
   String? updatedDate;
   String? expiredDate;
-  int? salary;
+  double? salary;
 
   JobDTO(
       {this.id,
@@ -38,7 +40,7 @@ class JobDTO {
     createdDate = json['createdDate'];
     updatedDate = json['updatedDate'];
     expiredDate = json['expiredDate'];
-    salary = json['salary'];
+    salary = double.parse(json['salary'].toString());
   }
 
   Map<String, dynamic> toJson() {

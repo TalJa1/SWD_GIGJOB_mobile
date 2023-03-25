@@ -31,7 +31,7 @@ class LocationService {
 
       if (_permissionGranted != PermissionStatus.granted) {
         return;
-      }
+      } 
     }
     locationData = await location.getLocation();
   }

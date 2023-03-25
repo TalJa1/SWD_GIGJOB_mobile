@@ -1,4 +1,4 @@
-// ignore_for_file: sized_box_for_whitespace
+// ignore_for_file: sized_box_for_whitespace, await_only_futures
 
 import 'package:date_format/date_format.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
@@ -94,10 +94,9 @@ class _PostListState extends State<PostList> {
   }
 
   Future checkEnable(Location value) async {
-
     bool isServiceEnable = await locationService.location.serviceEnabled();
-    PermissionStatus _permissionGranted = await locationService.location.hasPermission();
-
+    PermissionStatus _permissionGranted =
+        await locationService.location.hasPermission();
 
     if (isServiceEnable && _permissionGranted != PermissionStatus.denied) {
       return true;
@@ -201,14 +200,12 @@ class _PostListState extends State<PostList> {
         id: 1,
         label: 'Create date new to old',
         value: 'createdDate',
-        isAcs: "desc"
-        ),
+        isAcs: "desc"),
     SortBy(
         id: 2,
         label: 'Create date old to new',
         value: 'createdDate',
-        isAcs: "asc"
-        ),
+        isAcs: "asc"),
   ];
 
   late FilterDTO body;
@@ -275,7 +272,7 @@ class _PostListState extends State<PostList> {
     });
     await jobViewModel.getJobs(params: params, body: body.toJson());
     final newItems = jobViewModel.jobs;
-    
+
     // if (newItems != null && newItems.length < _pageSize) {
     //   _isLastPage = true;
     // }
@@ -389,11 +386,20 @@ class _PostListState extends State<PostList> {
                           child: InkWell(
                             onTap: () {
                               _searchFocusNode.unfocus();
-                              showModalBottomSheet(
-                                  context: context,
-                                  builder: (context) {
-                                    return _buiBottomSheetSort();
-                                  });
+                              Get.bottomSheet(
+                                  backgroundColor: Colors.white,
+                                  shape: const RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(20),
+                                      topRight: Radius.circular(20),
+                                    ),
+                                  ),
+                                  _buiBottomSheetSort());
+                              // showModalBottomSheet(
+                              //     context: context,
+                              //     builder: (context) {
+                              //       return _buiBottomSheetSort();
+                              //     });
                             },
                             child: Container(
                               width: 190,
@@ -424,13 +430,17 @@ class _PostListState extends State<PostList> {
                             onTap: () async {
                               _searchFocusNode.unfocus();
 
-                              await showModalBottomSheet(
-                                  context: context,
+                              Get.bottomSheet(
                                   isScrollControlled: true,
                                   enableDrag: false,
-                                  builder: (context) {
-                                    return _buidBottomSheetFilter();
-                                  });
+                                  _buidBottomSheetFilter());
+                              // await showModalBottomSheet(
+                              //     context: context,
+                              //     isScrollControlled: true,
+                              //     enableDrag: false,
+                              //     builder: (context) {
+                              //       return _buidBottomSheetFilter();
+                              //     });
                             },
                             child: Container(
                               width: 190,
@@ -526,13 +536,16 @@ class _PostListState extends State<PostList> {
 
   Widget _buiBottomSheetSort() {
     return Container(
+      // color: Colors.white,
+
       child: Column(
         children: [
           Padding(
             padding: const EdgeInsets.only(top: 12),
             child: GestureDetector(
               onTap: () {
-                Navigator.pop(context);
+                Get.back();
+                // Navigator.pop(context);
               },
               child: Container(
                 decoration: BoxDecoration(
@@ -818,8 +831,8 @@ class _PostListState extends State<PostList> {
             selectLocation = preSelectLocation;
           });
           await filterByCate();
-          // Get.back();
-          Navigator.pop(context);
+          Get.back();
+          // Navigator.pop(context);
         },
         child: Padding(
           padding: const EdgeInsets.fromLTRB(16, 48, 16, 16),
@@ -918,7 +931,10 @@ class _PostListState extends State<PostList> {
                     const SizedBox(height: 8),
                     Container(
                       child: Text(
-                        "Salary: ${job.salary}",
+                        "Salary:  ${NumberFormat.currency(
+                          locale: 'vi_VN',
+                          symbol: '₫',
+                        ).format(job.salary)}",
                         maxLines: 3,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
@@ -940,10 +956,10 @@ class _PostListState extends State<PostList> {
                           ),
                         ),
                         Text(
-                          DateFormat("yyyy-MM-dd").format(
-                                                    DateTime.parse(job.createdDate!)),
+                          // DateFormat("yyyy-MM-dd").format(
+                          //                           DateTime.parse(job.createdDate!)),
                           // "${job.createdDate}",
-                          // Jiffy("${job.createdDate}").fromNow(),
+                          Jiffy("${job.createdDate}").fromNow(),
                           style: const TextStyle(
                             fontSize: 14,
                             color: Colors.indigo,
