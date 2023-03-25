@@ -237,7 +237,7 @@ class _UpdateHistoryPageState extends State<UpdateHistoryPage> {
                   try {
                     HistoryDTO dto = new HistoryDTO();
                     dto.id = widget.userData?.id;
-                    dto.position = position;
+                    dto.position = position.isEmpty == true ? widget.userData?.position : position;
                     dto.startDate = selectedStart.toString();
                     dto.endDate = selectedEnd.toString();
                     // String? accountId = await getAccountID();
