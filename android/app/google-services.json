@@ -1,0 +1,139 @@
+{
+  "project_info": {
+    "project_number": "395540117439",
+    "firebase_url": "https://gigjob-mobile-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "gigjob-mobile",
+    "storage_bucket": "gigjob-mobile.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:395540117439:android:4795f18430d28a6167d30a",
+        "android_client_info": {
+          "package_name": "com.example.gigjob_mobile"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "395540117439-2pm5vil960v7n488vm6sdj7sdrv9jv5s.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.gigjob_mobile",
+            "certificate_hash": "915f97f70b3c17de01d404b1b9ae94016a969475"
+          }
+        },
+        {
+          "client_id": "395540117439-u81jcnces81em0blljhed7d60fep8e9k.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.gigjob_mobile",
+            "certificate_hash": "5d2f5ab43eea84b20c30f682d3db32c2315bfbcd"
+          }
+        },
+        {
+          "client_id": "395540117439-vm7157r90l3c0devegctefnll7qpr78m.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.gigjob_mobile",
+            "certificate_hash": "d908c8f85cb105714496a0e1b522e568fa2188fc"
+          }
+        },
+        {
+          "client_id": "395540117439-tu54if77tfdh8j07r7uoeikkudq7scbq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDggaiV6q_HzlX1RAxU-s4uj0gFg6zgojM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "395540117439-hkbj5lk2hnrtcteihk7cv8gtsmmmbp3u.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "395540117439-hriqo5e2ka4g8dotnh77a8uog4u4olh2.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.gigjobMobile"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:395540117439:android:d236589d0e68743667d30a",
+        "android_client_info": {
+          "package_name": "com.firebaseservice"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "395540117439-2r1qj5ivoomq213d8ien4hsuct27re33.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.firebaseservice",
+            "certificate_hash": "5d2f5ab43eea84b20c30f682d3db32c2315bfbcd"
+          }
+        },
+        {
+          "client_id": "395540117439-57eejugtdi1jh2m7s9mlm7up6ua03psq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.firebaseservice",
+            "certificate_hash": "d908c8f85cb105714496a0e1b522e568fa2188fc"
+          }
+        },
+        {
+          "client_id": "395540117439-dt0jpqe9pqu3gif9canl6k9e0uoibs4l.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.firebaseservice",
+            "certificate_hash": "088816c09b3d088a217e374144f2948b3673e93f"
+          }
+        },
+        {
+          "client_id": "395540117439-fsajjefeteafkumt8hcetobdqjcv8dok.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.firebaseservice",
+            "certificate_hash": "915f97f70b3c17de01d404b1b9ae94016a969475"
+          }
+        },
+        {
+          "client_id": "395540117439-tu54if77tfdh8j07r7uoeikkudq7scbq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDggaiV6q_HzlX1RAxU-s4uj0gFg6zgojM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "395540117439-hkbj5lk2hnrtcteihk7cv8gtsmmmbp3u.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "395540117439-hriqo5e2ka4g8dotnh77a8uog4u4olh2.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.gigjobMobile"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
